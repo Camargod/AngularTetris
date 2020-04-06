@@ -1,0 +1,9 @@
+canvas {
+  position: absolute;
+}
+.game-grid {
+  z-index: 3;
+}
+.game-box {
+  z-index: 2;
+}
