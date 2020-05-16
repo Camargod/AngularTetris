@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, HostListener } from '@angular/core';
-import { COLS,BLOCK_SIZE, ROWS, GRIDCOLS, KEY} from "./constants";
+import { COLS,BLOCK_SIZE, ROWS, GRIDCOLS, KEY, GRIDROWS} from "./constants";
 import TPiece from 'src/objects/piece';
 
 @Component({
@@ -180,7 +180,7 @@ export class AppComponent implements OnInit, AfterViewInit
           }
           
           
-          this.canvasContext.clearRect(this.lastPosX, this.lastPosY, this.lastPosX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
+          this.canvasContext.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
           this.posY += BLOCK_SIZE;
           this.tetrominoDraw();
         },this.gameTime);
@@ -340,7 +340,7 @@ export class AppComponent implements OnInit, AfterViewInit
 
         for(let indexReset = r * GRIDCOLS + 1; indexReset <= r * GRIDCOLS + COLS; indexReset++)
         {
-          this.gridVector[indexReset] = {value:0,color:'transparent'};
+          this.gridVector[indexReset] = {value:0,color:"transparent"};
         }
         for(let rDown = r; rDown >= 0; rDown--)
         {
@@ -352,25 +352,31 @@ export class AppComponent implements OnInit, AfterViewInit
             }
             else
             {
-              this.gridVector[rDown * GRIDCOLS + c] = {color:'transparent',value:0};
+              this.gridVector[rDown * GRIDCOLS + c] = {color:"transparent",value:0};
             }
           }
         }
         r++;
+        this.redrawAllTetrominos();
       }
     }
   }
 
-  // redrawAllTetrominos()
-  // {
-  //   this.piecesCanvasContext.clearRect(0,0,this.piecesCanvasContext.canvas.width, this.piecesCanvasContext.canvas.height);
-  //   for(let r = 0; r <= ROWS; r++)
-  //   {
-  //     for(let c = 0; c <= COLS; c++)
-  //     {
-  //       this.piecesCanvasContext.fillStyle()
-  //       this.piecesCanvasContext.fillRect()
-  //     }
-  //   }
-  // }
+  redrawAllTetrominos()
+  {
+    this.piecesCanvasContext.clearRect(0,0,this.piecesCanvasContext.canvas.width, this.piecesCanvasContext.canvas.height);
+    this.canvasContext.clearRect(0,0,this.canvasContext.canvas.width, this.canvasContext.canvas.height);
+    for(let r = 1; r <= GRIDROWS - 2; r++)
+    {
+      for(let c = 1; c <= GRIDCOLS - 1; c++)
+      {
+        let index = r * GRIDCOLS + c;
+        if(this.gridVector[index].value != 0 && this.gridVector[index].value != 9)
+        {
+          this.piecesCanvasContext.fillStyle = this.gridVector[index].color;
+          this.piecesCanvasContext.fillRect(c*BLOCK_SIZE,r*BLOCK_SIZE + BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+        }
+      }
+    }
+  }
 }
