@@ -14,6 +14,7 @@ export default class TPiece
   ];
   shape: number[];
   rotation : number = 0;
+  pieceNumberId = 0;
   tetrominos =
   [
     [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0], // I
@@ -36,5 +37,6 @@ export default class TPiece
     this.color = this.colorArray[number];
     this.shape = this.tetrominos[number];
     this.rotation = 0;
+    this.pieceNumberId = number + 1;
   }
 }

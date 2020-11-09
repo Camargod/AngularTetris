@@ -1,7 +1,7 @@
 export const COLS = 10;
 export const GRIDCOLS = 12;
-export const ROWS = 20;
-export const GRIDROWS = 22;
+export const ROWS = 25;
+export const GRIDROWS = 27;
 export const BLOCK_SIZE = 30;
 
 export class KEY 

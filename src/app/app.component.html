@@ -2,11 +2,13 @@
 
 
 <div class="game-body">
+  <canvas width="720" height="1280" class="piece-canvas" #piecescanvas></canvas>
+  <canvas width="720" height="1280" class="piece-canvas" #fallingpiecescanvas></canvas>
   <canvas width="720" height="1280" class="game-grid" #gridcanvas></canvas>
-  <canvas width="720" height="1280" class="game-box" #piecescanvas></canvas>
   <canvas width="720" height="1280" class="game-box" #canvas></canvas>
 </div>
 <div>
+  <img #theme id="theme" loading="eager" data-lazysrc="'./assets/themes/theme01.png'" style="visibility: hidden; z-index: -2;" decoding="async">
 </div>
 
 <router-outlet></router-outlet>
