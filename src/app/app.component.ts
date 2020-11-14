@@ -30,7 +30,7 @@ export class AppComponent implements OnInit
   /*
     Vetor de grid, contendo a informação da casa e a cor da peça que está nela.
   */
-  gridVector : Array<{value : number, color : string}>;
+  gridVector : Array<{value : number, color : string,number?:number}>;
   
   initalPos : number = 0;
   actualPiece : TPiece;
@@ -91,7 +91,7 @@ export class AppComponent implements OnInit
 
   waitImageLoad(){
     setTimeout(()=>{
-      if(ThemeService.image.width > 0){
+      if(!ThemeService.image ||ThemeService.image.width > 0){
         this.hasImageLoaded = true;
         this.draw()
         this.game();
@@ -202,7 +202,7 @@ export class AppComponent implements OnInit
     this.canvasGridContext.clearRect(0,0,this.canvasGridContext.canvas.width,this.canvasGridContext.canvas.height);
     this.canvasGridContext.fillStyle = 'black';
     
-    ThemeService.changeTheme("theme01.png");
+    ThemeService.changeTheme("theme02.png");
     ThemeService.getTileSize();
 
     let {x1,x2,y1,y2} = ThemeService.getDrawParams(ItemMap["BASE"]) ;
@@ -384,9 +384,7 @@ export class AppComponent implements OnInit
   */
   tetrominoDraw()
   {
-    this.canvasContext.fillStyle = this.actualPiece.color;
-
-    let {x1,x2,y1,y2} = ThemeService.getDrawParams(this.actualPiece.pieceNumberId) ;
+    let {x1,x2,y1,y2} = ThemeService.getDrawParams(this.actualPiece.pieceNumberId as ItemMap) ;
     this.fallingPiecesCanvasContext.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
 
     for(let px = 0; px < 4; px++)
@@ -400,7 +398,7 @@ export class AppComponent implements OnInit
           if(tetrominoPieceIndex + (GRIDCOLS * py) + px >= GRIDCOLS*6)
           {
             this.fallingPiecesCanvasContext.drawImage(ThemeService.image,x1,y1,x2,y2,this.posX + (px * BLOCK_SIZE),this.posY + (py * BLOCK_SIZE),BLOCK_SIZE,BLOCK_SIZE);
-            this.canvasContext.fillRect(this.posX + (px * BLOCK_SIZE),this.posY + (py * BLOCK_SIZE),BLOCK_SIZE,BLOCK_SIZE);
+            // this.canvasContext.fillRect(this.posX + (px * BLOCK_SIZE),this.posY + (py * BLOCK_SIZE),BLOCK_SIZE,BLOCK_SIZE);
           }
         }
       }
@@ -413,7 +411,7 @@ export class AppComponent implements OnInit
   */
   saveTetromino(posX,posY)
   {
-    let {x1,x2,y1,y2} = ThemeService.getDrawParams(this.actualPiece.pieceNumberId) ;
+    let {x1,x2,y1,y2} = ThemeService.getDrawParams(this.actualPiece.pieceNumberId as ItemMap) ;
 
     for(let px = 0; px < 4; px++)
     {
@@ -425,7 +423,7 @@ export class AppComponent implements OnInit
         {
           this.piecesCanvasContext.drawImage(ThemeService.image,x1,y1,x2,y2,posX + (px * BLOCK_SIZE),posY + (py * BLOCK_SIZE),BLOCK_SIZE,BLOCK_SIZE);
           let index = (((posX + (px * BLOCK_SIZE)) / BLOCK_SIZE) + ((((posY + (py * BLOCK_SIZE)) / BLOCK_SIZE) - 1) * GRIDCOLS));
-          this.gridVector[index] = {color:this.actualPiece.color,value:1};
+          this.gridVector[index] = {color:this.actualPiece.color,value:1,number:this.actualPiece.pieceNumberId};
         }
       }
     }
@@ -440,10 +438,10 @@ export class AppComponent implements OnInit
   */
   clearFullLines(lastPosxY)
   {
-    for(let r = ROWS - 1; r > 0; r--)
+    for(let r = ROWS; r >= 0; r--)
     {
       let isFilled = true;
-      for(let c = 1; c <= GRIDCOLS - 1; c++)
+      for(let c = 1; c < GRIDCOLS - 1; c++)
       {
         let index = r * GRIDCOLS + c;
         if(this.gridVector[index].value == 0)
@@ -491,8 +489,12 @@ export class AppComponent implements OnInit
         let index = r * GRIDCOLS + c;
         if(this.gridVector[index].value != 0 && this.gridVector[index].value != 9)
         {
-          this.piecesCanvasContext.fillStyle = this.gridVector[index].color;
-          this.piecesCanvasContext.fillRect(c*BLOCK_SIZE,r*BLOCK_SIZE + BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+          if(this.gridVector[index].number){
+            let {x1,x2,y1,y2} = ThemeService.getDrawParams(this.gridVector[index].number as ItemMap);
+            this.piecesCanvasContext.drawImage(ThemeService.image,x1,y1,x2,y2,c*BLOCK_SIZE,r*BLOCK_SIZE + BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+          }
+          // this.piecesCanvasContext.fillStyle = this.gridVector[index].color;
+          // this.piecesCanvasContext.fillRect(c*BLOCK_SIZE,r*BLOCK_SIZE + BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
         }
       }
     }

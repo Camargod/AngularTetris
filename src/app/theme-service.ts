@@ -28,15 +28,21 @@ export class ThemeService
 
     static getTileSize()
     {
-        return this.image.width / 8;
+        return Math.floor(this.image.width / 8);
+    }
+
+    static getTileHeight()
+    {
+        return Math.floor(this.image.height);
     }
 
     static getDrawParams(block:ItemMap)
     {
+        debugger;
         let x1 = block * this.getTileSize();
         let x2 = block * this.getTileSize() + this.getTileSize();
         let y1 = 0;
-        let y2 = this.getTileSize();
+        let y2 = this.getTileHeight();
 
         return {x1,x2,y1,y2}
     }
