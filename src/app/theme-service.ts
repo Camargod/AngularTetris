@@ -38,7 +38,6 @@ export class ThemeService
 
     static getDrawParams(block:ItemMap)
     {
-        debugger;
         let x1 = block * this.getTileSize();
         let x2 = block * this.getTileSize() + this.getTileSize();
         let y1 = 0;

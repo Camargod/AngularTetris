@@ -33,7 +33,6 @@ export default class TPiece
 
   spawn() 
   {
-    debugger;
     let number = Math.round(Math.random()*6);
     // let number = 0;
     this.color = this.colorArray[number];
