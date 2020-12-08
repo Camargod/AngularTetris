@@ -2,7 +2,7 @@ import {Component,ViewChild,ElementRef,OnInit,HostListener} from '@angular/core'
 import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS} from "./constants";
 import TPiece from 'src/objects/piece';
 import Utils from './utils';
-import {ItemMap,ThemeService} from './theme-service';
+import {ItemMap,Themes,ThemeService} from './theme-service';
 import {AudioMap,AudioMapNames,SoundClass} from './sound';
 
 @Component({
@@ -29,6 +29,10 @@ export class AppComponent implements OnInit {
     static: true
   }) fallingpiecescanvas: ElementRef < HTMLCanvasElement > ;
 
+  @ViewChild("themeSelect",{
+    static:true
+  }) themeSelect : ElementRef<HTMLSelectElement>
+
 
   canvasContext: CanvasRenderingContext2D;
   canvasGridContext: CanvasRenderingContext2D;
@@ -53,7 +57,6 @@ export class AppComponent implements OnInit {
   lastPosX: number = 0;
   lastPosY: number = 0;
 
-
   /*
     Variaveis de contagem de FPS (Broken)
   */
@@ -66,6 +69,7 @@ export class AppComponent implements OnInit {
   isGameOver: boolean = false;
 
   hasImageLoaded: boolean = false;
+  themeList = Themes;
 
   themeSoundManager: SoundClass;
 
@@ -92,7 +96,7 @@ export class AppComponent implements OnInit {
   */
 
   ngOnInit(): void {
-    ThemeService.setTile();
+    ThemeService.setTile(0);
     this.prepareCanvasContexts();
     this.setCanvasSize();
 
@@ -101,20 +105,32 @@ export class AppComponent implements OnInit {
     this.themeSoundManager.setNewAudio(AudioMap[AudioMapNames.main])
     this.themeSoundManager.audio.loop = true;
     this.waitImageLoad();
-
   }
 
   waitImageLoad() {
     setTimeout(() => {
-      if (!ThemeService.image || ThemeService.image.width > 0) {
+      if (ThemeService.image && ThemeService.image.width > 0) {
         this.hasImageLoaded = true;
         this.draw()
         this.game();
       } else if (!this.hasImageLoaded) {
         this.waitImageLoad();
       }
-    }, 100)
+    }, 300)
   }
+
+  ngAfterViewInit(): void {
+    this.setSelectActualTheme();
+  }
+
+  setSelectActualTheme(){
+    let actualTheme = localStorage.getItem("selectedTheme");
+
+    this.themeSelect.nativeElement.selectedIndex = this.themeList.findIndex((themeItem)=>{
+      return themeItem.fileName == actualTheme;
+    })
+  }
+
 
   draw() {
     this.grid();
@@ -206,7 +222,6 @@ export class AppComponent implements OnInit {
     this.canvasGridContext.clearRect(0, 0, this.canvasGridContext.canvas.width, this.canvasGridContext.canvas.height);
     this.canvasGridContext.fillStyle = 'black';
 
-    ThemeService.changeTheme("theme02.png");
     ThemeService.getTileSize();
 
     let {
@@ -265,7 +280,6 @@ export class AppComponent implements OnInit {
             this.saveTetromino(posValidateX, posValidateY);
 
             this.clearFullLines(posValidateY);
-            this.grid();
             // this.gridArrayDebug();
             this.actualPiece.spawn();
           }
@@ -354,8 +368,8 @@ export class AppComponent implements OnInit {
       x2,
       y1,
       y2
-    } = ThemeService.getDrawParams(this.actualPiece.pieceNumberId as ItemMap);
-    ThemeService.setTile();
+    } = ThemeService.getDrawParams(0);
+    ThemeService.setTile(this.actualPiece.pieceNumberId);
     this.fallingPiecesCanvasContext.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
 
     for (let px = 0; px < 4; px++) {
@@ -381,7 +395,7 @@ export class AppComponent implements OnInit {
       x2,
       y1,
       y2
-    } = ThemeService.getDrawParams(this.actualPiece.pieceNumberId as ItemMap);
+    } = ThemeService.getDrawParams(0);
 
     for (let px = 0; px < 4; px++) {
       for (let py = 0; py < 4; py++) {
@@ -463,12 +477,16 @@ export class AppComponent implements OnInit {
               x2,
               y1,
               y2
-            } = ThemeService.getDrawParams(this.gridVector[index].number as ItemMap);
+            } = ThemeService.getDrawParams(0);
+            ThemeService.setTile(this.actualPiece.pieceNumberId)
             this.piecesCanvasContext.drawImage(ThemeService.image, x1, y1, x2, y2, c * BLOCK_SIZE, r * BLOCK_SIZE + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
           }
 
         }
       }
     }
+  }
+  onChangeTheme(themeFileString){
+    ThemeService.changeTheme(themeFileString.target.value);
   }
 }

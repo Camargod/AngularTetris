@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { Session } from 'protractor';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -15,12 +16,13 @@ export class ThemeService
     {
         this.selectedThemeFile = selectedTheme;
         localStorage.setItem("selectedTheme",selectedTheme)
+        location.reload();
     }
 
-    static setTile()
+    static setTile(tileNumber : number)
     {
         let image = new Image();
-        image.src = `assets/themes/${localStorage.getItem("selectedTheme")}`;
+        image.src = `assets/themes/${localStorage.getItem("selectedTheme")}/${tileNumber}.png`;
         image.onload = () =>{
             this.image = image;
         }; 
@@ -28,7 +30,7 @@ export class ThemeService
 
     static getTileSize()
     {
-        return Math.floor(this.image.width / 8);
+        return Math.floor(this.image.width);
     }
 
     static getTileHeight()
@@ -36,7 +38,7 @@ export class ThemeService
         return Math.floor(this.image.height);
     }
 
-    static getDrawParams(block:ItemMap)
+    static getDrawParams(block)
     {
         let x1 = block * this.getTileSize();
         let x2 = block * this.getTileSize() + this.getTileSize();
@@ -59,3 +61,25 @@ export enum ItemMap
     "COLOR_6" = 6,
     "COLOR_7" = 7
 }
+
+export const Themes = [{
+        name:"Tema base",
+        fileName: "theme01"
+    },
+    {
+        name:"Noir",
+        fileName: "theme02"
+    },
+    {
+        name:"Tecnologia",
+        fileName: "temaO3"
+    },
+    {
+        name:"RetroFuturista",
+        fileName: "theme04"
+    },
+    {
+        name:"Frutas",
+        fileName: "theme05"
+    }
+]

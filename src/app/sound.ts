@@ -4,7 +4,6 @@ export class SoundClass{
     }
 
     setNewAudio(soundName : string){
-        debugger;
         this.audio = new Audio(`assets/themes/${soundName}.mp3`);
         this.audio.volume = .12;
         this.audio.load();
