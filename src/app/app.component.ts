@@ -4,6 +4,7 @@ import TPiece from 'src/objects/piece';
 import Utils from './utils';
 import {ItemMap,Themes,ThemeService} from './theme-service';
 import {AudioMap,AudioMapNames,SoundClass} from './sound';
+import { SocketService } from './socket/socket.service';
 
 @Component({
   selector: 'app-root',
@@ -75,7 +76,10 @@ export class AppComponent implements OnInit {
 
   pontuation = 0;
 
-  constructor(private themeService: ThemeService) {
+  constructor(
+    private themeService: ThemeService,
+    private socketService : SocketService 
+  ) {
     this.themeSoundManager = new SoundClass();
   }
 
@@ -99,7 +103,7 @@ export class AppComponent implements OnInit {
     ThemeService.setTile(0);
     this.prepareCanvasContexts();
     this.setCanvasSize();
-
+    this.socketService.socketReturn();
     this.pieceSet()
     this.setBounds();
     this.themeSoundManager.setNewAudio(AudioMap[AudioMapNames.main])
@@ -307,6 +311,7 @@ export class AppComponent implements OnInit {
       switch (key) {
         case KEY.LEFT:
           if (!this.colision(this.posX - BLOCK_SIZE, this.posY, this.actualPiece.rotation)) {
+            this.socketService.socketMsg("MV_LEFT")
             this.canvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
             this.posX -= BLOCK_SIZE;
             this.tetrominoDraw();
@@ -314,6 +319,7 @@ export class AppComponent implements OnInit {
           break;
         case KEY.RIGHT:
           if (!this.colision(this.posX + BLOCK_SIZE, this.posY, this.actualPiece.rotation)) {
+            this.socketService.socketMsg("MV_RIGHT")
             this.canvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
             this.posX += BLOCK_SIZE;
             this.tetrominoDraw();
@@ -324,6 +330,7 @@ export class AppComponent implements OnInit {
             break;
           }
           if (!this.colision(this.posX, this.posY, this.actualPiece.rotation + 1)) {
+            this.socketService.socketMsg("MV_UP")
             if (this.actualPiece.rotation == 3) {
               this.actualPiece.rotation = 0;
             } else {
@@ -334,6 +341,7 @@ export class AppComponent implements OnInit {
             break;
           } else {
             if (!this.colision(this.posX + BLOCK_SIZE, this.posY, this.actualPiece.rotation + 1)) {
+              this.socketService.socketMsg("MV_UP")
               if (this.actualPiece.rotation == 3) {
                 this.actualPiece.rotation = 0;
               } else {
@@ -344,6 +352,7 @@ export class AppComponent implements OnInit {
               this.tetrominoDraw();
               break;
             } else if(!this.colision(this.posX - BLOCK_SIZE, this.posY, this.actualPiece.rotation + 1)) {
+              this.socketService.socketMsg("MV_UP")
               if (this.actualPiece.rotation == 3) {
                 this.actualPiece.rotation = 0;
               } else {
