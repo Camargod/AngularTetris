@@ -30,20 +30,16 @@
 // }
 
 
-canvas
-{
+canvas{
     position: absolute;
 }
-.game-grid
-{
+.game-grid{
     z-index: 3;
 }
-.game-box
-{
+.game-box{
     z-index: 2;
 }
-.piece-canvas
-{
+.piece-canvas{
     z-index: 4;
 }
 

@@ -4,7 +4,8 @@ import TPiece from 'src/objects/piece';
 import Utils from './utils';
 import {ItemMap,Themes,ThemeService} from './theme-service';
 import {AudioMap,AudioMapNames,SoundClass} from './sound';
-import { SocketService } from './socket/socket.service';
+import { SocketService } from './game-modules/socket/socket.service';
+import { MatchVariablesService } from './game-modules/match-variables/match-variables.service';
 
 @Component({
   selector: 'app-root',
@@ -78,6 +79,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private themeService: ThemeService,
+    private matchVariables : MatchVariablesService,
     private socketService : SocketService 
   ) {
     this.themeSoundManager = new SoundClass();
@@ -100,15 +102,23 @@ export class AppComponent implements OnInit {
   */
 
   ngOnInit(): void {
+    this.matchVariables.startGameListening()
     ThemeService.setTile(0);
     this.prepareCanvasContexts();
     this.setCanvasSize();
-    this.socketService.socketReturn();
     this.pieceSet()
     this.setBounds();
     this.themeSoundManager.setNewAudio(AudioMap[AudioMapNames.main])
     this.themeSoundManager.audio.loop = true;
     this.waitImageLoad();
+  }
+
+  socketStart(){
+    this.socketService.socketReturn();
+
+    this.socketService._eventBehavior.subscribe((event)=>{
+      
+    })
   }
 
   waitImageLoad() {
