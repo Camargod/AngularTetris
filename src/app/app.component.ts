@@ -501,7 +501,6 @@ export class AppComponent implements OnInit {
             console.log(`Desenhando tile de numero ${this.gridVector[index].number}`)
             let subcription = this.themeService.setTileObservable(this.gridVector[index].number).subscribe((image)=>{
               window.requestAnimationFrame(()=>{
-                debugger;
                 this.piecesCanvasContext.drawImage(image, x1, y1, x2, y2, c * BLOCK_SIZE, r * BLOCK_SIZE + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                 subcription.unsubscribe();
               })

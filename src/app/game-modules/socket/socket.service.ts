@@ -28,7 +28,7 @@ export class SocketService {
     
     socketMsg(key : string, value: string){
         if(this.socket.readyState == this.socket.OPEN) this.socket.send(`${key}|${value}`);
-        else console.warn("Socket está fechado");
+        else console.warn("Socket não está aberto");
     }
 
     private eventHandler(message : string){
