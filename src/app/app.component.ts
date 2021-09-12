@@ -75,7 +75,11 @@ export class AppComponent implements OnInit {
 
   themeSoundManager: SoundClass;
 
-  pontuation = 0;
+  gamePontuation = 0;
+
+  //Variáveis do socket
+  timer = 0;
+  players = 0;
 
   constructor(
     private themeService: ThemeService,
@@ -103,7 +107,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.matchVariables.startGameListening()
-    ThemeService.setTile(0);
+    this.socketStart();
+    this.themeService.setTile(0);
     this.prepareCanvasContexts();
     this.setCanvasSize();
     this.pieceSet()
@@ -111,19 +116,21 @@ export class AppComponent implements OnInit {
     this.themeSoundManager.setNewAudio(AudioMap[AudioMapNames.main])
     this.themeSoundManager.audio.loop = true;
     this.waitImageLoad();
+    
   }
 
   socketStart(){
-    this.socketService.socketReturn();
-
-    this.socketService._eventBehavior.subscribe((event)=>{
-      
+    this.matchVariables.timer.subscribe((timer)=>{
+      this.timer = timer;
+    })
+    this.matchVariables.in_match_players.subscribe((players)=>{
+      this.players = players;
     })
   }
 
   waitImageLoad() {
     setTimeout(() => {
-      if (ThemeService.image && ThemeService.image.width > 0) {
+      if (this.themeService.image && this.themeService.image.width > 0) {
         this.hasImageLoaded = true;
         this.draw()
         this.game();
@@ -166,12 +173,12 @@ export class AppComponent implements OnInit {
     Precisa ser ajustado depois para responsividade
   */
   setCanvasSize() {
-    this.canvasContext.canvas.width = window.innerWidth * 0.33;
-    this.canvasContext.canvas.height = window.innerHeight * 0.92;
-    this.canvasGridContext.canvas.width = window.innerWidth * 0.33;
-    this.canvasGridContext.canvas.height = window.innerHeight * 0.92;
-    this.piecesCanvasContext.canvas.width = window.innerWidth * 0.33;
-    this.piecesCanvasContext.canvas.height = window.innerHeight * 0.92;
+    this.canvasContext.canvas.width = window.innerWidth;
+    this.canvasContext.canvas.height = window.innerHeight + 80;
+    this.canvasGridContext.canvas.width = window.innerWidth;
+    this.canvasGridContext.canvas.height = window.innerHeight + 80;
+    this.piecesCanvasContext.canvas.width = window.innerWidth;
+    this.piecesCanvasContext.canvas.height = window.innerHeight + 80;
   }
 
   /*
@@ -227,7 +234,9 @@ export class AppComponent implements OnInit {
         }
       }
       return false;
-    } catch (err) {}
+    } catch (err) {
+      console.error(`Erro de colisão: ${err}`);
+    }
   }
   /*
     Faz o desenho da grid.
@@ -236,19 +245,19 @@ export class AppComponent implements OnInit {
     this.canvasGridContext.clearRect(0, 0, this.canvasGridContext.canvas.width, this.canvasGridContext.canvas.height);
     this.canvasGridContext.fillStyle = 'black';
 
-    ThemeService.getTileSize();
+    this.themeService.getTileSize();
 
     let {
       x1,
       x2,
       y1,
       y2
-    } = ThemeService.getDrawParams(ItemMap["BASE"]);
+    } = this.themeService.getDrawParams(ItemMap["BASE"]);
 
     for (let c = 0; c < COLS; c++) {
       for (let r = 6; r <= ROWS + 1; r++) {
         if (r != ROWS + 1) {
-          this.canvasGridContext.drawImage(ThemeService.image, x1, y1, x2, y2, (c * BLOCK_SIZE) + BLOCK_SIZE, (r * BLOCK_SIZE) + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+          this.canvasGridContext.drawImage(this.themeService.image, x1, y1, x2, y2, (c * BLOCK_SIZE) + BLOCK_SIZE, (r * BLOCK_SIZE) + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }
       }
     }
@@ -277,23 +286,14 @@ export class AppComponent implements OnInit {
   gameDraw() {
     try {
       if (!this.isGameOver) {
-        this.lastFps = performance.now();
-
-        //Aqui fica a queda natural de peças ao logo do jogo
-
-        //Limpa a tela para atualizar elementos
-        //Solicita o gameloop
         setTimeout(() => {
           this.lastPosX = this.posX;
           this.lastPosY = this.posY;
 
-          window.requestAnimationFrame(() => this.gameDraw());
           if (this.colision(this.posX, this.posY + BLOCK_SIZE, this.actualPiece.rotation)) {
-            let posValidateY = this.posY;
-            let posValidateX = this.posX;
-            this.saveTetromino(posValidateX, posValidateY);
+            this.saveTetromino(this.posX, this.posY);
 
-            this.clearFullLines(posValidateY);
+            this.clearFullLines(this.posY);
             // this.gridArrayDebug();
             this.actualPiece.spawn();
           }
@@ -302,6 +302,7 @@ export class AppComponent implements OnInit {
           this.canvasContext.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
           this.posY += BLOCK_SIZE;
           this.tetrominoDraw();
+          window.requestAnimationFrame(() => this.gameDraw());
         }, this.gameTime);
 
       } else {
@@ -309,7 +310,7 @@ export class AppComponent implements OnInit {
         location.reload();
       }
     } catch (err) {
-
+      console.error(`Erro de gameloop: ${err}`)
     }
   }
 
@@ -321,7 +322,7 @@ export class AppComponent implements OnInit {
       switch (key) {
         case KEY.LEFT:
           if (!this.colision(this.posX - BLOCK_SIZE, this.posY, this.actualPiece.rotation)) {
-            this.socketService.socketMsg("MV_LEFT")
+            this.socketService.socketMsg("MV_LEFT","63")
             this.canvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
             this.posX -= BLOCK_SIZE;
             this.tetrominoDraw();
@@ -329,7 +330,7 @@ export class AppComponent implements OnInit {
           break;
         case KEY.RIGHT:
           if (!this.colision(this.posX + BLOCK_SIZE, this.posY, this.actualPiece.rotation)) {
-            this.socketService.socketMsg("MV_RIGHT")
+            this.socketService.socketMsg("MV_RIGHT","12")
             this.canvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
             this.posX += BLOCK_SIZE;
             this.tetrominoDraw();
@@ -340,7 +341,7 @@ export class AppComponent implements OnInit {
             break;
           }
           if (!this.colision(this.posX, this.posY, this.actualPiece.rotation + 1)) {
-            this.socketService.socketMsg("MV_UP")
+            this.socketService.socketMsg("MV_UP","23")
             if (this.actualPiece.rotation == 3) {
               this.actualPiece.rotation = 0;
             } else {
@@ -351,7 +352,7 @@ export class AppComponent implements OnInit {
             break;
           } else {
             if (!this.colision(this.posX + BLOCK_SIZE, this.posY, this.actualPiece.rotation + 1)) {
-              this.socketService.socketMsg("MV_UP")
+              this.socketService.socketMsg("MV_UP","3")
               if (this.actualPiece.rotation == 3) {
                 this.actualPiece.rotation = 0;
               } else {
@@ -362,7 +363,7 @@ export class AppComponent implements OnInit {
               this.tetrominoDraw();
               break;
             } else if(!this.colision(this.posX - BLOCK_SIZE, this.posY, this.actualPiece.rotation + 1)) {
-              this.socketService.socketMsg("MV_UP")
+              this.socketService.socketMsg("MV_UP","2")
               if (this.actualPiece.rotation == 3) {
                 this.actualPiece.rotation = 0;
               } else {
@@ -387,8 +388,8 @@ export class AppComponent implements OnInit {
       x2,
       y1,
       y2
-    } = ThemeService.getDrawParams(0);
-    ThemeService.setTile(this.actualPiece.pieceNumberId);
+    } = this.themeService.getDrawParams(0);
+    this.themeService.setTile(this.actualPiece.pieceNumberId);
     this.fallingPiecesCanvasContext.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
 
     for (let px = 0; px < 4; px++) {
@@ -397,7 +398,7 @@ export class AppComponent implements OnInit {
         if (this.actualPiece.shape[rotate] == 1) {
           let tetrominoPieceIndex = Utils.getIndexHeightByPos(this.posY, py);
           if (tetrominoPieceIndex + (GRIDCOLS * py) + px >= GRIDCOLS * 6) {
-            this.fallingPiecesCanvasContext.drawImage(ThemeService.image, x1, y1, x2, y2, this.posX + (px * BLOCK_SIZE), this.posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
+            this.fallingPiecesCanvasContext.drawImage(this.themeService.image, x1, y1, x2, y2, this.posX + (px * BLOCK_SIZE), this.posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
@@ -414,7 +415,7 @@ export class AppComponent implements OnInit {
       x2,
       y1,
       y2
-    } = ThemeService.getDrawParams(0);
+    } = this.themeService.getDrawParams(0);
 
     for (let px = 0; px < 4; px++) {
       for (let py = 0; py < 4; py++) {
@@ -430,7 +431,7 @@ export class AppComponent implements OnInit {
               value: 1,
               number: this.actualPiece.pieceNumberId
             };
-            this.piecesCanvasContext.drawImage(ThemeService.image, x1, y1, x2, y2, posX + (px * BLOCK_SIZE), posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
+            this.piecesCanvasContext.drawImage(this.themeService.image, x1, y1, x2, y2, posX + (px * BLOCK_SIZE), posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
@@ -478,7 +479,7 @@ export class AppComponent implements OnInit {
         r++;
         this.redrawAllTetrominos();
         this.gameTime -= 6;
-        this.pontuation += 50;
+        this.gamePontuation += 50;
       }
     }
   }
@@ -496,16 +497,21 @@ export class AppComponent implements OnInit {
               x2,
               y1,
               y2
-            } = ThemeService.getDrawParams(0);
-            ThemeService.setTile(this.actualPiece.pieceNumberId)
-            this.piecesCanvasContext.drawImage(ThemeService.image, x1, y1, x2, y2, c * BLOCK_SIZE, r * BLOCK_SIZE + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            } = this.themeService.getDrawParams(0);
+            console.log(`Desenhando tile de numero ${this.gridVector[index].number}`)
+            let subcription = this.themeService.setTileObservable(this.gridVector[index].number).subscribe((image)=>{
+              window.requestAnimationFrame(()=>{
+                debugger;
+                this.piecesCanvasContext.drawImage(image, x1, y1, x2, y2, c * BLOCK_SIZE, r * BLOCK_SIZE + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                subcription.unsubscribe();
+              })
+            });
           }
-
         }
       }
     }
   }
   onChangeTheme(themeFileString){
-    ThemeService.changeTheme(themeFileString.target.value);
+    this.themeService.changeTheme(themeFileString.target.value);
   }
 }

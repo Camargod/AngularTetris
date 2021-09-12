@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { Socket } from "net";
 import { BehaviorSubject } from "rxjs";
 
 @Injectable({
@@ -7,23 +6,29 @@ import { BehaviorSubject } from "rxjs";
 })
 
 export class SocketService {
-    socket : WebSocket = new WebSocket("ws://localhost:8080/chat");
+    socket : WebSocket;
     public _eventBehavior : BehaviorSubject<{key:number,value:string}> = new BehaviorSubject(null)
     public isConnected : boolean = false;
 
     socketReturn(){
+        this.socket = new WebSocket("ws://localhost:8080/game");
         this.socket.onopen = (event) =>{
-            console.log("Iniciando Socket.")
+            console.log("Iniciando Socket.");
             this.isConnected = true;
         }
         this.socket.onmessage = (event : MessageEvent) =>{
-           let response = this.eventHandler(event.data)
-           this._eventBehavior.next(response)
+           let response = this.eventHandler(event.data);
+           this._eventBehavior.next(response);
+        }
+        this.socket.onerror = (event) => {
+            setTimeout(()=>{this.socketReturn()},1000)
+            console.log("Reconectando");
         }
     }
     
-    socketMsg(msg : string){
-        this.socket.send(msg)
+    socketMsg(key : string, value: string){
+        if(this.socket.readyState == this.socket.OPEN) this.socket.send(`${key}|${value}`);
+        else console.warn("Socket está fechado");
     }
 
     private eventHandler(message : string){

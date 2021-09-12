@@ -32,6 +32,7 @@
 
 canvas{
     position: absolute;
+    top: -80px;
 }
 .game-grid{
     z-index: 3;
@@ -46,4 +47,9 @@ canvas{
 select{
     position: relative;
     z-index: 5;
+}
+
+*{
+    margin: 0;
+    padding: 0;
 }

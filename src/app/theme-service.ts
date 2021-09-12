@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Session } from 'protractor';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
     providedIn:'root'
@@ -8,18 +7,18 @@ import { BehaviorSubject } from 'rxjs';
 
 export class ThemeService
 {
-    public static selectedThemeFile = "theme01.png"
-    public static selectedThemeChanged : BehaviorSubject<void> = new BehaviorSubject<void>(null);
-    public static image : HTMLImageElement; 
+    public selectedThemeFile = "theme01.png"
+    public selectedThemeChanged : BehaviorSubject<void> = new BehaviorSubject<void>(null);
+    public image : HTMLImageElement; 
 
-    static changeTheme(selectedTheme)
+    changeTheme(selectedTheme)
     {
         this.selectedThemeFile = selectedTheme;
         localStorage.setItem("selectedTheme",selectedTheme)
         location.reload();
     }
 
-    static setTile(tileNumber : number)
+    setTile(tileNumber : number)
     {
         let image = new Image();
         image.src = `assets/themes/${localStorage.getItem("selectedTheme")}/${tileNumber}.png`;
@@ -28,17 +27,17 @@ export class ThemeService
         }; 
     }
 
-    static getTileSize()
+    getTileSize()
     {
         return Math.floor(this.image.width);
     }
 
-    static getTileHeight()
+    getTileHeight()
     {
         return Math.floor(this.image.height);
     }
 
-    static getDrawParams(block)
+    getDrawParams(block)
     {
         let x1 = block * this.getTileSize();
         let x2 = block * this.getTileSize() + this.getTileSize();
@@ -47,7 +46,21 @@ export class ThemeService
 
         return {x1,x2,y1,y2}
     }
-    
+    setTileObservable(tileNumber : number) : Observable<HTMLImageElement>{
+        let imgSrc = `assets/themes/${localStorage.getItem("selectedTheme")}/${tileNumber}.png`;
+        return new Observable(function(observer){
+          const img = new Image();
+          img.src = imgSrc;
+          img.onload = function(){
+            observer.next(img);
+            observer.complete();
+          }
+          img.onerror = function(err){
+            observer.error(err);
+          }
+        });
+     }
+
 }
 
 export enum ItemMap
@@ -72,7 +85,7 @@ export const Themes = [{
     },
     {
         name:"Tecnologia",
-        fileName: "temaO3"
+        fileName: "theme03"
     },
     {
         name:"RetroFuturista",
@@ -83,3 +96,4 @@ export const Themes = [{
         fileName: "theme05"
     }
 ]
+

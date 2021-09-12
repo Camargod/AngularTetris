@@ -19,7 +19,6 @@ constructor(
 
   public in_match_players = new BehaviorSubject<number>(0);
 
-  private enums = SocketEventServerEnumerator;
 
   startGameListening(){
     this.socketService.socketReturn();
@@ -30,14 +29,18 @@ constructor(
 
   private socketMessageHandler(event: {key:number,value:string}){
     if(event) switch(event.key){
-      case 201:
+      case SocketEventServerEnumerator.TIME_UPDATE:
         this.timer.next(Number.parseInt(event.value));
         break;
-      case 202:
+      case SocketEventServerEnumerator.GAME_START:
         this.game_start.next(event.value == "true");
         break;
-      case 203:
+      case SocketEventServerEnumerator.RECEIVED_DAMAGE:
         this.damage_received.next(Number.parseInt(event.value));
+        break;
+      case SocketEventServerEnumerator.IN_MATCH_PLAYERS:
+        this.in_match_players.next(Number.parseInt(event.value));
+        break;
     } 
     // this.socketVars[this.enums[event.key]] = event.value
   }
