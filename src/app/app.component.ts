@@ -133,7 +133,7 @@ export class AppComponent implements OnInit {
       if (this.themeService.image && this.themeService.image.width > 0) {
         this.hasImageLoaded = true;
         this.draw()
-        this.game();
+        this.gameDraw();
       } else if (!this.hasImageLoaded) {
         this.waitImageLoad();
       }
@@ -252,7 +252,7 @@ export class AppComponent implements OnInit {
       x2,
       y1,
       y2
-    } = this.themeService.getDrawParams(ItemMap["BASE"]);
+    } = this.themeService.getDrawParams();
 
     for (let c = 0; c < COLS; c++) {
       for (let r = 6; r <= ROWS + 1; r++) {
@@ -274,12 +274,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  /*
-    Loop de execução do jogo.
-  */
-  game() {
-    window.requestAnimationFrame(() => this.gameDraw());
-  }
+
   /*
     Desenho de jogo.
   */
@@ -388,7 +383,7 @@ export class AppComponent implements OnInit {
       x2,
       y1,
       y2
-    } = this.themeService.getDrawParams(0);
+    } = this.themeService.getDrawParams();
     this.themeService.setTile(this.actualPiece.pieceNumberId);
     this.fallingPiecesCanvasContext.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
 
@@ -415,7 +410,7 @@ export class AppComponent implements OnInit {
       x2,
       y1,
       y2
-    } = this.themeService.getDrawParams(0);
+    } = this.themeService.getDrawParams();
 
     for (let px = 0; px < 4; px++) {
       for (let py = 0; py < 4; py++) {
@@ -497,7 +492,7 @@ export class AppComponent implements OnInit {
               x2,
               y1,
               y2
-            } = this.themeService.getDrawParams(0);
+            } = this.themeService.getDrawParams();
             console.log(`Desenhando tile de numero ${this.gridVector[index].number}`)
             let subcription = this.themeService.setTileObservable(this.gridVector[index].number).subscribe((image)=>{
               window.requestAnimationFrame(()=>{
@@ -510,6 +505,7 @@ export class AppComponent implements OnInit {
       }
     }
   }
+  
   onChangeTheme(themeFileString){
     this.themeService.changeTheme(themeFileString.target.value);
   }

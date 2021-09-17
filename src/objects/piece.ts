@@ -2,14 +2,6 @@ export default class TPiece {
   x: number;
   y: number;
   color: string;
-  colorArray = [
-    'blue',
-    'yellow',
-    'green',
-    'purple',
-    'pink',
-    'red'
-  ];
   shape: number[];
   rotation: number = 0;
   pieceNumberId = 0;
@@ -30,7 +22,6 @@ export default class TPiece {
   spawn() {
     let number = Math.round(Math.random() * 6);
     // let number = 0;
-    this.color = this.colorArray[number];
     this.shape = this.tetrominos[number];
     this.rotation = 0;
     this.pieceNumberId = number + 1;

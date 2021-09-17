@@ -37,10 +37,10 @@ export class ThemeService
         return Math.floor(this.image.height);
     }
 
-    getDrawParams(block)
+    getDrawParams()
     {
-        let x1 = block * this.getTileSize();
-        let x2 = block * this.getTileSize() + this.getTileSize();
+        let x1 = 0;
+        let x2 = this.getTileSize();
         let y1 = 0;
         let y2 = this.getTileHeight();
 
@@ -94,6 +94,18 @@ export const Themes = [{
     {
         name:"Frutas",
         fileName: "theme05"
+    },
+    {
+        name:"Tema Base 2",
+        fileName: "theme06"
+    },
+    {
+        name:"Geométricos",
+        fileName: "theme07"
+    },
+    {
+        name:"😎😎😎😎😎😎😎",
+        fileName: "theme08"
     }
 ]
 
