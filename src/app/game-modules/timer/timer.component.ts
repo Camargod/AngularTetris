@@ -17,9 +17,4 @@ export class TimerComponent implements OnInit {
       this.timer = time;
     })
   }
-
-  botaoDoFranca(){
-    MatchVariablesService.helloWorld()
-  }
-
 }

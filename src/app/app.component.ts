@@ -21,9 +21,6 @@ export class AppComponent implements OnInit {
   @ViewChild("gridcanvas", {
     static: true
   }) gridcanvas: ElementRef < HTMLCanvasElement > ;
-  @ViewChild("canvas", {
-    static: true
-  }) canvas: ElementRef < HTMLCanvasElement > ;
   @ViewChild("piecescanvas", {
     static: true
   }) piecescanvas: ElementRef < HTMLCanvasElement > ;
@@ -36,7 +33,6 @@ export class AppComponent implements OnInit {
   }) themeSelect : ElementRef<HTMLSelectElement>
 
 
-  canvasContext: CanvasRenderingContext2D;
   canvasGridContext: CanvasRenderingContext2D;
   piecesCanvasContext: CanvasRenderingContext2D;
   fallingPiecesCanvasContext: CanvasRenderingContext2D;
@@ -161,7 +157,6 @@ export class AppComponent implements OnInit {
     Traz para o tipo de contexto as referencias de elemento HTML
   */
   prepareCanvasContexts() {
-    this.canvasContext = this.canvas.nativeElement.getContext('2d');
     this.canvasGridContext = this.gridcanvas.nativeElement.getContext('2d');
     this.piecesCanvasContext = this.piecescanvas.nativeElement.getContext('2d');
     this.fallingPiecesCanvasContext = this.fallingpiecescanvas.nativeElement.getContext('2d')
@@ -173,19 +168,19 @@ export class AppComponent implements OnInit {
     Precisa ser ajustado depois para responsividade
   */
   setCanvasSize() {
-    this.canvasContext.canvas.width = window.innerWidth;
-    this.canvasContext.canvas.height = window.innerHeight + 80;
+    this.fallingPiecesCanvasContext.canvas.width = window.innerWidth;
+    this.fallingPiecesCanvasContext.canvas.height = window.innerHeight + 140;
     this.canvasGridContext.canvas.width = window.innerWidth;
-    this.canvasGridContext.canvas.height = window.innerHeight + 80;
+    this.canvasGridContext.canvas.height = window.innerHeight + 140;
     this.piecesCanvasContext.canvas.width = window.innerWidth;
-    this.piecesCanvasContext.canvas.height = window.innerHeight + 80;
+    this.piecesCanvasContext.canvas.height = window.innerHeight + 140;
   }
 
   /*
     Coloca uma nova peça no jogo.
   */
   pieceSet() {
-    this.actualPiece = new TPiece(this.canvasContext);
+    this.actualPiece = new TPiece(this.fallingPiecesCanvasContext);
   }
 
   /*
@@ -294,7 +289,7 @@ export class AppComponent implements OnInit {
           }
 
 
-          this.canvasContext.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
+          this.fallingPiecesCanvasContext.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
           this.posY += BLOCK_SIZE;
           this.tetrominoDraw();
           window.requestAnimationFrame(() => this.gameDraw());
@@ -318,7 +313,7 @@ export class AppComponent implements OnInit {
         case KEY.LEFT:
           if (!this.colision(this.posX - BLOCK_SIZE, this.posY, this.actualPiece.rotation)) {
             this.socketService.socketMsg("MV_LEFT","63")
-            this.canvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
+            this.fallingPiecesCanvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
             this.posX -= BLOCK_SIZE;
             this.tetrominoDraw();
           }
@@ -326,7 +321,7 @@ export class AppComponent implements OnInit {
         case KEY.RIGHT:
           if (!this.colision(this.posX + BLOCK_SIZE, this.posY, this.actualPiece.rotation)) {
             this.socketService.socketMsg("MV_RIGHT","12")
-            this.canvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
+            this.fallingPiecesCanvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
             this.posX += BLOCK_SIZE;
             this.tetrominoDraw();
           }
@@ -342,7 +337,7 @@ export class AppComponent implements OnInit {
             } else {
               this.actualPiece.rotation += 1;
             }
-            this.canvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
+            this.fallingPiecesCanvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
             this.tetrominoDraw();
             break;
           } else {
@@ -353,7 +348,7 @@ export class AppComponent implements OnInit {
               } else {
                 this.actualPiece.rotation += 1;
               }
-              this.canvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
+              this.fallingPiecesCanvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
               this.posX += BLOCK_SIZE;
               this.tetrominoDraw();
               break;
@@ -364,7 +359,7 @@ export class AppComponent implements OnInit {
               } else {
                 this.actualPiece.rotation += 1;
               }
-              this.canvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
+              this.fallingPiecesCanvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
               this.posX -= BLOCK_SIZE;
               this.tetrominoDraw();
               break;
@@ -481,7 +476,6 @@ export class AppComponent implements OnInit {
 
   redrawAllTetrominos() {
     this.piecesCanvasContext.clearRect(0, 0, this.piecesCanvasContext.canvas.width, this.piecesCanvasContext.canvas.height);
-    this.canvasContext.clearRect(0, 0, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
     for (let r = 1; r <= GRIDROWS - 2; r++) {
       for (let c = 1; c <= GRIDCOLS - 1; c++) {
         let index = r * GRIDCOLS + c;
@@ -508,5 +502,9 @@ export class AppComponent implements OnInit {
   
   onChangeTheme(themeFileString){
     this.themeService.changeTheme(themeFileString.target.value);
+  }
+
+  alertToUser(){
+    window.alert("Vc clicou em mim")
   }
 }
