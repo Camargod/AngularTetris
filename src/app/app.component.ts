@@ -15,9 +15,8 @@ import { MatchVariablesService } from './game-modules/match-variables/match-vari
 export class AppComponent implements OnInit {
   title = 'Online Tetris';
 
-  /*
-    Diretivas de leitura de ElementosHtml do Canvas para controle direto da API do mesmo.
-  */
+  //Diretivas de leitura de ElementosHtml do Canvas para controle direto da API do mesmo.
+  
   @ViewChild("gridcanvas", {
     static: true
   }) gridcanvas: ElementRef < HTMLCanvasElement > ;
@@ -63,6 +62,8 @@ export class AppComponent implements OnInit {
   fps: number = 0;
 
   gameTime = 500;
+  delayTime = 0;
+  useDelay = false;
 
   isGameOver: boolean = false;
 
@@ -92,8 +93,8 @@ export class AppComponent implements OnInit {
   */
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    if (event.keyCode) {
-      this.move(event.keyCode);
+    if (event.keyCode && this.keyMap[event.keyCode]) {
+      this.keyMap[event.keyCode](this);
     }
   }
 
@@ -148,7 +149,6 @@ export class AppComponent implements OnInit {
     })
   }
 
-
   draw() {
     this.grid();
     // this.gridArrayDebug();
@@ -169,11 +169,11 @@ export class AppComponent implements OnInit {
   */
   setCanvasSize() {
     this.fallingPiecesCanvasContext.canvas.width = window.innerWidth;
-    this.fallingPiecesCanvasContext.canvas.height = window.innerHeight + 140;
+    this.fallingPiecesCanvasContext.canvas.height = window.innerHeight + 280;
     this.canvasGridContext.canvas.width = window.innerWidth;
-    this.canvasGridContext.canvas.height = window.innerHeight + 140;
+    this.canvasGridContext.canvas.height = window.innerHeight + 280;
     this.piecesCanvasContext.canvas.width = window.innerWidth;
-    this.piecesCanvasContext.canvas.height = window.innerHeight + 140;
+    this.piecesCanvasContext.canvas.height = window.innerHeight + 280;
   }
 
   /*
@@ -276,6 +276,9 @@ export class AppComponent implements OnInit {
   gameDraw() {
     try {
       if (!this.isGameOver) {
+        setTimeout(()=>{
+          this.delayTime++;
+        },1)
         setTimeout(() => {
           this.lastPosX = this.posX;
           this.lastPosY = this.posY;
@@ -292,8 +295,11 @@ export class AppComponent implements OnInit {
           this.fallingPiecesCanvasContext.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
           this.posY += BLOCK_SIZE;
           this.tetrominoDraw();
+          this.useDelay = false;
+          this.delayTime = 0;
           window.requestAnimationFrame(() => this.gameDraw());
-        }, this.gameTime);
+
+        }, this.gameTime + (this.useDelay ? this.delayTime : 0));
 
       } else {
         alert("Você perdeu");
@@ -302,72 +308,6 @@ export class AppComponent implements OnInit {
     } catch (err) {
       console.error(`Erro de gameloop: ${err}`)
     }
-  }
-
-  /*
-    Validação de movimento
-  */
-  move(key: number) {
-    try {
-      switch (key) {
-        case KEY.LEFT:
-          if (!this.colision(this.posX - BLOCK_SIZE, this.posY, this.actualPiece.rotation)) {
-            this.socketService.socketMsg("MV_LEFT","63")
-            this.fallingPiecesCanvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
-            this.posX -= BLOCK_SIZE;
-            this.tetrominoDraw();
-          }
-          break;
-        case KEY.RIGHT:
-          if (!this.colision(this.posX + BLOCK_SIZE, this.posY, this.actualPiece.rotation)) {
-            this.socketService.socketMsg("MV_RIGHT","12")
-            this.fallingPiecesCanvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
-            this.posX += BLOCK_SIZE;
-            this.tetrominoDraw();
-          }
-          break;
-        case KEY.UP:
-          if (this.colision(this.posX, this.posY, this.actualPiece.rotation + 1)) {
-            break;
-          }
-          if (!this.colision(this.posX, this.posY, this.actualPiece.rotation + 1)) {
-            this.socketService.socketMsg("MV_UP","23")
-            if (this.actualPiece.rotation == 3) {
-              this.actualPiece.rotation = 0;
-            } else {
-              this.actualPiece.rotation += 1;
-            }
-            this.fallingPiecesCanvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
-            this.tetrominoDraw();
-            break;
-          } else {
-            if (!this.colision(this.posX + BLOCK_SIZE, this.posY, this.actualPiece.rotation + 1)) {
-              this.socketService.socketMsg("MV_UP","3")
-              if (this.actualPiece.rotation == 3) {
-                this.actualPiece.rotation = 0;
-              } else {
-                this.actualPiece.rotation += 1;
-              }
-              this.fallingPiecesCanvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
-              this.posX += BLOCK_SIZE;
-              this.tetrominoDraw();
-              break;
-            } else if(!this.colision(this.posX - BLOCK_SIZE, this.posY, this.actualPiece.rotation + 1)) {
-              this.socketService.socketMsg("MV_UP","2")
-              if (this.actualPiece.rotation == 3) {
-                this.actualPiece.rotation = 0;
-              } else {
-                this.actualPiece.rotation += 1;
-              }
-              this.fallingPiecesCanvasContext.clearRect(this.posX, this.posY, this.posX + (BLOCK_SIZE * 4), this.posY + (BLOCK_SIZE * 4));
-              this.posX -= BLOCK_SIZE;
-              this.tetrominoDraw();
-              break;
-            }
-          }
-      }
-    } catch (err) {}
-
   }
   /*
     Desenha a peça atual
@@ -504,7 +444,51 @@ export class AppComponent implements OnInit {
     this.themeService.changeTheme(themeFileString.target.value);
   }
 
-  alertToUser(){
-    window.alert("Vc clicou em mim")
+  keyLeft(scope : AppComponent){
+    if (!scope.colision(scope.posX - BLOCK_SIZE, scope.posY, scope.actualPiece.rotation)) {
+      scope.socketService.socketMsg("MV_LEFT","63")
+      scope.fallingPiecesCanvasContext.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
+      scope.posX -= BLOCK_SIZE;
+      scope.tetrominoDraw();
+    }
   }
+
+  keyRight(scope : AppComponent){
+    if (!scope.colision(scope.posX + BLOCK_SIZE, scope.posY, scope.actualPiece.rotation)) {
+      scope.socketService.socketMsg("MV_RIGHT","12")
+      scope.fallingPiecesCanvasContext.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
+      scope.posX += BLOCK_SIZE;
+      scope.tetrominoDraw();
+    }
+  }
+
+  keyUp(scope : AppComponent){
+    if (!scope.colision(scope.posX, scope.posY, scope.actualPiece.rotation + 1)) {
+      scope.socketService.socketMsg("MV_UP","23")
+      if (scope.actualPiece.rotation == 3) {
+        scope.actualPiece.rotation = 0;
+      } else {
+        scope.actualPiece.rotation += 1;
+      }
+      scope.fallingPiecesCanvasContext.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
+      scope.tetrominoDraw();
+    }
+  }
+
+  keyDown(scope : AppComponent){
+    if(!scope.colision(scope.posX, scope.posY + BLOCK_SIZE, scope.actualPiece.rotation)){
+      scope.posY += BLOCK_SIZE;
+      scope.fallingPiecesCanvasContext.clearRect(0,0,scope.fallingpiecescanvas.nativeElement.width,scope.fallingpiecescanvas.nativeElement.height);
+      scope.tetrominoDraw();
+      this.useDelay = true;
+    }
+  }
+
+  keyMap = {
+    37: this.keyLeft,
+    38: this.keyUp,
+    39: this.keyRight,
+    40: this.keyDown
+  }
+
 }
