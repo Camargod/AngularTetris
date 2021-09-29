@@ -4,15 +4,15 @@
   <canvas width="720" height="1280" class="piece-canvas" #fallingpiecescanvas></canvas>
   <canvas width="720" height="1280" class="game-grid" #gridcanvas></canvas>
 </div>
-<label >Pontuação: {{gamePontuation}}</label>
-<label>Players: {{players}}</label>
-<select #themeSelect aria-placeholder="Tema" (change)="onChangeTheme($event)" style="margin-left: 10px;">
-  <ng-container *ngFor="let item of themeList">
-    <option value="{{item.fileName}}">{{item.name}}</option>
-  </ng-container>
-</select>
-<div>Tempo para começar: {{timer}}</div>
-<div>
-  <img #theme id="theme" loading="eager" data-lazysrc="'./assets/themes/theme01.png'" style="visibility: hidden; z-index: -2;" decoding="async">
+<div class="info">
+  <select #themeSelect aria-placeholder="Tema" (change)="onChangeTheme($event)">
+    <ng-container *ngFor="let item of themeList">
+      <option value="{{item.fileName}}">{{item.name}}</option>
+    </ng-container>
+  </select>
+  <div>Tempo para começar: {{timer}}</div>
+  <label >Pontuação: {{gamePontuation}}</label>
+  <label>Players: {{players}}</label>
 </div>
+
 <!-- <app-timer></app-timer> -->

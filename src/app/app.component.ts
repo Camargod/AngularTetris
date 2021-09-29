@@ -168,11 +168,11 @@ export class AppComponent implements OnInit {
     Precisa ser ajustado depois para responsividade
   */
   setCanvasSize() {
-    this.fallingPiecesCanvasContext.canvas.width = window.innerWidth;
+    this.fallingPiecesCanvasContext.canvas.width = window.innerWidth /3;
     this.fallingPiecesCanvasContext.canvas.height = window.innerHeight + 280;
-    this.canvasGridContext.canvas.width = window.innerWidth;
+    this.canvasGridContext.canvas.width = window.innerWidth /3;
     this.canvasGridContext.canvas.height = window.innerHeight + 280;
-    this.piecesCanvasContext.canvas.width = window.innerWidth;
+    this.piecesCanvasContext.canvas.width = window.innerWidth /3;
     this.piecesCanvasContext.canvas.height = window.innerHeight + 280;
   }
 
