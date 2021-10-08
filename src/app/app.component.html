@@ -1,18 +1,19 @@
+<div class="game" #gameDiv> 
+  <div class="game-body">
+    <canvas width="1000" height="1520" class="piece-canvas" #piecescanvas></canvas>
+    <canvas width="1000" height="1520" class="piece-canvas" #fallingpiecescanvas></canvas>
+    <canvas width="1000" height="1520" class="game-grid" #gridcanvas></canvas>
+  </div>
 
-<div class="game-body">
-  <canvas width="720" height="1280" class="piece-canvas" #piecescanvas></canvas>
-  <canvas width="720" height="1280" class="piece-canvas" #fallingpiecescanvas></canvas>
-  <canvas width="720" height="1280" class="game-grid" #gridcanvas></canvas>
-</div>
-<div class="info">
-  <select #themeSelect aria-placeholder="Tema" (change)="onChangeTheme($event)">
-    <ng-container *ngFor="let item of themeList">
-      <option value="{{item.fileName}}">{{item.name}}</option>
-    </ng-container>
-  </select>
-  <div>Tempo para começar: {{timer}}</div>
-  <label >Pontuação: {{gamePontuation}}</label>
-  <label>Players: {{players}}</label>
-</div>
+  <div class="info">
+    <select #themeSelect aria-placeholder="Tema" (change)="onChangeTheme($event)">
+      <ng-container *ngFor="let item of themeList">
+        <option value="{{item.fileName}}">{{item.name}}</option>
+      </ng-container>
+    </select>
 
-<!-- <app-timer></app-timer> -->
+    <div>Tempo para começar: {{timer}}</div>
+    <label>Pontuação: {{gamePontuation}}</label>
+    <label>Players: {{players}}</label>
+  </div>
+</div>

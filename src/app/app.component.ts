@@ -17,20 +17,13 @@ export class AppComponent implements OnInit {
 
   //Diretivas de leitura de ElementosHtml do Canvas para controle direto da API do mesmo.
   
-  @ViewChild("gridcanvas", {
-    static: true
-  }) gridcanvas: ElementRef < HTMLCanvasElement > ;
-  @ViewChild("piecescanvas", {
-    static: true
-  }) piecescanvas: ElementRef < HTMLCanvasElement > ;
-  @ViewChild("fallingpiecescanvas", {
-    static: true
-  }) fallingpiecescanvas: ElementRef < HTMLCanvasElement > ;
+  @ViewChild("gridcanvas", {static: true}) gridCanvas: ElementRef < HTMLCanvasElement > ;
+  @ViewChild("piecescanvas", {static: true}) piecesCanvas: ElementRef < HTMLCanvasElement > ;
+  @ViewChild("fallingpiecescanvas", {static: true}) fallingPiecesCanvas: ElementRef < HTMLCanvasElement > ;
 
-  @ViewChild("themeSelect",{
-    static:true
-  }) themeSelect : ElementRef<HTMLSelectElement>
+  @ViewChild("themeSelect",{static:true}) themeSelect : ElementRef<HTMLSelectElement>
 
+  @ViewChild("gameDiv", {static: true}) gameDiv: ElementRef <HTMLDivElement>;
 
   canvasGridContext: CanvasRenderingContext2D;
   piecesCanvasContext: CanvasRenderingContext2D;
@@ -157,9 +150,9 @@ export class AppComponent implements OnInit {
     Traz para o tipo de contexto as referencias de elemento HTML
   */
   prepareCanvasContexts() {
-    this.canvasGridContext = this.gridcanvas.nativeElement.getContext('2d');
-    this.piecesCanvasContext = this.piecescanvas.nativeElement.getContext('2d');
-    this.fallingPiecesCanvasContext = this.fallingpiecescanvas.nativeElement.getContext('2d')
+    this.canvasGridContext = this.gridCanvas.nativeElement.getContext('2d');
+    this.piecesCanvasContext = this.piecesCanvas.nativeElement.getContext('2d');
+    this.fallingPiecesCanvasContext = this.fallingPiecesCanvas.nativeElement.getContext('2d')
   }
 
   /*
@@ -168,12 +161,12 @@ export class AppComponent implements OnInit {
     Precisa ser ajustado depois para responsividade
   */
   setCanvasSize() {
-    this.fallingPiecesCanvasContext.canvas.width = window.innerWidth / 3;
-    this.fallingPiecesCanvasContext.canvas.height = window.innerHeight + 280;
-    this.canvasGridContext.canvas.width = window.innerWidth / 3;
-    this.canvasGridContext.canvas.height = window.innerHeight + 280;
-    this.piecesCanvasContext.canvas.width = window.innerWidth / 3;
-    this.piecesCanvasContext.canvas.height = window.innerHeight + 280;
+    this.fallingPiecesCanvasContext.scale(1.35,1.35);
+    this.fallingPiecesCanvasContext.scale(1.35,1.35);
+    this.canvasGridContext.scale(1.35,1.35);
+    this.canvasGridContext.scale(1.35,1.35); 
+    this.piecesCanvasContext.scale(1.35,1.35);  
+    this.piecesCanvasContext.scale(1.35,1.35); 
   }
 
   /*
@@ -183,6 +176,9 @@ export class AppComponent implements OnInit {
     this.actualPiece = new TPiece(this.fallingPiecesCanvasContext);
   }
 
+  setBackgroundByTheme(){
+    this.gameDiv.nativeElement.style.background = this.themeService.getBackgroundUrl();
+  }
   /*
     Define boundaries do campo de jogo.
   */
@@ -478,7 +474,7 @@ export class AppComponent implements OnInit {
   keyDown(scope : AppComponent){
     if(!scope.colision(scope.posX, scope.posY + BLOCK_SIZE, scope.actualPiece.rotation)){
       scope.posY += BLOCK_SIZE;
-      scope.fallingPiecesCanvasContext.clearRect(0,0,scope.fallingpiecescanvas.nativeElement.width,scope.fallingpiecescanvas.nativeElement.height);
+      scope.fallingPiecesCanvasContext.clearRect(0,0,scope.fallingPiecesCanvas.nativeElement.width,scope.fallingPiecesCanvas.nativeElement.height);
       scope.tetrominoDraw();
       this.useDelay = true;
     }

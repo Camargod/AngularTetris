@@ -11,15 +11,13 @@ export class ThemeService
     public selectedThemeChanged : BehaviorSubject<void> = new BehaviorSubject<void>(null);
     public image : HTMLImageElement; 
 
-    changeTheme(selectedTheme)
-    {
+    changeTheme(selectedTheme){
         this.selectedThemeFile = selectedTheme;
         localStorage.setItem("selectedTheme",selectedTheme)
         location.reload();
     }
 
-    setTile(tileNumber : number)
-    {
+    setTile(tileNumber : number){
         let image = new Image();
         image.src = `assets/themes/${localStorage.getItem("selectedTheme")}/${tileNumber}.png`;
         image.onload = () =>{
@@ -27,18 +25,15 @@ export class ThemeService
         }; 
     }
 
-    getTileSize()
-    {
+    getTileSize(){
         return Math.floor(this.image.width);
     }
 
-    getTileHeight()
-    {
+    getTileHeight(){
         return Math.floor(this.image.height);
     }
 
-    getDrawParams()
-    {
+    getDrawParams(){
         let x1 = 0;
         let x2 = this.getTileSize();
         let y1 = 0;
@@ -46,6 +41,7 @@ export class ThemeService
 
         return {x1,x2,y1,y2}
     }
+
     setTileObservable(tileNumber : number) : Observable<HTMLImageElement>{
         let imgSrc = `assets/themes/${localStorage.getItem("selectedTheme")}/${tileNumber}.png`;
         return new Observable(function(observer){
@@ -59,8 +55,15 @@ export class ThemeService
             observer.error(err);
           }
         });
-     }
+    }
 
+     getBackgroundUrl(){
+        let selectedTheme = localStorage.getItem("selectedTheme");
+        if(selectedTheme != "theme01"){
+            return `url(assets/themes/theme01/fundo.png)`;
+        }
+        return `url(assets/themes/${selectedTheme}/fundo.png)`;
+    }
 }
 
 export enum ItemMap

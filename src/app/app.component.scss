@@ -1,28 +1,36 @@
-.game-body
-{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.game{
+    background-image: url("/assets/interface/fundo.png");
+    background-repeat: no-repeat;
+    background-size:cover;
     width: 100%;
     height: 100%;
-    .game-box
+    .game-body
     {
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        flex: 1;
+        flex-direction: column;
+        justify-content: normal;
+        align-items: center;
+        width: 100%;
         height: 100%;
-        border-style: solid;
-        background-color: white;
-        box-shadow: black 0 0 15px;
-        .game
+        
+        .game-box
         {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
             flex: 1;
-        }
-        .score
-        {
-            flex: 1;
+            height: 100%;
+            border-style: solid;
+            background-color: white;
+            box-shadow: black 0 0 15px;
+            .game
+            {
+                flex: 1;
+            }
+            .score
+            {
+                flex: 1;
+            }
         }
     }
 }
@@ -34,12 +42,13 @@
     padding: 20px;
     width: 100vw;
     height: 100vh;
+    color: white;
 }
 
 canvas{
     position: absolute;
     //top: -140px;
-    height: calc(120% - 20px);
+    height: calc(100% - 20px);
 }
 .game-grid{
     z-index: 3;
@@ -57,9 +66,7 @@ select{
 }
 
 :host{
-    padding: 20px;
     width: 100vw;
     height: 100vh;
     display: block;
-    background-color: #b8b6b3;
 }
