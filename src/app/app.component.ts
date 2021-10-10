@@ -97,7 +97,7 @@ export class AppComponent implements OnInit {
     Ajustes iniciais do jogo.
   */
 
-  ngOnInit(): void {
+  ngOnInit() : void {
     this.matchVariables.startGameListening()
     this.socketStart();
     this.themeService.setTile(0);
@@ -107,8 +107,7 @@ export class AppComponent implements OnInit {
     this.setBounds();
     this.themeSoundManager.setNewAudio(AudioMap[AudioMapNames.main])
     this.themeSoundManager.audio.loop = true;
-    this.waitImageLoad();
-    
+    this.waitImageLoad(); 
   }
 
   socketStart(){
@@ -121,15 +120,13 @@ export class AppComponent implements OnInit {
   }
 
   waitImageLoad() {
-    setTimeout(() => {
-      if (this.themeService.image && this.themeService.image.width > 0) {
-        this.hasImageLoaded = true;
-        this.draw()
-        this.gameDraw();
-      } else if (!this.hasImageLoaded) {
-        this.waitImageLoad();
-      }
-    }, 300)
+    debugger;
+    let subscription = this.themeService.setTileObservable(0).subscribe(()=>{
+      this.hasImageLoaded = true;
+      this.draw()
+      this.gameDraw();
+    });
+    subscription.unsubscribe();
   }
 
   ngAfterViewInit(): void {

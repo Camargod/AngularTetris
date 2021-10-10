@@ -48,6 +48,7 @@ export class ThemeService
           const img = new Image();
           img.src = imgSrc;
           img.onload = function(){
+            //while(img.width == undefined || img.width == 0){}
             observer.next(img);
             observer.complete();
           }
