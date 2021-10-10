@@ -13,8 +13,6 @@ export class SocketService {
 
     socketReturn(){
         this.socket = io("http://localhost:3000");
-        debugger;
-        this.socket;
         // this.socket. = (event) =>{
         //     console.log("Iniciando Socket.");
         //     this.isConnected = true;
@@ -30,8 +28,8 @@ export class SocketService {
     }
     
     socketMsg(key : string, value: string){
-        //if(this.socket.readyState == this.socket.OPEN) this.socket.send(`${key}|${value}`);
-        //else console.warn("Socket não está aberto");
+        if(this.socket.connected) this.socket.emit("event",value);
+        else console.warn("Socket não está aberto");
     }
 
     private eventHandler(message : string){

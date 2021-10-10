@@ -6,6 +6,7 @@ import {ItemMap,Themes,ThemeService} from './theme-service';
 import {AudioMap,AudioMapNames,SoundClass} from './sound';
 import { SocketService } from './game-modules/socket/socket.service';
 import { MatchVariablesService } from './game-modules/match-variables/match-variables.service';
+import { MovementService } from './game-modules/movement/movement-service';
 
 @Component({
   selector: 'app-root',
@@ -34,8 +35,8 @@ export class AppComponent implements OnInit {
   */
   gridVector: Array < {
     value: number,
-    color: string,
-    number ? : number
+    color?: string,
+    themeNumber ? : number
   } > ;
 
   initalPos: number = 0;
@@ -74,7 +75,8 @@ export class AppComponent implements OnInit {
   constructor(
     private themeService: ThemeService,
     private matchVariables : MatchVariablesService,
-    private socketService : SocketService 
+    private socketService : SocketService,
+    private movementService : MovementService
   ) {
     this.themeSoundManager = new SoundClass();
   }
@@ -86,8 +88,8 @@ export class AppComponent implements OnInit {
   */
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    if (event.keyCode && this.keyMap[event.keyCode]) {
-      this.keyMap[event.keyCode](this);
+    if (event.keyCode && this.movementService.keyMap[event.keyCode]) {
+      this.movementService.keyMap[event.keyCode](this);
     }
   }
 
@@ -187,7 +189,6 @@ export class AppComponent implements OnInit {
     for (let y = 0; y <= GRIDROWS; y++) {
       for (let x = 0; x < GRIDCOLS; x++) {
         this.gridVector[y * GRIDCOLS + x] = {
-          color: 'none',
           value: ((x == 0 || y == GRIDROWS - 1 || x == GRIDCOLS - 1) ? 9 : 0)
         };
       }
@@ -355,7 +356,7 @@ export class AppComponent implements OnInit {
             this.gridVector[index] = {
               color: this.actualPiece.color,
               value: 1,
-              number: this.actualPiece.pieceNumberId
+              themeNumber: this.actualPiece.pieceNumberId
             };
             this.piecesCanvasContext.drawImage(this.themeService.image, x1, y1, x2, y2, posX + (px * BLOCK_SIZE), posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
           }
@@ -416,15 +417,15 @@ export class AppComponent implements OnInit {
       for (let c = 1; c <= GRIDCOLS - 1; c++) {
         let index = r * GRIDCOLS + c;
         if (this.gridVector[index].value != 0 && this.gridVector[index].value != 9) {
-          if (this.gridVector[index].number) {
+          if (this.gridVector[index].themeNumber) {
             let {
               x1,
               x2,
               y1,
               y2
             } = this.themeService.getDrawParams();
-            console.log(`Desenhando tile de numero ${this.gridVector[index].number}`)
-            let subcription = this.themeService.setTileObservable(this.gridVector[index].number).subscribe((image)=>{
+            console.log(`Desenhando tile de numero ${this.gridVector[index].themeNumber}`)
+            let subcription = this.themeService.setTileObservable(this.gridVector[index].themeNumber).subscribe((image)=>{
               window.requestAnimationFrame(()=>{
                 this.piecesCanvasContext.drawImage(image, x1, y1, x2, y2, c * BLOCK_SIZE, r * BLOCK_SIZE + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                 subcription.unsubscribe();
@@ -438,53 +439,6 @@ export class AppComponent implements OnInit {
   
   onChangeTheme(themeFileString){
     this.themeService.changeTheme(themeFileString.target.value);
-  }
-
-  keyLeft(scope : AppComponent){
-    if (!scope.colision(scope.posX - BLOCK_SIZE, scope.posY, scope.actualPiece.rotation)) {
-      scope.socketService.socketMsg("MV_LEFT","63")
-      scope.fallingPiecesCanvasContext.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
-      scope.posX -= BLOCK_SIZE;
-      scope.tetrominoDraw();
-    }
-  }
-
-  keyRight(scope : AppComponent){
-    if (!scope.colision(scope.posX + BLOCK_SIZE, scope.posY, scope.actualPiece.rotation)) {
-      scope.socketService.socketMsg("MV_RIGHT","12")
-      scope.fallingPiecesCanvasContext.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
-      scope.posX += BLOCK_SIZE;
-      scope.tetrominoDraw();
-    }
-  }
-
-  keyUp(scope : AppComponent){
-    if (!scope.colision(scope.posX, scope.posY, scope.actualPiece.rotation + 1)) {
-      scope.socketService.socketMsg("MV_UP","23")
-      if (scope.actualPiece.rotation == 3) {
-        scope.actualPiece.rotation = 0;
-      } else {
-        scope.actualPiece.rotation += 1;
-      }
-      scope.fallingPiecesCanvasContext.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
-      scope.tetrominoDraw();
-    }
-  }
-
-  keyDown(scope : AppComponent){
-    if(!scope.colision(scope.posX, scope.posY + BLOCK_SIZE, scope.actualPiece.rotation)){
-      scope.posY += BLOCK_SIZE;
-      scope.fallingPiecesCanvasContext.clearRect(0,0,scope.fallingPiecesCanvas.nativeElement.width,scope.fallingPiecesCanvas.nativeElement.height);
-      scope.tetrominoDraw();
-      this.useDelay = true;
-    }
-  }
-
-  keyMap = {
-    37: this.keyLeft,
-    38: this.keyUp,
-    39: this.keyRight,
-    40: this.keyDown
   }
 
 }
