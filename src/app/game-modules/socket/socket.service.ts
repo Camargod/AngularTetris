@@ -7,8 +7,8 @@ import { io, Socket } from "socket.io-client";
 })
 
 export class SocketService {
-    socket : Socket;
-    public _eventBehavior : BehaviorSubject<{key:number,value:string}> = new BehaviorSubject(null)
+    socket ?: Socket;
+    public _eventBehavior : BehaviorSubject<{key:number,value:string}> = new BehaviorSubject({key:0,value:"0"})
     public isConnected : boolean = false;
 
     socketReturn(){
@@ -28,7 +28,7 @@ export class SocketService {
     }
     
     socketMsg(key : string, value: string){
-        if(this.socket.connected) this.socket.emit("event",value);
+        if(this.socket!.connected) this.socket!.emit("event",value);
         else console.warn("Socket não está aberto");
     }
 

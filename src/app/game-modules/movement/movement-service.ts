@@ -9,7 +9,7 @@ export class MovementService{
 
     keyLeft(scope : AppComponent){
         if (!scope.colision(scope.posX - BLOCK_SIZE, scope.posY, scope.actualPiece.rotation)) {
-          scope.fallingPiecesCanvasContext.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
+          scope.fallingPiecesCanvasContext!.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
           scope.posX -= BLOCK_SIZE;
           scope.tetrominoDraw();
         }
@@ -17,7 +17,7 @@ export class MovementService{
     
       keyRight(scope : AppComponent){
         if (!scope.colision(scope.posX + BLOCK_SIZE, scope.posY, scope.actualPiece.rotation)) {
-          scope.fallingPiecesCanvasContext.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
+          scope.fallingPiecesCanvasContext!.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
           scope.posX += BLOCK_SIZE;
           scope.tetrominoDraw();
         }
@@ -30,7 +30,7 @@ export class MovementService{
           } else {
             scope.actualPiece.rotation += 1;
           }
-          scope.fallingPiecesCanvasContext.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
+          scope.fallingPiecesCanvasContext!.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
           scope.tetrominoDraw();
         }
       }
@@ -38,13 +38,13 @@ export class MovementService{
       keyDown(scope : AppComponent){
         if(!scope.colision(scope.posX, scope.posY + BLOCK_SIZE, scope.actualPiece.rotation)){
           scope.posY += BLOCK_SIZE;
-          scope.fallingPiecesCanvasContext.clearRect(0,0,scope.fallingPiecesCanvas.nativeElement.width,scope.fallingPiecesCanvas.nativeElement.height);
+          scope.fallingPiecesCanvasContext!.clearRect(0,0,scope.fallingPiecesCanvas.nativeElement.width,scope.fallingPiecesCanvas.nativeElement.height);
           scope.tetrominoDraw();
           scope.useDelay = true;
         }
       }
     
-      keyMap = {
+      keyMap : any = {
         37: this.keyLeft,
         38: this.keyUp,
         39: this.keyRight,

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { EventEmitter } from 'events';
 import { BehaviorSubject } from 'rxjs';
 import { SocketEventServerEnumerator } from 'src/enums/socket-event.enum';
 import { SocketService } from '../socket/socket.service';

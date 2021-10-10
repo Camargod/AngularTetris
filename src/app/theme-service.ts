@@ -8,10 +8,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class ThemeService
 {
     public selectedThemeFile = "theme01.png"
-    public selectedThemeChanged : BehaviorSubject<void> = new BehaviorSubject<void>(null);
-    public image : HTMLImageElement; 
+    public selectedThemeChanged : BehaviorSubject<null> = new BehaviorSubject<null>(null);
+    public image ?: HTMLImageElement; 
 
-    changeTheme(selectedTheme){
+    changeTheme(selectedTheme : string){
         this.selectedThemeFile = selectedTheme;
         localStorage.setItem("selectedTheme",selectedTheme)
         location.reload();
@@ -26,11 +26,11 @@ export class ThemeService
     }
 
     getTileSize(){
-        return Math.floor(this.image.width);
+        return Math.floor(this.image!.width);
     }
 
     getTileHeight(){
-        return Math.floor(this.image.height);
+        return Math.floor(this.image!.height);
     }
 
     getDrawParams(){

@@ -18,29 +18,29 @@ export class AppComponent implements OnInit {
 
   //Diretivas de leitura de ElementosHtml do Canvas para controle direto da API do mesmo.
   
-  @ViewChild("gridcanvas", {static: true}) gridCanvas: ElementRef < HTMLCanvasElement > ;
-  @ViewChild("piecescanvas", {static: true}) piecesCanvas: ElementRef < HTMLCanvasElement > ;
-  @ViewChild("fallingpiecescanvas", {static: true}) fallingPiecesCanvas: ElementRef < HTMLCanvasElement > ;
+  @ViewChild("gridcanvas", {static: true}) gridCanvas !: ElementRef < HTMLCanvasElement > ;
+  @ViewChild("piecescanvas", {static: true}) piecesCanvas !: ElementRef < HTMLCanvasElement > ;
+  @ViewChild("fallingpiecescanvas", {static: true}) fallingPiecesCanvas !: ElementRef < HTMLCanvasElement > ;
 
-  @ViewChild("themeSelect",{static:true}) themeSelect : ElementRef<HTMLSelectElement>
+  @ViewChild("themeSelect",{static:true}) themeSelect !: ElementRef<HTMLSelectElement>
 
-  @ViewChild("gameDiv", {static: true}) gameDiv: ElementRef <HTMLDivElement>;
+  @ViewChild("gameDiv", {static: true}) gameDiv !: ElementRef <HTMLDivElement>;
 
-  canvasGridContext: CanvasRenderingContext2D;
-  piecesCanvasContext: CanvasRenderingContext2D;
-  fallingPiecesCanvasContext: CanvasRenderingContext2D;
+  canvasGridContext !: CanvasRenderingContext2D | null;
+  piecesCanvasContext !: CanvasRenderingContext2D | null;
+  fallingPiecesCanvasContext !: CanvasRenderingContext2D | null;
 
   /*
     Vetor de grid, contendo a informação da casa e a cor da peça que está nela.
   */
-  gridVector: Array < {
+  gridVector !: Array < {
     value: number,
     color?: string,
     themeNumber ? : number
   } > ;
 
   initalPos: number = 0;
-  actualPiece: TPiece;
+  actualPiece !: TPiece;
 
   posX: number = BLOCK_SIZE * 6;
   posY: number = 0;
@@ -106,7 +106,7 @@ export class AppComponent implements OnInit {
     this.pieceSet()
     this.setBounds();
     this.themeSoundManager.setNewAudio(AudioMap[AudioMapNames.main])
-    this.themeSoundManager.audio.loop = true;
+    this.themeSoundManager.audio!.loop = true;
     this.waitImageLoad(); 
   }
 
@@ -120,13 +120,22 @@ export class AppComponent implements OnInit {
   }
 
   waitImageLoad() {
-    debugger;
-    let subscription = this.themeService.setTileObservable(0).subscribe(()=>{
-      this.hasImageLoaded = true;
-      this.draw()
-      this.gameDraw();
-    });
-    subscription.unsubscribe();
+    // debugger;
+    // let subscription = this.themeService.setTileObservable(0).subscribe(()=>{
+    //   this.hasImageLoaded = true;
+    //   this.draw()
+    //   this.gameDraw();
+    // });
+    // subscription.unsubscribe();
+    setTimeout(() => {
+      if (this.themeService.image && this.themeService.image.width > 0) {
+        this.hasImageLoaded = true;
+        this.draw()
+        this.gameDraw();
+      } else if (!this.hasImageLoaded) {
+        this.waitImageLoad();
+      }
+    }, 300)
   }
 
   ngAfterViewInit(): void {
@@ -160,19 +169,19 @@ export class AppComponent implements OnInit {
     Precisa ser ajustado depois para responsividade
   */
   setCanvasSize() {
-    this.fallingPiecesCanvasContext.scale(1.35,1.35);
-    this.fallingPiecesCanvasContext.scale(1.35,1.35);
-    this.canvasGridContext.scale(1.35,1.35);
-    this.canvasGridContext.scale(1.35,1.35); 
-    this.piecesCanvasContext.scale(1.35,1.35);  
-    this.piecesCanvasContext.scale(1.35,1.35); 
+    this.fallingPiecesCanvasContext!.scale(1.35,1.35);
+    this.fallingPiecesCanvasContext!.scale(1.35,1.35);
+    this.canvasGridContext!.scale(1.35,1.35);
+    this.canvasGridContext!.scale(1.35,1.35); 
+    this.piecesCanvasContext!.scale(1.35,1.35);  
+    this.piecesCanvasContext!.scale(1.35,1.35); 
   }
 
   /*
     Coloca uma nova peça no jogo.
   */
   pieceSet() {
-    this.actualPiece = new TPiece(this.fallingPiecesCanvasContext);
+    this.actualPiece = new TPiece(this.fallingPiecesCanvasContext!);
   }
 
   setBackgroundByTheme(){
@@ -204,6 +213,8 @@ export class AppComponent implements OnInit {
         return 15 - (py * 4) - px;
       case 3:
         return 3 - py + (px * 4);
+      default:
+        return 0;
     }
   }
 
@@ -215,24 +226,24 @@ export class AppComponent implements OnInit {
       for (let px = 0; px < 4; px++) {
         for (let py = 0; py < 4; py++) {
           let rotate = this.pieceRotate(px, py, actualRotation);
-          if (this.actualPiece.shape[rotate] == 1) {
+          if (this.actualPiece.shape![rotate!] == 1) {
             let index = (((currentX + (px * BLOCK_SIZE)) / BLOCK_SIZE) + ((((currentY + (py * BLOCK_SIZE)) / BLOCK_SIZE) - 1) * GRIDCOLS));
             let colision = (this.gridVector[index].value == 9 || this.gridVector[index].value == 1) ? true : false;
             if (colision) return colision;
           }
         }
       }
-      return false;
     } catch (err) {
       console.error(`Erro de colisão: ${err}`);
     }
+    return false;
   }
   /*
     Faz o desenho da grid.
   */
   grid() {
-    this.canvasGridContext.clearRect(0, 0, this.canvasGridContext.canvas.width, this.canvasGridContext.canvas.height);
-    this.canvasGridContext.fillStyle = 'black';
+    this.canvasGridContext!.clearRect(0, 0, this.canvasGridContext!.canvas.width, this.canvasGridContext!.canvas.height);
+    this.canvasGridContext!.fillStyle = 'black';
 
     this.themeService.getTileSize();
 
@@ -246,7 +257,7 @@ export class AppComponent implements OnInit {
     for (let c = 0; c < COLS; c++) {
       for (let r = 6; r <= ROWS + 1; r++) {
         if (r != ROWS + 1) {
-          this.canvasGridContext.drawImage(this.themeService.image, x1, y1, x2, y2, (c * BLOCK_SIZE) + BLOCK_SIZE, (r * BLOCK_SIZE) + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+          this.canvasGridContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, (c * BLOCK_SIZE) + BLOCK_SIZE, (r * BLOCK_SIZE) + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }
       }
     }
@@ -257,8 +268,8 @@ export class AppComponent implements OnInit {
   gridArrayDebug() {
     for (let c = 0; c < GRIDCOLS; c++) {
       for (let r = 5; r < GRIDROWS; r++) {
-        this.canvasGridContext.fillText(this.gridVector[r * GRIDCOLS + c].value.toString(), c * BLOCK_SIZE + 12, r * BLOCK_SIZE + 50);
-        this.canvasGridContext.stroke();
+        this.canvasGridContext!.fillText(this.gridVector[r * GRIDCOLS + c].value.toString(), c * BLOCK_SIZE + 12, r * BLOCK_SIZE + 50);
+        this.canvasGridContext!.stroke();
       }
     }
   }
@@ -286,7 +297,7 @@ export class AppComponent implements OnInit {
           }
 
 
-          this.fallingPiecesCanvasContext.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
+          this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
           this.posY += BLOCK_SIZE;
           this.tetrominoDraw();
           this.useDelay = false;
@@ -314,15 +325,15 @@ export class AppComponent implements OnInit {
       y2
     } = this.themeService.getDrawParams();
     this.themeService.setTile(this.actualPiece.pieceNumberId);
-    this.fallingPiecesCanvasContext.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
+    this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
 
     for (let px = 0; px < 4; px++) {
       for (let py = 0; py < 4; py++) {
         let rotate = this.pieceRotate(px, py, this.actualPiece.rotation);
-        if (this.actualPiece.shape[rotate] == 1) {
+        if (this.actualPiece.shape![rotate!] == 1) {
           let tetrominoPieceIndex = Utils.getIndexHeightByPos(this.posY, py);
           if (tetrominoPieceIndex + (GRIDCOLS * py) + px >= GRIDCOLS * 6) {
-            this.fallingPiecesCanvasContext.drawImage(this.themeService.image, x1, y1, x2, y2, this.posX + (px * BLOCK_SIZE), this.posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
+            this.fallingPiecesCanvasContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, this.posX + (px * BLOCK_SIZE), this.posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
@@ -333,7 +344,7 @@ export class AppComponent implements OnInit {
   /*
     Após colisão, desenha a peça em outro canvas que fica fixo.
   */
-  saveTetromino(posX, posY) {
+  saveTetromino(posX : number, posY : number) {
     let {
       x1,
       x2,
@@ -345,7 +356,7 @@ export class AppComponent implements OnInit {
       for (let py = 0; py < 4; py++) {
         let rotate = this.pieceRotate(px, py, this.actualPiece.rotation);
 
-        if (this.actualPiece.shape[rotate] == 1) {
+        if (this.actualPiece.shape![rotate!] == 1) {
           let index = (((posX + (px * BLOCK_SIZE)) / BLOCK_SIZE) + ((((posY + (py * BLOCK_SIZE)) / BLOCK_SIZE) - 1) * GRIDCOLS));
           if (index < GRIDCOLS * 6) {
             this.isGameOver = true;
@@ -355,7 +366,7 @@ export class AppComponent implements OnInit {
               value: 1,
               themeNumber: this.actualPiece.pieceNumberId
             };
-            this.piecesCanvasContext.drawImage(this.themeService.image, x1, y1, x2, y2, posX + (px * BLOCK_SIZE), posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
+            this.piecesCanvasContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, posX + (px * BLOCK_SIZE), posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
@@ -369,7 +380,7 @@ export class AppComponent implements OnInit {
     NECESSARIO MUDAR O ALGORITMO
     Pode se realizar essa validação com base na posição Y e Y + 4 convertidos no indices de vetor como intervalo, assim evita ser iterado toda vez a grita toda. 
   */
-  clearFullLines(lastPosxY) {
+  clearFullLines(lastPosxY : number) {
     for (let r = ROWS; r >= 0; r--) {
       let isFilled = true;
       for (let c = 1; c < GRIDCOLS - 1; c++) {
@@ -380,7 +391,7 @@ export class AppComponent implements OnInit {
         }
       }
       if (isFilled) {
-        this.piecesCanvasContext.clearRect(30, (r * BLOCK_SIZE) + BLOCK_SIZE, BLOCK_SIZE * COLS, BLOCK_SIZE);
+        this.piecesCanvasContext!.clearRect(30, (r * BLOCK_SIZE) + BLOCK_SIZE, BLOCK_SIZE * COLS, BLOCK_SIZE);
 
         for (let indexReset = r * GRIDCOLS + 1; indexReset <= r * GRIDCOLS + COLS; indexReset++) {
           this.gridVector[indexReset] = {
@@ -409,7 +420,7 @@ export class AppComponent implements OnInit {
   }
 
   redrawAllTetrominos() {
-    this.piecesCanvasContext.clearRect(0, 0, this.piecesCanvasContext.canvas.width, this.piecesCanvasContext.canvas.height);
+    this.piecesCanvasContext!.clearRect(0, 0, this.piecesCanvasContext!.canvas.width, this.piecesCanvasContext!.canvas.height);
     for (let r = 1; r <= GRIDROWS - 2; r++) {
       for (let c = 1; c <= GRIDCOLS - 1; c++) {
         let index = r * GRIDCOLS + c;
@@ -422,9 +433,9 @@ export class AppComponent implements OnInit {
               y2
             } = this.themeService.getDrawParams();
             console.log(`Desenhando tile de numero ${this.gridVector[index].themeNumber}`)
-            let subcription = this.themeService.setTileObservable(this.gridVector[index].themeNumber).subscribe((image)=>{
+            let subcription = this.themeService.setTileObservable(this.gridVector[index].themeNumber!).subscribe((image)=>{
               window.requestAnimationFrame(()=>{
-                this.piecesCanvasContext.drawImage(image, x1, y1, x2, y2, c * BLOCK_SIZE, r * BLOCK_SIZE + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                this.piecesCanvasContext!.drawImage(image, x1, y1, x2, y2, c * BLOCK_SIZE, r * BLOCK_SIZE + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                 subcription.unsubscribe();
               })
             });
@@ -434,7 +445,7 @@ export class AppComponent implements OnInit {
     }
   }
   
-  onChangeTheme(themeFileString){
+  onChangeTheme(themeFileString : any){
     this.themeService.changeTheme(themeFileString.target.value);
   }
 
