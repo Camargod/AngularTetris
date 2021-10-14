@@ -1,8 +1,8 @@
 export default class TPiece {
-  x: number;
-  y: number;
-  color: string;
-  shape: number[];
+  x?: number;
+  y?: number;
+  color?: string;
+  shape?: number[];
   rotation: number = 0;
   pieceNumberId = 0;
   tetrominos = [

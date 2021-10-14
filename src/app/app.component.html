@@ -15,5 +15,11 @@
     <div>Tempo para começar: {{timer}}</div>
     <label>Pontuação: {{gamePontuation}}</label>
     <label>Players: {{players}}</label>
+
+    <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
+      <button type="submit">Test autenticate</button>
+      <input id="nickname" type="text" formControlName="nickname">
+    </form>
+
   </div>
 </div>
