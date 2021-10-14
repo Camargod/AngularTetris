@@ -7,6 +7,9 @@ import {AudioMap,AudioMapNames,SoundClass} from './sound';
 import { SocketService } from './game-modules/socket/socket.service';
 import { MatchVariablesService } from './game-modules/match-variables/match-variables.service';
 import { MovementService } from './game-modules/movement/movement-service';
+import { FormBuilder } from '@angular/forms';
+import { UserService } from './game-modules/user/user.service';
+import { TetrisGridPiece } from './game-modules/objects/tetris-grid-piece';
 
 @Component({
   selector: 'app-root',
@@ -33,11 +36,7 @@ export class AppComponent implements OnInit {
   /*
     Vetor de grid, contendo a informação da casa e a cor da peça que está nela.
   */
-  gridVector !: Array < {
-    value: number,
-    color?: string,
-    themeNumber ? : number
-  } > ;
+  gridVector !: Array < TetrisGridPiece> ;
 
   initalPos: number = 0;
   actualPiece !: TPiece;
@@ -72,11 +71,16 @@ export class AppComponent implements OnInit {
   timer = 0;
   players = 0;
 
+  autenticateForm = this.formBuilder.group({
+    nickname: '',
+  });
+
   constructor(
     private themeService: ThemeService,
     private matchVariables : MatchVariablesService,
-    private socketService : SocketService,
-    private movementService : MovementService
+    private movementService : MovementService,
+    private formBuilder: FormBuilder,
+    private userService : UserService
   ) {
     this.themeSoundManager = new SoundClass();
   }
@@ -140,6 +144,7 @@ export class AppComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.setSelectActualTheme();
+    this.setBackgroundByTheme();
   }
 
   setSelectActualTheme(){
@@ -362,7 +367,6 @@ export class AppComponent implements OnInit {
             this.isGameOver = true;
           } else {
             this.gridVector[index] = {
-              color: this.actualPiece.color,
               value: 1,
               themeNumber: this.actualPiece.pieceNumberId
             };
@@ -373,6 +377,7 @@ export class AppComponent implements OnInit {
     }
     this.posY = 30;
     this.posX = BLOCK_SIZE * 6;
+    this.matchVariables.setGridUpdate(this.gridVector);
   }
   /*
     Limpa as linhas cheias.
@@ -395,8 +400,7 @@ export class AppComponent implements OnInit {
 
         for (let indexReset = r * GRIDCOLS + 1; indexReset <= r * GRIDCOLS + COLS; indexReset++) {
           this.gridVector[indexReset] = {
-            value: 0,
-            color: "transparent"
+            value: 0
           };
         }
         for (let rDown = r; rDown >= 0; rDown--) {
@@ -405,7 +409,6 @@ export class AppComponent implements OnInit {
               this.gridVector[rDown * GRIDCOLS + c] = this.gridVector[(rDown * GRIDCOLS + c) - 12]
             } else {
               this.gridVector[rDown * GRIDCOLS + c] = {
-                color: "transparent",
                 value: 0
               };
             }
@@ -447,6 +450,10 @@ export class AppComponent implements OnInit {
   
   onChangeTheme(themeFileString : any){
     this.themeService.changeTheme(themeFileString.target.value);
+  }
+
+  authenticateUser(){
+    this.userService.authenticate(this.autenticateForm.value["nickname"]);
   }
 
 }

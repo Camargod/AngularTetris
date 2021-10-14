@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 
 import { io, Socket } from "socket.io-client";
+import { SocketEventClientEnumerator } from "src/enums/socket-event.enum";
 @Injectable({
     providedIn:'root'
 })
@@ -13,6 +14,10 @@ export class SocketService {
 
     socketReturn(){
         this.socket = io("http://localhost:3000");
+        this.socket!.onAny((key,value)=>{
+            console.log(`key: ${key} value: ${value}`);
+            this._eventBehavior.next(this.eventHandler(key,value))
+        })
         // this.socket. = (event) =>{
         //     console.log("Iniciando Socket.");
         //     this.isConnected = true;
@@ -27,25 +32,13 @@ export class SocketService {
         // }
     }
     
-    socketMsg(key : string, value: string){
-        if(this.socket!.connected) this.socket!.emit("event",value);
+    socketMsg(key : SocketEventClientEnumerator, value: any){
+        if(this.socket!.connected) this.socket!.emit(SocketEventClientEnumerator[key],value);
         else console.warn("Socket não está aberto");
     }
 
-    private eventHandler(message : string){
-        let key : number = 0;
-        let value : string = "";
-
-        try{    
-            let keyValue = message.split("|")
-            key = Number.parseInt(keyValue[0])
-            value = keyValue[1]
-        }
-        catch(err){
-            console.error(`Evento invalido: ${err}`)
-        }
-        finally{
-            return {key,value}
-        }
+    private eventHandler(key : any, value : any){
+        key = Number.parseInt(key);
+        return {key,value}
     }
 }

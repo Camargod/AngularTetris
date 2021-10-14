@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { SocketEventServerEnumerator } from 'src/enums/socket-event.enum';
+import { SocketEventClientEnumerator, SocketEventServerEnumerator } from 'src/enums/socket-event.enum';
+import { TetrisGridPiece } from '../objects/tetris-grid-piece';
 import { SocketService } from '../socket/socket.service';
 
 @Injectable({
@@ -27,24 +28,35 @@ constructor(
   }
 
   private socketMessageHandler(event: {key:number,value:string}){
-    if(event) switch(event.key){
-      case SocketEventServerEnumerator.TIME_UPDATE:
-        this.timer.next(Number.parseInt(event.value));
-        break;
-      case SocketEventServerEnumerator.GAME_START:
-        this.game_start.next(event.value == "true");
-        break;
-      case SocketEventServerEnumerator.RECEIVED_DAMAGE:
-        this.damage_received.next(Number.parseInt(event.value));
-        break;
-      case SocketEventServerEnumerator.IN_MATCH_PLAYERS:
-        this.in_match_players.next(Number.parseInt(event.value));
-        break;
-    } 
+    try{
+      if(event){
+        switch(event.key){
+          case SocketEventServerEnumerator.TIME_UPDATE:
+            this.timer.next(Number.parseInt(event.value));
+            console.log(`Tempo atualizado: ${this.timer.value}`)
+            break
+          case SocketEventServerEnumerator.GAME_START:
+            this.game_start.next(event.value == "true");
+            break
+          case SocketEventServerEnumerator.RECEIVED_DAMAGE:
+            this.damage_received.next(Number.parseInt(event.value));
+            break
+          case SocketEventServerEnumerator.IN_MATCH_PLAYERS:
+            this.in_match_players.next(Number.parseInt(event.value));
+            break
+          default:
+            break
+        } 
+      }
+    }
+    catch(err){
+      console.error(`Erro lidando com mensagem do servidor: ${err}`);
+    }
+    
     // this.socketVars[this.enums[event.key]] = event.value
   }
 
-  public static helloWorld(){
-    window.alert("Hello world");
+  setGridUpdate(grid : Array<TetrisGridPiece>){
+    this.socketService.socketMsg(SocketEventClientEnumerator.GRID_UPDATE,grid)
   } 
 }
