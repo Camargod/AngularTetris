@@ -10,7 +10,7 @@ export class TimerComponent implements OnInit {
 
   constructor(private variablesService : MatchVariablesService) { }
 
-  timer;
+  timer : any;
 
   ngOnInit() {
     this.variablesService.timer.subscribe((time)=>{

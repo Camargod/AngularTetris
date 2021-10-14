@@ -1,5 +1,5 @@
 export class SoundClass{
-    audio : HTMLAudioElement;
+    audio ?: HTMLAudioElement;
     constructor(){
     }
 
@@ -8,7 +8,7 @@ export class SoundClass{
         this.audio.volume = .12;
         this.audio.load();
         this.audio.onload = () =>{
-            this.audio.play();
+            this.audio!.play();
         }
         
     }
