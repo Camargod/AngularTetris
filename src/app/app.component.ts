@@ -72,7 +72,7 @@ export class AppComponent implements OnInit {
   players = 0;
 
   autenticateForm = this.formBuilder.group({
-    nickname: '',
+    nickname: localStorage.getItem("user") ? localStorage.getItem("user") : '',
   });
 
   constructor(
@@ -454,6 +454,7 @@ export class AppComponent implements OnInit {
 
   authenticateUser(){
     this.userService.authenticate(this.autenticateForm.value["nickname"]);
+    localStorage.setItem("user",this.autenticateForm.value["nickname"])
   }
 
 }

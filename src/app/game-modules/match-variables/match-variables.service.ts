@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SocketEventClientEnumerator, SocketEventServerEnumerator } from 'src/enums/socket-event.enum';
+import { PlayersGrids } from '../objects/players-grids';
+import { User } from '../objects/server/user';
 import { TetrisGridPiece } from '../objects/tetris-grid-piece';
 import { SocketService } from '../socket/socket.service';
 
@@ -19,6 +21,7 @@ constructor(
 
   public in_match_players = new BehaviorSubject<number>(0);
 
+  public otherPlayersGrid = new BehaviorSubject<PlayersGrids>({});
 
   startGameListening(){
     this.socketService.socketReturn();
@@ -27,7 +30,7 @@ constructor(
     })
   }
 
-  private socketMessageHandler(event: {key:number,value:string}){
+  private socketMessageHandler(event: {key:number,value:any}){
     try{
       if(event){
         switch(event.key){
@@ -37,6 +40,14 @@ constructor(
             break
           case SocketEventServerEnumerator.GAME_START:
             this.game_start.next(event.value == "true");
+            break
+          case SocketEventServerEnumerator.CHALLENGER_GRID_UPDATE:
+            let user : User = event.value;
+            let newArray = this.otherPlayersGrid.value;
+            if(this.socketService.socket?.id != user.socketId){
+              newArray[user.socketId] = user.playerGrid;
+              this.otherPlayersGrid.next(newArray);
+            } else console.log("Ignorando matriz (Id é o mesmo do seu client)");
             break
           case SocketEventServerEnumerator.RECEIVED_DAMAGE:
             this.damage_received.next(Number.parseInt(event.value));
