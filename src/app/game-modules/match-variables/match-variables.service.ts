@@ -5,6 +5,7 @@ import { PlayersGrids } from '../objects/players-grids';
 import { User } from '../objects/server/user';
 import { TetrisGridPiece } from '../objects/tetris-grid-piece';
 import { SocketService } from '../socket/socket.service';
+import { Parser } from '../utils/parser';
 
 @Injectable({
   providedIn: 'root'
@@ -45,9 +46,16 @@ constructor(
             let user : User = event.value;
             let newArray = this.otherPlayersGrid.value;
             if(this.socketService.socket?.id != user.socketId){
-              newArray[user.socketId] = user.playerGrid;
+              newArray[user.userId] = user.playerGrid;
               this.otherPlayersGrid.next(newArray);
             } else console.log("Ignorando matriz (Id é o mesmo do seu client)");
+            break
+          case SocketEventServerEnumerator.ALL_CHALLENGER_GRID:
+            let users : User[] = event.value;
+            let newUsers = users.filter((user)=>{
+              return user.socketId != this.socketService.socket?.id;
+            });           
+            this.otherPlayersGrid.next(Parser.convertToPlayersGrid(newUsers));
             break
           case SocketEventServerEnumerator.RECEIVED_DAMAGE:
             this.damage_received.next(Number.parseInt(event.value));
