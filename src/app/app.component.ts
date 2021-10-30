@@ -1,5 +1,5 @@
 import {Component,ViewChild,ElementRef,OnInit,HostListener} from '@angular/core';
-import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS} from "./constants";
+import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS, LATERAL_PADDING, CANVAS_SCALING, TOP_PADDING} from "./constants";
 import TPiece from 'src/objects/piece';
 import Utils from './utils';
 import {ItemMap,Themes,ThemeService} from './theme-service';
@@ -174,12 +174,9 @@ export class AppComponent implements OnInit {
     Precisa ser ajustado depois para responsividade
   */
   setCanvasSize() {
-    this.fallingPiecesCanvasContext!.scale(1.35,1.35);
-    this.fallingPiecesCanvasContext!.scale(1.35,1.35);
-    this.canvasGridContext!.scale(1.35,1.35);
-    this.canvasGridContext!.scale(1.35,1.35); 
-    this.piecesCanvasContext!.scale(1.35,1.35);  
-    this.piecesCanvasContext!.scale(1.35,1.35); 
+    this.fallingPiecesCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
+    this.canvasGridContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
+    this.piecesCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);  
   }
 
   /*
@@ -247,11 +244,6 @@ export class AppComponent implements OnInit {
     Faz o desenho da grid.
   */
   grid() {
-    this.canvasGridContext!.clearRect(0, 0, this.canvasGridContext!.canvas.width, this.canvasGridContext!.canvas.height);
-    this.canvasGridContext!.fillStyle = 'black';
-
-    this.themeService.getTileSize();
-
     let {
       x1,
       x2,
@@ -259,13 +251,15 @@ export class AppComponent implements OnInit {
       y2
     } = this.themeService.getDrawParams();
 
-    for (let c = 0; c < COLS; c++) {
+    this.themeService.setTileObservable(0).subscribe((image)=>{
       for (let r = 6; r <= ROWS + 1; r++) {
-        if (r != ROWS + 1) {
-          this.canvasGridContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, (c * BLOCK_SIZE) + BLOCK_SIZE, (r * BLOCK_SIZE) + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        for (let c = 0; c < COLS; c++) {
+          if (r != ROWS + 1) {
+            this.canvasGridContext!.drawImage(image, x1, y1, x2, y2, (c * BLOCK_SIZE) + (BLOCK_SIZE * LATERAL_PADDING), (r * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING), BLOCK_SIZE, BLOCK_SIZE);
+          }
         }
       }
-    }
+    })
   }
   /*
     Faz o desenho de grid com numeração de cada casa e o seu valor.
@@ -302,7 +296,7 @@ export class AppComponent implements OnInit {
           }
 
 
-          this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
+          this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
           this.posY += BLOCK_SIZE;
           this.tetrominoDraw();
           this.useDelay = false;
@@ -330,7 +324,7 @@ export class AppComponent implements OnInit {
       y2
     } = this.themeService.getDrawParams();
     this.themeService.setTile(this.actualPiece.pieceNumberId);
-    this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
+    this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
 
     for (let px = 0; px < 4; px++) {
       for (let py = 0; py < 4; py++) {
@@ -338,7 +332,7 @@ export class AppComponent implements OnInit {
         if (this.actualPiece.shape![rotate!] == 1) {
           let tetrominoPieceIndex = Utils.getIndexHeightByPos(this.posY, py);
           if (tetrominoPieceIndex + (GRIDCOLS * py) + px >= GRIDCOLS * 6) {
-            this.fallingPiecesCanvasContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, this.posX + (px * BLOCK_SIZE), this.posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
+            this.fallingPiecesCanvasContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, this.posX + (px * BLOCK_SIZE) + (BLOCK_SIZE * (LATERAL_PADDING - 1)) , this.posY + (py * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING) - BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
@@ -370,7 +364,7 @@ export class AppComponent implements OnInit {
               value: 1,
               themeNumber: this.actualPiece.pieceNumberId
             };
-            this.piecesCanvasContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, posX + (px * BLOCK_SIZE), posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
+            this.piecesCanvasContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, posX + (px * BLOCK_SIZE) + (BLOCK_SIZE * (LATERAL_PADDING - 1)), posY + (py * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING) - BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
