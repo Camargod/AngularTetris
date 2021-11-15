@@ -1,0 +1,11 @@
+:host{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    top: 20vh;
+    //background-color: rgba(255, 0, 0, 0.116);
+    position: absolute;
+    width: 30vw;
+    height: 80vh;
+    z-index: 6;
+}
