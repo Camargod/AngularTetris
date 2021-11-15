@@ -428,10 +428,15 @@ export class AppComponent implements OnInit {
               y2
             } = this.themeService.getDrawParams();
             console.log(`Desenhando tile de numero ${this.gridVector[index].themeNumber}`)
-            let subcription = this.themeService.setTileObservable(this.gridVector[index].themeNumber!).subscribe((image)=>{
-                this.piecesCanvasContext!.drawImage(image, x1, y1, x2, y2, c * BLOCK_SIZE + (BLOCK_SIZE * (LATERAL_PADDING - 1)), r * BLOCK_SIZE + (BLOCK_SIZE * TOP_PADDING), BLOCK_SIZE, BLOCK_SIZE);
-                subcription.unsubscribe();
-            });
+            this.themeService.setTile(this.actualPiece.pieceNumberId)
+            this.piecesCanvasContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, c * BLOCK_SIZE + (BLOCK_SIZE * (LATERAL_PADDING - 1)), r * BLOCK_SIZE + (BLOCK_SIZE * TOP_PADDING), BLOCK_SIZE, BLOCK_SIZE);
+
+            // let subcription = this.themeService.setTileObservable(this.gridVector[index].themeNumber!).subscribe((image)=>{
+            //   window.requestAnimationFrame(()=>{
+            //     this.piecesCanvasContext!.drawImage(image, x1, y1, x2, y2, c * BLOCK_SIZE + (BLOCK_SIZE * (LATERAL_PADDING - 1)), r * BLOCK_SIZE + (BLOCK_SIZE * TOP_PADDING), BLOCK_SIZE, BLOCK_SIZE);
+            //     subcription.unsubscribe();
+            //   })
+            // });
           }
         }
       }
