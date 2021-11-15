@@ -1,5 +1,5 @@
 <div class="game" #gameDiv> 
-  <!-- <enemies-view></enemies-view> -->
+  <enemies-view></enemies-view>
   <div class="game-body">
     <canvas width="800" height="1520" class="piece-canvas game-canvas" #piecescanvas></canvas>
     <canvas width="800" height="1520" class="piece-canvas game-canvas" #fallingpiecescanvas></canvas>
@@ -14,7 +14,7 @@
     </select>
 
     <div>Tempo para começar: {{timer}}</div>
-    <label>Pontuação: {{gamePontuation}}</label>
+    <label>Pontuação: {{gamePontuation}} </label>
     <label>Players: {{players}}</label>
 
     <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">

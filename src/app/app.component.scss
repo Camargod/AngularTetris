@@ -41,7 +41,7 @@
     padding: 20px;
     width: 100vw;
     height: 100vh;
-    color: white;
+    // color: white;
     z-index: 10;
 }
 
@@ -49,9 +49,6 @@
     position: absolute;
     //top: -140px;
     height: calc(100% - 20px);
-    border: white;
-    border-style: solid;
-    border-radius: 10px;
 }
 .game-grid{
     z-index: 3;

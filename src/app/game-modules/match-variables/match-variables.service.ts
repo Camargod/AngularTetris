@@ -54,8 +54,10 @@ constructor(
             let users : User[] = event.value;
             let newUsers = users.filter((user)=>{
               return user.socketId != this.socketService.socket?.id;
-            });           
-            this.otherPlayersGrid.next(Parser.convertToPlayersGrid(newUsers));
+            });  
+            let grids : PlayersGrids = Parser.convertToPlayersGrid(newUsers);
+            debugger;
+            this.otherPlayersGrid.next(grids);
             break
           case SocketEventServerEnumerator.RECEIVED_DAMAGE:
             this.damage_received.next(Number.parseInt(event.value));

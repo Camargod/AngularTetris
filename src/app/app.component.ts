@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
   title = 'Online Tetris';
 
   //Diretivas de leitura de ElementosHtml do Canvas para controle direto da API do mesmo.
-  
+
   @ViewChild("gridcanvas", {static: true}) gridCanvas !: ElementRef < HTMLCanvasElement > ;
   @ViewChild("piecescanvas", {static: true}) piecesCanvas !: ElementRef < HTMLCanvasElement > ;
   @ViewChild("fallingpiecescanvas", {static: true}) fallingPiecesCanvas !: ElementRef < HTMLCanvasElement > ;
@@ -86,8 +86,8 @@ export class AppComponent implements OnInit {
   }
 
   /*
-    Movimento de peças, por evento de keydown 
-    
+    Movimento de peças, por evento de keydown
+
     Necessita trocar a variavel KeyCode, deprecated.
   */
   @HostListener('window:keydown', ['$event'])
@@ -111,7 +111,7 @@ export class AppComponent implements OnInit {
     this.setBounds();
     this.themeSoundManager.setNewAudio(AudioMap[AudioMapNames.main])
     this.themeSoundManager.audio!.loop = true;
-    this.waitImageLoad(); 
+    this.waitImageLoad();
   }
 
   socketStart(){
@@ -171,12 +171,12 @@ export class AppComponent implements OnInit {
   /*
     Define tamanho para o canvas.
 
-    Precisa ser ajustado depois para responsividade
+    Precisa ser ajustado depois para r∑esponsividade
   */
   setCanvasSize() {
     this.fallingPiecesCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
     this.canvasGridContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
-    this.piecesCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);  
+    this.piecesCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
   }
 
   /*
@@ -377,7 +377,7 @@ export class AppComponent implements OnInit {
     Limpa as linhas cheias.
 
     NECESSARIO MUDAR O ALGORITMO
-    Pode se realizar essa validação com base na posição Y e Y + 4 convertidos no indices de vetor como intervalo, assim evita ser iterado toda vez a grita toda. 
+    Pode se realizar essa validação com base na posição Y e Y + 4 convertidos no indices de vetor como intervalo, assim evita ser iterado toda vez a grita toda.
   */
   clearFullLines(lastPosxY : number) {
     for (let r = ROWS; r >= 0; r--) {
@@ -390,8 +390,6 @@ export class AppComponent implements OnInit {
         }
       }
       if (isFilled) {
-        this.piecesCanvasContext!.clearRect(30, (r * BLOCK_SIZE) + BLOCK_SIZE, BLOCK_SIZE * COLS, BLOCK_SIZE);
-
         for (let indexReset = r * GRIDCOLS + 1; indexReset <= r * GRIDCOLS + COLS; indexReset++) {
           this.gridVector[indexReset] = {
             value: 0
@@ -431,17 +429,16 @@ export class AppComponent implements OnInit {
             } = this.themeService.getDrawParams();
             console.log(`Desenhando tile de numero ${this.gridVector[index].themeNumber}`)
             let subcription = this.themeService.setTileObservable(this.gridVector[index].themeNumber!).subscribe((image)=>{
-              window.requestAnimationFrame(()=>{
-                this.piecesCanvasContext!.drawImage(image, x1, y1, x2, y2, c * BLOCK_SIZE, r * BLOCK_SIZE + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                this.piecesCanvasContext!.drawImage(image, x1, y1, x2, y2, c * BLOCK_SIZE + (BLOCK_SIZE * (LATERAL_PADDING - 1)), r * BLOCK_SIZE + (BLOCK_SIZE * TOP_PADDING), BLOCK_SIZE, BLOCK_SIZE);
                 subcription.unsubscribe();
-              })
             });
           }
         }
       }
     }
+    window.requestAnimationFrame(()=>{});
   }
-  
+
   onChangeTheme(themeFileString : any){
     this.themeService.changeTheme(themeFileString.target.value);
   }
