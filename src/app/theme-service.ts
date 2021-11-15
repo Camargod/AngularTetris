@@ -28,7 +28,7 @@ export class ThemeService {
         let image = new Image();
         image.src = `assets/themes/${localStorage.getItem("selectedTheme")}/${index}.png`;
         image.onload = () => {
-          this.themeImages.push(image);
+          this.themeImages[index] = image;
 
           if(index == 7){
             observable.next();
