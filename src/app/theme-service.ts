@@ -13,12 +13,30 @@ import {
 export class ThemeService {
   public selectedThemeFile = "theme01.png"
   public selectedThemeChanged: BehaviorSubject < null > = new BehaviorSubject < null > (null);
-  public image ? : HTMLImageElement;
+  public image ?: HTMLImageElement;
+  public themeImages : Array<HTMLImageElement> = [];
 
   changeTheme(selectedTheme: string) {
     this.selectedThemeFile = selectedTheme;
     localStorage.setItem("selectedTheme", selectedTheme)
     location.reload();
+  }
+
+  loadNewTheme(){
+    return new Observable((observable)=>{
+      for(let index = 0; index <= 7; index++){
+        let image = new Image();
+        image.src = `assets/themes/${localStorage.getItem("selectedTheme")}/${index}.png`;
+        image.onload = () => {
+          this.themeImages.push(image);
+
+          if(index == 7){
+            observable.next();
+            observable.complete();
+          }
+        };
+      }
+    })
   }
 
   setTile(tileNumber: number) {
@@ -139,5 +157,5 @@ export const Themes = [{
   {
     name: "Red Scale",
     fileName: "theme12"
-  },
+  }
 ]

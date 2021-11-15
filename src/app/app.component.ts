@@ -102,6 +102,7 @@ export class AppComponent implements OnInit {
   */
 
   ngOnInit() : void {
+    this.waitImageLoad();
     this.matchVariables.startGameListening()
     this.socketStart();
     this.themeService.setTile(0);
@@ -111,7 +112,6 @@ export class AppComponent implements OnInit {
     this.setBounds();
     this.themeSoundManager.setNewAudio(AudioMap[AudioMapNames.main])
     this.themeSoundManager.audio!.loop = true;
-    this.waitImageLoad();
   }
 
   socketStart(){
@@ -131,15 +131,11 @@ export class AppComponent implements OnInit {
     //   this.gameDraw();
     // });
     // subscription.unsubscribe();
-    setTimeout(() => {
-      if (this.themeService.image && this.themeService.image.width > 0) {
-        this.hasImageLoaded = true;
-        this.draw()
-        this.gameDraw();
-      } else if (!this.hasImageLoaded) {
-        this.waitImageLoad();
-      }
-    }, 300)
+    this.themeService.loadNewTheme().subscribe(()=>{
+      this.hasImageLoaded = true;
+      this.draw()
+      this.gameDraw();
+    })
   }
 
   ngAfterViewInit(): void {
@@ -251,15 +247,14 @@ export class AppComponent implements OnInit {
       y2
     } = this.themeService.getDrawParams();
 
-    this.themeService.setTileObservable(0).subscribe((image)=>{
-      for (let r = 6; r <= ROWS + 1; r++) {
-        for (let c = 0; c < COLS; c++) {
-          if (r != ROWS + 1) {
-            this.canvasGridContext!.drawImage(image, x1, y1, x2, y2, (c * BLOCK_SIZE) + (BLOCK_SIZE * LATERAL_PADDING), (r * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING), BLOCK_SIZE, BLOCK_SIZE);
-          }
+
+    for (let r = 6; r <= ROWS + 1; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (r != ROWS + 1) {
+          this.canvasGridContext!.drawImage(this.themeService.themeImages[0], x1, y1, x2, y2, (c * BLOCK_SIZE) + (BLOCK_SIZE * LATERAL_PADDING), (r * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING), BLOCK_SIZE, BLOCK_SIZE);
         }
       }
-    })
+    }
   }
   /*
     Faz o desenho de grid com numeração de cada casa e o seu valor.
@@ -323,7 +318,6 @@ export class AppComponent implements OnInit {
       y1,
       y2
     } = this.themeService.getDrawParams();
-    this.themeService.setTile(this.actualPiece.pieceNumberId);
     this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
 
     for (let px = 0; px < 4; px++) {
@@ -332,7 +326,7 @@ export class AppComponent implements OnInit {
         if (this.actualPiece.shape![rotate!] == 1) {
           let tetrominoPieceIndex = Utils.getIndexHeightByPos(this.posY, py);
           if (tetrominoPieceIndex + (GRIDCOLS * py) + px >= GRIDCOLS * 6) {
-            this.fallingPiecesCanvasContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, this.posX + (px * BLOCK_SIZE) + (BLOCK_SIZE * (LATERAL_PADDING - 1)) , this.posY + (py * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING) - BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            this.fallingPiecesCanvasContext!.drawImage(this.themeService.themeImages[this.actualPiece.pieceNumberId]!, x1, y1, x2, y2, this.posX + (px * BLOCK_SIZE) + (BLOCK_SIZE * (LATERAL_PADDING - 1)) , this.posY + (py * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING) - BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
@@ -364,7 +358,7 @@ export class AppComponent implements OnInit {
               value: 1,
               themeNumber: this.actualPiece.pieceNumberId
             };
-            this.piecesCanvasContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, posX + (px * BLOCK_SIZE) + (BLOCK_SIZE * (LATERAL_PADDING - 1)), posY + (py * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING) - BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            this.piecesCanvasContext!.drawImage(this.themeService.themeImages[this.gridVector[index].themeNumber!], x1, y1, x2, y2, posX + (px * BLOCK_SIZE) + (BLOCK_SIZE * (LATERAL_PADDING - 1)), posY + (py * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING) - BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
@@ -427,16 +421,7 @@ export class AppComponent implements OnInit {
               y1,
               y2
             } = this.themeService.getDrawParams();
-            console.log(`Desenhando tile de numero ${this.gridVector[index].themeNumber}`)
-            this.themeService.setTile(this.actualPiece.pieceNumberId)
-            this.piecesCanvasContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, c * BLOCK_SIZE + (BLOCK_SIZE * (LATERAL_PADDING - 1)), r * BLOCK_SIZE + (BLOCK_SIZE * TOP_PADDING), BLOCK_SIZE, BLOCK_SIZE);
-
-            // let subcription = this.themeService.setTileObservable(this.gridVector[index].themeNumber!).subscribe((image)=>{
-            //   window.requestAnimationFrame(()=>{
-            //     this.piecesCanvasContext!.drawImage(image, x1, y1, x2, y2, c * BLOCK_SIZE + (BLOCK_SIZE * (LATERAL_PADDING - 1)), r * BLOCK_SIZE + (BLOCK_SIZE * TOP_PADDING), BLOCK_SIZE, BLOCK_SIZE);
-            //     subcription.unsubscribe();
-            //   })
-            // });
+            this.piecesCanvasContext!.drawImage(this.themeService.themeImages[this.gridVector[index].themeNumber!], x1, y1, x2, y2, c * BLOCK_SIZE + (BLOCK_SIZE * (LATERAL_PADDING - 1)), r * BLOCK_SIZE + (BLOCK_SIZE * TOP_PADDING), BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
