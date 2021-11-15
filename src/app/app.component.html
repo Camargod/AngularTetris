@@ -1,4 +1,4 @@
-<div class="game" #gameDiv> 
+<div class="game" #gameDiv>
   <enemies-view></enemies-view>
   <div class="game-body">
     <canvas width="800" height="1520" class="piece-canvas game-canvas" #piecescanvas></canvas>
@@ -7,20 +7,21 @@
   </div>
 
   <div class="info">
-    <select #themeSelect aria-placeholder="Tema" (change)="onChangeTheme($event)">
-      <ng-container *ngFor="let item of themeList">
-        <option value="{{item.fileName}}">{{item.name}}</option>
-      </ng-container>
-    </select>
+    <span class="info-background">
+      <select #themeSelect aria-placeholder="Tema" (change)="onChangeTheme($event)">
+        <ng-container *ngFor="let item of themeList">
+          <option value="{{item.fileName}}">{{item.name}}</option>
+        </ng-container>
+      </select>
 
-    <div>Tempo para começar: {{timer}}</div>
-    <label>Pontuação: {{gamePontuation}} </label>
-    <label>Players: {{players}}</label>
+      <div>Tempo para começar: {{timer}}</div>
+      <label>Pontuação: {{gamePontuation}} </label>
+      <label>Players: {{players}}</label>
 
-    <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
-      <button type="submit">Test autenticate</button>
-      <input id="nickname" type="text" formControlName="nickname">
-    </form>
-
+      <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
+        <button type="submit">Test autenticate</button>
+        <input id="nickname" type="text" formControlName="nickname">
+      </form>
+    </span>
   </div>
 </div>
