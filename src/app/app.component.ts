@@ -133,23 +133,11 @@ export class AppComponent implements OnInit {
     //   this.gameDraw();
     // });
     // subscription.unsubscribe();
-<<<<<<< HEAD
-    setTimeout(() => {
-      if (this.themeService.image && this.themeService.image.width > 0) {
-        this.hasImageLoaded = true;
-        this.draw();
-        this.gameDraw();
-      } else if (!this.hasImageLoaded) {
-        this.waitImageLoad();
-      }
-    }, 300)
-=======
     this.themeService.loadNewTheme().subscribe(()=>{
       this.hasImageLoaded = true;
       this.draw()
       this.gameDraw();
     })
->>>>>>> origin/master
   }
 
   ngAfterViewInit(): void {
@@ -197,18 +185,9 @@ export class AppComponent implements OnInit {
     Precisa ser ajustado depois para r∑esponsividade
   */
   setCanvasSize() {
-<<<<<<< HEAD
-    this.fallingPiecesCanvasContext!.scale(1.35,1.35);
-    this.fallingPiecesCanvasContext!.scale(1.35,1.35);
-    this.canvasGridContext!.scale(1.35,1.35);
-    this.canvasGridContext!.scale(1.35,1.35); 
-    this.piecesCanvasContext!.scale(1.35,1.35);  
-    this.piecesCanvasContext!.scale(1.35,1.35);  
-=======
     this.fallingPiecesCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
     this.canvasGridContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
     this.piecesCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
->>>>>>> origin/master
   }
 
   /*
