@@ -1,5 +1,5 @@
 import {Component,ViewChild,ElementRef,OnInit,HostListener} from '@angular/core';
-import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS} from "./constants";
+import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS, LATERAL_PADDING, CANVAS_SCALING, TOP_PADDING} from "./constants";
 import TPiece from 'src/objects/piece';
 import Utils from './utils';
 import {ItemMap,Themes,ThemeService} from './theme-service';
@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
   title = 'Online Tetris';
 
   //Diretivas de leitura de ElementosHtml do Canvas para controle direto da API do mesmo.
-  
+
   @ViewChild("gridcanvas", {static: true}) gridCanvas !: ElementRef < HTMLCanvasElement > ;
   @ViewChild("piecescanvas", {static: true}) piecesCanvas !: ElementRef < HTMLCanvasElement > ;
   @ViewChild("fallingpiecescanvas", {static: true}) fallingPiecesCanvas !: ElementRef < HTMLCanvasElement > ;
@@ -74,7 +74,7 @@ export class AppComponent implements OnInit {
   players = 0;
 
   autenticateForm = this.formBuilder.group({
-    nickname: '',
+    nickname: localStorage.getItem("user") ? localStorage.getItem("user") : '',
   });
 
   constructor(
@@ -88,8 +88,8 @@ export class AppComponent implements OnInit {
   }
 
   /*
-    Movimento de peças, por evento de keydown 
-    
+    Movimento de peças, por evento de keydown
+
     Necessita trocar a variavel KeyCode, deprecated.
   */
   @HostListener('window:keydown', ['$event'])
@@ -104,6 +104,7 @@ export class AppComponent implements OnInit {
   */
 
   ngOnInit() : void {
+    this.waitImageLoad();
     this.matchVariables.startGameListening()
     this.socketStart();
     this.themeService.setTile(0);
@@ -113,7 +114,6 @@ export class AppComponent implements OnInit {
     this.setBounds();
     this.themeSoundManager.setNewAudio(AudioMap[AudioMapNames.main])
     this.themeSoundManager.audio!.loop = true;
-    this.waitImageLoad(); 
   }
 
   socketStart(){
@@ -133,6 +133,7 @@ export class AppComponent implements OnInit {
     //   this.gameDraw();
     // });
     // subscription.unsubscribe();
+<<<<<<< HEAD
     setTimeout(() => {
       if (this.themeService.image && this.themeService.image.width > 0) {
         this.hasImageLoaded = true;
@@ -142,6 +143,13 @@ export class AppComponent implements OnInit {
         this.waitImageLoad();
       }
     }, 300)
+=======
+    this.themeService.loadNewTheme().subscribe(()=>{
+      this.hasImageLoaded = true;
+      this.draw()
+      this.gameDraw();
+    })
+>>>>>>> origin/master
   }
 
   ngAfterViewInit(): void {
@@ -186,15 +194,21 @@ export class AppComponent implements OnInit {
   /*
     Define tamanho para o canvas.
 
-    Precisa ser ajustado depois para responsividade
+    Precisa ser ajustado depois para r∑esponsividade
   */
   setCanvasSize() {
+<<<<<<< HEAD
     this.fallingPiecesCanvasContext!.scale(1.35,1.35);
     this.fallingPiecesCanvasContext!.scale(1.35,1.35);
     this.canvasGridContext!.scale(1.35,1.35);
     this.canvasGridContext!.scale(1.35,1.35); 
     this.piecesCanvasContext!.scale(1.35,1.35);  
     this.piecesCanvasContext!.scale(1.35,1.35);  
+=======
+    this.fallingPiecesCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
+    this.canvasGridContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
+    this.piecesCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
+>>>>>>> origin/master
   }
 
   /*
@@ -262,11 +276,6 @@ export class AppComponent implements OnInit {
     Faz o desenho da grid.
   */
   grid() {
-    this.canvasGridContext!.clearRect(0, 0, this.canvasGridContext!.canvas.width, this.canvasGridContext!.canvas.height);
-    this.canvasGridContext!.fillStyle = 'black';
-
-    this.themeService.getTileSize();
-
     let {
       x1,
       x2,
@@ -274,10 +283,11 @@ export class AppComponent implements OnInit {
       y2
     } = this.themeService.getDrawParams();
 
-    for (let c = 0; c < COLS; c++) {
-      for (let r = 6; r <= ROWS + 1; r++) {
+
+    for (let r = 6; r <= ROWS + 1; r++) {
+      for (let c = 0; c < COLS; c++) {
         if (r != ROWS + 1) {
-          this.canvasGridContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, (c * BLOCK_SIZE) + BLOCK_SIZE, (r * BLOCK_SIZE) + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+          this.canvasGridContext!.drawImage(this.themeService.themeImages[0], x1, y1, x2, y2, (c * BLOCK_SIZE) + (BLOCK_SIZE * LATERAL_PADDING), (r * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING), BLOCK_SIZE, BLOCK_SIZE);
         }
       }
     }
@@ -317,7 +327,7 @@ export class AppComponent implements OnInit {
           }
 
 
-          this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
+          this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
           this.posY += BLOCK_SIZE;
           this.tetrominoDraw();
           this.useDelay = false;
@@ -344,8 +354,7 @@ export class AppComponent implements OnInit {
       y1,
       y2
     } = this.themeService.getDrawParams();
-    this.themeService.setTile(this.actualPiece.pieceNumberId);
-    this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - BLOCK_SIZE, this.lastPosY - BLOCK_SIZE, this.lastPosX + (BLOCK_SIZE * 5), this.posY + (BLOCK_SIZE * 5));
+    this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
 
     for (let px = 0; px < 4; px++) {
       for (let py = 0; py < 4; py++) {
@@ -353,7 +362,7 @@ export class AppComponent implements OnInit {
         if (this.actualPiece.shape![rotate!] == 1) {
           let tetrominoPieceIndex = Utils.getIndexHeightByPos(this.posY, py);
           if (tetrominoPieceIndex + (GRIDCOLS * py) + px >= GRIDCOLS * 6) {
-            this.fallingPiecesCanvasContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, this.posX + (px * BLOCK_SIZE), this.posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
+            this.fallingPiecesCanvasContext!.drawImage(this.themeService.themeImages[this.actualPiece.pieceNumberId]!, x1, y1, x2, y2, this.posX + (px * BLOCK_SIZE) + (BLOCK_SIZE * (LATERAL_PADDING - 1)) , this.posY + (py * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING) - BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
@@ -385,7 +394,7 @@ export class AppComponent implements OnInit {
               value: 1,
               themeNumber: this.actualPiece.pieceNumberId
             };
-            this.piecesCanvasContext!.drawImage(this.themeService.image!, x1, y1, x2, y2, posX + (px * BLOCK_SIZE), posY + (py * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
+            this.piecesCanvasContext!.drawImage(this.themeService.themeImages[this.gridVector[index].themeNumber!], x1, y1, x2, y2, posX + (px * BLOCK_SIZE) + (BLOCK_SIZE * (LATERAL_PADDING - 1)), posY + (py * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING) - BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
@@ -398,7 +407,7 @@ export class AppComponent implements OnInit {
     Limpa as linhas cheias.
 
     NECESSARIO MUDAR O ALGORITMO
-    Pode se realizar essa validação com base na posição Y e Y + 4 convertidos no indices de vetor como intervalo, assim evita ser iterado toda vez a grita toda. 
+    Pode se realizar essa validação com base na posição Y e Y + 4 convertidos no indices de vetor como intervalo, assim evita ser iterado toda vez a grita toda.
   */
   clearFullLines(lastPosxY : number) {
     for (let r = ROWS; r >= 0; r--) {
@@ -411,8 +420,6 @@ export class AppComponent implements OnInit {
         }
       }
       if (isFilled) {
-        this.piecesCanvasContext!.clearRect(30, (r * BLOCK_SIZE) + BLOCK_SIZE, BLOCK_SIZE * COLS, BLOCK_SIZE);
-
         for (let indexReset = r * GRIDCOLS + 1; indexReset <= r * GRIDCOLS + COLS; indexReset++) {
           this.gridVector[indexReset] = {
             value: 0
@@ -450,25 +457,21 @@ export class AppComponent implements OnInit {
               y1,
               y2
             } = this.themeService.getDrawParams();
-            console.log(`Desenhando tile de numero ${this.gridVector[index].themeNumber}`)
-            let subcription = this.themeService.setTileObservable(this.gridVector[index].themeNumber!).subscribe((image)=>{
-              window.requestAnimationFrame(()=>{
-                this.piecesCanvasContext!.drawImage(image, x1, y1, x2, y2, c * BLOCK_SIZE, r * BLOCK_SIZE + BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-                subcription.unsubscribe();
-              })
-            });
+            this.piecesCanvasContext!.drawImage(this.themeService.themeImages[this.gridVector[index].themeNumber!], x1, y1, x2, y2, c * BLOCK_SIZE + (BLOCK_SIZE * (LATERAL_PADDING - 1)), r * BLOCK_SIZE + (BLOCK_SIZE * TOP_PADDING), BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
     }
+    window.requestAnimationFrame(()=>{});
   }
-  
+
   onChangeTheme(themeFileString : any){
     this.themeService.changeTheme(themeFileString.target.value);
   }
 
   authenticateUser(){
     this.userService.authenticate(this.autenticateForm.value["nickname"]);
+    localStorage.setItem("user",this.autenticateForm.value["nickname"])
   }
 
 }

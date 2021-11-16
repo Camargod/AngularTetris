@@ -12,6 +12,7 @@
         align-items: center;
         width: 100%;
         height: 100%;
+
         .game-box
         {
             display: flex;
@@ -41,11 +42,19 @@
     padding: 20px;
     width: 100vw;
     height: 100vh;
-    color: white;
+    // color: white;
     z-index: 10;
+    .info-background{
+      background-color: gainsboro;
+      box-shadow: 0px 3px 6px black;
+      border-radius: 6px;
+      display: block;
+      width: fit-content;
+      padding: 10px;
+    }
 }
 
-canvas{
+.game-canvas{
     position: absolute;
     //top: -140px;
     height: calc(100% - 20px);
