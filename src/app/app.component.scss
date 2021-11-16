@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 .game{
     background-repeat: no-repeat;
     background-size:cover;
@@ -57,6 +58,33 @@ canvas{
 }
 .piece-canvas{
     z-index: 4;
+}
+.interface-hud{
+    z-index: 5;
+}
+
+.tempo{
+    letter-spacing: 0.4px;
+    font-family:"Bebas Neue";
+    margin-top: 11.5%;
+    margin-left: 57%;
+}
+
+.pontuacao{
+    letter-spacing: 0.4px;
+    font-family:"Bebas Neue";
+    margin-left: 57%;
+    margin-top: 11.5%;
+    position: absolute;
+    
+}
+
+.players{
+    letter-spacing: 0.4px;
+    font-family:"Bebas Neue";
+    margin-left: 57.4%;
+    position: absolute;
+    margin-top: 23.5%;
 }
 
 select{

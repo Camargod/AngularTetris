@@ -24,14 +24,16 @@ export class AppComponent implements OnInit {
   @ViewChild("gridcanvas", {static: true}) gridCanvas !: ElementRef < HTMLCanvasElement > ;
   @ViewChild("piecescanvas", {static: true}) piecesCanvas !: ElementRef < HTMLCanvasElement > ;
   @ViewChild("fallingpiecescanvas", {static: true}) fallingPiecesCanvas !: ElementRef < HTMLCanvasElement > ;
+  @ViewChild("interfaceHUD", {static: true}) interfaceHUD !: ElementRef <HTMLCanvasElement>;
 
-  @ViewChild("themeSelect",{static:true}) themeSelect !: ElementRef<HTMLSelectElement>
+  @ViewChild("themeSelect",{static:true}) themeSelect !: ElementRef<HTMLSelectElement>;
 
   @ViewChild("gameDiv", {static: true}) gameDiv !: ElementRef <HTMLDivElement>;
 
   canvasGridContext !: CanvasRenderingContext2D | null;
   piecesCanvasContext !: CanvasRenderingContext2D | null;
   fallingPiecesCanvasContext !: CanvasRenderingContext2D | null;
+  interfaceHUDCanvasContext !: CanvasRenderingContext2D | null;
 
   /*
     Vetor de grid, contendo a informação da casa e a cor da peça que está nela.
@@ -134,7 +136,7 @@ export class AppComponent implements OnInit {
     setTimeout(() => {
       if (this.themeService.image && this.themeService.image.width > 0) {
         this.hasImageLoaded = true;
-        this.draw()
+        this.draw();
         this.gameDraw();
       } else if (!this.hasImageLoaded) {
         this.waitImageLoad();
@@ -157,6 +159,7 @@ export class AppComponent implements OnInit {
 
   draw() {
     this.grid();
+    this.drawsquare();
     // this.gridArrayDebug();
   }
   /*
@@ -165,8 +168,20 @@ export class AppComponent implements OnInit {
   prepareCanvasContexts() {
     this.canvasGridContext = this.gridCanvas.nativeElement.getContext('2d');
     this.piecesCanvasContext = this.piecesCanvas.nativeElement.getContext('2d');
-    this.fallingPiecesCanvasContext = this.fallingPiecesCanvas.nativeElement.getContext('2d')
+    this.fallingPiecesCanvasContext = this.fallingPiecesCanvas.nativeElement.getContext('2d');
+    this.interfaceHUDCanvasContext = this.interfaceHUD.nativeElement.getContext('2d');
   }
+
+  drawsquare(){
+    
+    this.interfaceHUDCanvasContext!.fillStyle = '#404040';
+    this.interfaceHUDCanvasContext!.fillRect(this.interfaceHUD!.nativeElement.width * 0.70,380,300,250);
+    this.interfaceHUDCanvasContext!.fillRect(this.interfaceHUD!.nativeElement.width * 0.70,800,300,250);
+    this.interfaceHUDCanvasContext!.fillRect(this.interfaceHUD!.nativeElement.width * 0.70,1220,300,250);
+
+    window.requestAnimationFrame(()=>{this.drawsquare()})
+  }
+
 
   /*
     Define tamanho para o canvas.
@@ -179,7 +194,7 @@ export class AppComponent implements OnInit {
     this.canvasGridContext!.scale(1.35,1.35);
     this.canvasGridContext!.scale(1.35,1.35); 
     this.piecesCanvasContext!.scale(1.35,1.35);  
-    this.piecesCanvasContext!.scale(1.35,1.35); 
+    this.piecesCanvasContext!.scale(1.35,1.35);  
   }
 
   /*

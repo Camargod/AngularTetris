@@ -3,8 +3,11 @@
     <canvas width="1000" height="1520" class="piece-canvas" #piecescanvas></canvas>
     <canvas width="1000" height="1520" class="piece-canvas" #fallingpiecescanvas></canvas>
     <canvas width="1000" height="1520" class="game-grid" #gridcanvas></canvas>
+    <canvas width="1000" height="1520" class="interface-hud" #interfaceHUD></canvas>
   </div>
 
+  <!--Telas das pontuações-->
+  
   <div class="info">
     <select #themeSelect aria-placeholder="Tema" (change)="onChangeTheme($event)">
       <ng-container *ngFor="let item of themeList">
@@ -12,14 +15,8 @@
       </ng-container>
     </select>
 
-    <div>Tempo para começar: {{timer}}</div>
-    <label>Pontuação: {{gamePontuation}}</label>
-    <label>Players: {{players}}</label>
-
-    <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
-      <button type="submit">Test autenticate</button>
-      <input id="nickname" type="text" formControlName="nickname">
-    </form>
-
+    <div class = "tempo">Tempo para começar: {{timer}}</div><br>
+    <label class = "pontuacao">Pontuação: {{gamePontuation}}</label><br>
+    <label class = "players">Players: {{players}}</label>
   </div>
 </div>
