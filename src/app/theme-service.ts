@@ -143,19 +143,27 @@ export const Themes = [{
     fileName: "theme08"
   },
   {
-    name: "Pink Scale",
+    name: "Roxo",
     fileName: "theme09"
   },
   {
-    name: "Blue Scale",
+    name: "Azul",
     fileName: "theme10"
   },
   {
-    name: "Green Scale",
+    name: "Verde",
     fileName: "theme11"
   },
   {
-    name: "Red Scale",
+    name: "Vermelho",
     fileName: "theme12"
+  },
+  {
+    name: "Comidas",
+    fileName: "theme13"
+  },
+  {
+    name: "Animais",
+    fileName: "theme14"
   }
 ]
