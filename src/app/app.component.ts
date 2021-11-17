@@ -155,7 +155,7 @@ export class AppComponent implements OnInit {
 
   draw() {
     this.grid();
-    this.drawsquare();
+    // this.drawHud();
     // this.gridArrayDebug();
   }
   /*
@@ -165,17 +165,17 @@ export class AppComponent implements OnInit {
     this.canvasGridContext = this.gridCanvas.nativeElement.getContext('2d');
     this.piecesCanvasContext = this.piecesCanvas.nativeElement.getContext('2d');
     this.fallingPiecesCanvasContext = this.fallingPiecesCanvas.nativeElement.getContext('2d');
-    this.interfaceHUDCanvasContext = this.interfaceHUD.nativeElement.getContext('2d');
+    // this.interfaceHUDCanvasContext = this.interfaceHUD.nativeElement.getContext('2d');
   }
 
-  drawsquare(){
-    
+  drawHud(){
+
     this.interfaceHUDCanvasContext!.fillStyle = '#404040';
     this.interfaceHUDCanvasContext!.fillRect(this.interfaceHUD!.nativeElement.width * 0.70,380,300,250);
     this.interfaceHUDCanvasContext!.fillRect(this.interfaceHUD!.nativeElement.width * 0.70,800,300,250);
     this.interfaceHUDCanvasContext!.fillRect(this.interfaceHUD!.nativeElement.width * 0.70,1220,300,250);
 
-    window.requestAnimationFrame(()=>{this.drawsquare()})
+    window.requestAnimationFrame(()=>{this.drawHud()})
   }
 
 
