@@ -10,6 +10,7 @@ import { MovementService } from './game-modules/movement/movement-service';
 import { FormBuilder } from '@angular/forms';
 import { UserService } from './game-modules/user/user.service';
 import { TetrisGridPiece } from './game-modules/objects/tetris-grid-piece';
+import { EnemiesViewComponent } from './game-modules/view/enemies-view/enemies-view.component';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +30,8 @@ export class AppComponent implements OnInit {
   @ViewChild("themeSelect",{static:true}) themeSelect !: ElementRef<HTMLSelectElement>;
 
   @ViewChild("gameDiv", {static: true}) gameDiv !: ElementRef <HTMLDivElement>;
+
+  @ViewChild("viewsManager",{static:true}) views !: EnemiesViewComponent;
 
   canvasGridContext !: CanvasRenderingContext2D | null;
   piecesCanvasContext !: CanvasRenderingContext2D | null;
@@ -304,7 +307,7 @@ export class AppComponent implements OnInit {
             // this.gridArrayDebug();
             this.actualPiece.spawn();
           }
-
+          this.views.drawViews();
 
           this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
           this.posY += BLOCK_SIZE;
