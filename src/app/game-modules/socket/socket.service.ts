@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { env } from "process";
 import { BehaviorSubject, Observable, Subscriber } from "rxjs";
 
 import { io, Socket } from "socket.io-client";
 import { SocketEventClientEnumerator } from "src/enums/socket-event.enum";
+import { environment } from "src/environments/environment";
 @Injectable({
     providedIn:'root'
 })
@@ -14,7 +14,7 @@ export class SocketService {
     public isConnected : boolean = false;
     socketReturn(){
 
-        this.socket = io(env.server || "http://localhost:3000");
+        this.socket = io(environment.server || "http://localhost:3000");
         this.socket.onAny((key,value)=>{
             console.log(`key: ${key} value: ${value}`);
             this._eventBehavior.next(this.eventHandler(key,value))
