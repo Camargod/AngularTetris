@@ -34,9 +34,12 @@ export class EnemiesViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   drawViews(){
-    console.log("Chamando views")
-    this.singleViews?.forEach((view)=>{
-      view.gridDraw();
-    })
+    try{
+      this.singleViews?.forEach((view)=>{
+        view.gridDraw();
+      })
+    }catch(err){
+      console.error(err);
+    }
   }
 }
