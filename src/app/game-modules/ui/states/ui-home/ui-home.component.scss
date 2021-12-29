@@ -1,0 +1,53 @@
+:host{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  img{
+    width: 35%;
+  }
+  background-color: cornsilk;
+  transition: 2s;
+  flex-direction: column;
+}
+
+.logo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .home-title{
+    font-size: 96px;
+  }
+  opacity: 0;
+  transform: translateY(-70px);
+  animation-name: intro;
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+}
+
+.key-press{
+  opacity: 0;
+  animation-name: key-intro;
+  animation-duration: 1.7s;
+  animation-delay: 3s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+@keyframes key-intro {
+  50%{
+    opacity: 1;
+  }
+
+  100%{
+    opacity: 0;
+  }
+}
+
+@keyframes intro {
+  100%{
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+

@@ -13,10 +13,10 @@ import { Parser } from '../utils/parser';
 export class MatchVariablesService {
 
 constructor(
-  private socketService : SocketService 
+  private socketService : SocketService
 ) { }
 
-  public timer = new BehaviorSubject<number>(0);
+  public timer = new BehaviorSubject<number>(9999);
   public game_start = new BehaviorSubject<boolean>(false);
   public damage_received = new BehaviorSubject<number>(0);
 
@@ -54,7 +54,7 @@ constructor(
             let users : User[] = event.value;
             let newUsers = users.filter((user)=>{
               return user.socketId != this.socketService.socket?.id;
-            });  
+            });
             let grids : PlayersGrids = Parser.convertToPlayersGrid(newUsers);
             debugger;
             this.otherPlayersGrid.next(grids);
@@ -67,17 +67,17 @@ constructor(
             break
           default:
             break
-        } 
+        }
       }
     }
     catch(err){
       console.error(`Erro lidando com mensagem do servidor: ${err}`);
     }
-    
+
     // this.socketVars[this.enums[event.key]] = event.value
   }
 
   setGridUpdate(grid : Array<TetrisGridPiece>){
     this.socketService.socketMsg(SocketEventClientEnumerator.GRID_UPDATE,grid)
-  } 
+  }
 }

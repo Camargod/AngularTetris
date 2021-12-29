@@ -6,7 +6,7 @@ import {ItemMap,Themes,ThemeService} from './theme-service';
 import {AudioMap,AudioMapNames,SoundClass} from './sound';
 import { SocketService } from './game-modules/socket/socket.service';
 import { MatchVariablesService } from './game-modules/match-variables/match-variables.service';
-import { MovementService } from './game-modules/movement/movement-service';
+import { MovementService } from './game-modules/movement/movement.service';
 import { FormBuilder } from '@angular/forms';
 import { UserService } from './game-modules/user/user.service';
 import { TetrisGridPiece } from './game-modules/objects/tetris-grid-piece';
@@ -41,7 +41,7 @@ export class AppComponent implements OnInit {
   /*
     Vetor de grid, contendo a informação da casa e a cor da peça que está nela.
   */
-  gridVector !: Array < TetrisGridPiece> ;
+  gridVector !: Array <TetrisGridPiece> ;
 
   initalPos: number = 0;
   actualPiece !: TPiece;
@@ -64,7 +64,7 @@ export class AppComponent implements OnInit {
   useDelay = false;
 
   isGameOver: boolean = false;
-
+  isPaused = true;
   hasImageLoaded: boolean = false;
   themeList = Themes;
 
@@ -122,6 +122,9 @@ export class AppComponent implements OnInit {
   socketStart(){
     this.matchVariables.timer.subscribe((timer)=>{
       this.timer = timer;
+      if(timer == 0) {
+        this.isPaused = false;
+      }
     })
     this.matchVariables.in_match_players.subscribe((players)=>{
       this.players = players;
@@ -292,7 +295,7 @@ export class AppComponent implements OnInit {
   */
   gameDraw() {
     try {
-      if (!this.isGameOver) {
+      if (!this.isGameOver && !this.isPaused) {
         setTimeout(()=>{
           this.delayTime++;
         },1)
@@ -318,7 +321,8 @@ export class AppComponent implements OnInit {
 
         }, this.gameTime + (this.useDelay ? this.delayTime : 0));
 
-      } else {
+      }
+      if(this.isGameOver) {
         alert("Você perdeu");
         location.reload();
       }
