@@ -30,5 +30,5 @@
       </form>
     </span>
   </div>
-  <ui-state-controller></ui-state-controller>
+  <ui-state-controller (onToggle)="toggleUi($event)" [style.display]="isUiEnabled ? 'flex' : 'none'"></ui-state-controller>
 </div>

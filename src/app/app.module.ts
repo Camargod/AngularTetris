@@ -1,10 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { AuthModule } from '@auth0/auth0-angular';
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { TimerComponent } from './game-modules/timer/timer.component';
 import { ReactiveFormsModule } from '@angular/forms';
+
+import { AppComponent } from './app.component';
 import { EnemiesViewComponent } from './game-modules/view/enemies-view/enemies-view.component';
 import { SingleViewComponent } from './game-modules/view/enemies-view/single-view/single-view.component';
 import { UiStateControllerComponent } from './game-modules/ui/ui-state-controller/ui-state-controller.component';
@@ -15,7 +15,6 @@ import { UiMenuComponent } from './game-modules/ui/states/ui-menu/ui-menu.compon
 @NgModule({
   declarations: [
     AppComponent,
-    TimerComponent,
     EnemiesViewComponent,
     SingleViewComponent,
     UiStateControllerComponent,
@@ -26,7 +25,11 @@ import { UiMenuComponent } from './game-modules/ui/states/ui-menu/ui-menu.compon
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AuthModule.forRoot({
+      domain: 'tetrisverse.us.auth0.com',
+      clientId: 'BCeKlUlczhTXiT7gVoD4iLzoikwOolnJ'
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]

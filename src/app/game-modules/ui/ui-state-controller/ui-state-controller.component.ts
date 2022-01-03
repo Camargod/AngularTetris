@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { UiStateControllerService } from './ui-state-controller.service';
 
@@ -8,6 +8,8 @@ import { UiStateControllerService } from './ui-state-controller.service';
   styleUrls: ['./ui-state-controller.component.scss']
 })
 export class UiStateControllerComponent implements OnInit, OnDestroy {
+
+  @Output() onToggle : EventEmitter<boolean> = new EventEmitter();
 
   constructor(private stateController : UiStateControllerService) { }
   selectedPage ?: {name:string,component:any};
@@ -20,6 +22,7 @@ export class UiStateControllerComponent implements OnInit, OnDestroy {
     })
     this.enabledSubscription = this.stateController._uiVisible.subscribe((visibility)=>{
       this.isEnabled = visibility;
+      this.onToggle.emit(this.isEnabled);
     })
   }
   ngOnDestroy(): void {

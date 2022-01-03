@@ -1,7 +1,7 @@
 import {Component,ViewChild,ElementRef,OnInit,HostListener} from '@angular/core';
 import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS, LATERAL_PADDING, CANVAS_SCALING, TOP_PADDING} from "./constants";
 import TPiece from 'src/objects/piece';
-import Utils from './utils';
+import GameUtils from './game-modules/utils/game-utils';
 import {ItemMap,Themes,ThemeService} from './theme-service';
 import {AudioMap,AudioMapNames,SoundClass} from './sound';
 import { SocketService } from './game-modules/socket/socket.service';
@@ -72,9 +72,12 @@ export class AppComponent implements OnInit {
 
   gamePontuation = 0;
 
+  isUiEnabled = true;
+
   //Variáveis do socket
   timer = 0;
   players = 0;
+
 
   autenticateForm = this.formBuilder.group({
     nickname: localStorage.getItem("user") ? localStorage.getItem("user") : '',
@@ -108,7 +111,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() : void {
     this.waitImageLoad();
-    this.matchVariables.startGameListening()
     this.socketStart();
     this.themeService.setTile(0);
     this.prepareCanvasContexts();
@@ -346,7 +348,7 @@ export class AppComponent implements OnInit {
       for (let py = 0; py < 4; py++) {
         let rotate = this.pieceRotate(px, py, this.actualPiece.rotation);
         if (this.actualPiece.shape![rotate!] == 1) {
-          let tetrominoPieceIndex = Utils.getIndexHeightByPos(this.posY, py);
+          let tetrominoPieceIndex = GameUtils.getIndexHeightByPos(this.posY, py);
           if (tetrominoPieceIndex + (GRIDCOLS * py) + px >= GRIDCOLS * 6) {
             this.fallingPiecesCanvasContext!.drawImage(this.themeService.themeImages[this.actualPiece.pieceNumberId]!, x1, y1, x2, y2, this.posX + (px * BLOCK_SIZE) + (BLOCK_SIZE * (LATERAL_PADDING - 1)) , this.posY + (py * BLOCK_SIZE) + (BLOCK_SIZE * TOP_PADDING) - BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
           }
@@ -456,8 +458,9 @@ export class AppComponent implements OnInit {
   }
 
   authenticateUser(){
-    this.userService.authenticate(this.autenticateForm.value["nickname"]);
-    localStorage.setItem("user",this.autenticateForm.value["nickname"])
   }
 
+  toggleUi(value : boolean){
+    this.isUiEnabled = value;
+  }
 }

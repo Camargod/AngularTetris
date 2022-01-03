@@ -1,6 +1,6 @@
-import { BLOCK_SIZE, COLS, GRIDCOLS, GRIDROWS } from './constants';
+import { BLOCK_SIZE, COLS, GRIDCOLS, GRIDROWS } from '../../constants';
 
-export default class Utils
+export default class GameUtils
 {
     static getIndexByPos(posY: number, posX:number,px:number,py:number) : Number
     {
