@@ -25,7 +25,6 @@ export class UiMenuComponent implements OnInit {
     this.auth.user$.subscribe((user)=>{
       this.user = user
     })
-    this.userService.authenticate()
   }
 
   selectOption(item : MenuItem){
