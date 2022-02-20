@@ -2,15 +2,15 @@ import {Component,ViewChild,ElementRef,OnInit,HostListener} from '@angular/core'
 import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS, LATERAL_PADDING, CANVAS_SCALING, TOP_PADDING} from "./constants";
 import TPiece from 'src/objects/piece';
 import GameUtils from './game-modules/utils/game-utils';
-import {ItemMap,Themes,ThemeService} from './theme-service';
-import {AudioMap,AudioMapNames,SoundClass} from './sound';
-import { SocketService } from './game-modules/socket/socket.service';
+import { Themes,ThemeService} from './theme-service';
+import { AudioMap,AudioMapNames,SoundClass} from './sound';
 import { MatchVariablesService } from './game-modules/match-variables/match-variables.service';
 import { MovementService } from './game-modules/movement/movement.service';
 import { FormBuilder } from '@angular/forms';
-import { UserService } from './game-modules/user/user.service';
 import { TetrisGridPiece } from './game-modules/objects/tetris-grid-piece';
 import { EnemiesViewComponent } from './game-modules/view/enemies-view/enemies-view.component';
+import { Subscription } from 'rxjs';
+import { UiStateControllerService } from './game-modules/ui/ui-state-controller/ui-state-controller.service';
 
 @Component({
   selector: 'app-root',
@@ -60,11 +60,13 @@ export class AppComponent implements OnInit {
   fps: number = 0;
 
   gameTime = 500;
+  _gameTimeSubscription ?: Subscription;
   delayTime = 0;
   useDelay = false;
 
   isGameOver: boolean = false;
   isPaused = true;
+  isPausedSubscription ?: Subscription;
   hasImageLoaded: boolean = false;
   themeList = Themes;
 
@@ -76,8 +78,9 @@ export class AppComponent implements OnInit {
 
   //Variáveis do socket
   timer = 0;
+  _timerSubscription ?: Subscription;
   players = 0;
-
+  _playersSubscription ?: Subscription;
 
   autenticateForm = this.formBuilder.group({
     nickname: localStorage.getItem("user") ? localStorage.getItem("user") : '',
@@ -88,7 +91,7 @@ export class AppComponent implements OnInit {
     private matchVariables : MatchVariablesService,
     private movementService : MovementService,
     private formBuilder: FormBuilder,
-    private userService : UserService
+    private uiStateControllerService : UiStateControllerService
   ) {
     this.themeSoundManager = new SoundClass();
   }
@@ -122,14 +125,20 @@ export class AppComponent implements OnInit {
   }
 
   socketStart(){
-    this.matchVariables.timer.subscribe((timer)=>{
+    this._timerSubscription = this.matchVariables.timer.subscribe((timer)=>{
       this.timer = timer;
       if(timer == 0) {
         this.isPaused = false;
       }
     })
-    this.matchVariables.in_match_players.subscribe((players)=>{
+    this._playersSubscription = this.matchVariables.in_match_players.subscribe((players)=>{
       this.players = players;
+    })
+    this._gameTimeSubscription = this.matchVariables.match_speed.subscribe((match_speed)=>{
+      this.gameTime = match_speed;
+    })
+    this.isPausedSubscription = this.uiStateControllerService._gameStart.subscribe((isPaused)=>{
+      this.isPaused = isPaused
     })
   }
 
@@ -177,7 +186,6 @@ export class AppComponent implements OnInit {
   }
 
   drawHud(){
-
     this.interfaceHUDCanvasContext!.fillStyle = '#404040';
     this.interfaceHUDCanvasContext!.fillRect(this.interfaceHUD!.nativeElement.width * 0.70,380,300,250);
     this.interfaceHUDCanvasContext!.fillRect(this.interfaceHUD!.nativeElement.width * 0.70,800,300,250);
@@ -250,7 +258,10 @@ export class AppComponent implements OnInit {
           if (this.actualPiece.shape![rotate!] == 1) {
             let index = (((currentX + (px * BLOCK_SIZE)) / BLOCK_SIZE) + ((((currentY + (py * BLOCK_SIZE)) / BLOCK_SIZE) - 1) * GRIDCOLS));
             let colision = (this.gridVector[index].value == 9 || this.gridVector[index].value == 1) ? true : false;
-            if (colision) return colision;
+            if (colision) {
+              console.log(colision);
+              return colision;
+            }
           }
         }
       }
@@ -297,36 +308,36 @@ export class AppComponent implements OnInit {
   */
   gameDraw() {
     try {
-      if (!this.isGameOver && !this.isPaused) {
         setTimeout(()=>{
           this.delayTime++;
         },1)
         setTimeout(() => {
-          this.lastPosX = this.posX;
-          this.lastPosY = this.posY;
+          if (!this.isGameOver && !this.isPaused) {
+            this.lastPosX = this.posX;
+            this.lastPosY = this.posY;
 
-          if (this.colision(this.posX, this.posY + BLOCK_SIZE, this.actualPiece.rotation)) {
-            this.saveTetromino(this.posX, this.posY);
+            if (this.colision(this.posX, this.posY + BLOCK_SIZE, this.actualPiece.rotation)) {
+              this.saveTetromino(this.posX, this.posY);
 
-            this.clearFullLines(this.posY);
-            // this.gridArrayDebug();
-            this.actualPiece.spawn();
+              this.clearFullLines(this.posY);
+              // this.gridArrayDebug();
+              this.actualPiece.spawn();
+            }
+            this.views.drawViews();
+
+            this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
+            this.posY += BLOCK_SIZE;
+            this.tetrominoDraw();
+            this.useDelay = false;
+            this.delayTime = 0;
           }
-          this.views.drawViews();
-
-          this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
-          this.posY += BLOCK_SIZE;
-          this.tetrominoDraw();
-          this.useDelay = false;
-          this.delayTime = 0;
           window.requestAnimationFrame(() => this.gameDraw());
-
         }, this.gameTime + (this.useDelay ? this.delayTime : 0));
 
-      }
+
       if(this.isGameOver) {
         alert("Você perdeu");
-        location.reload();
+        // location.reload();
       }
     } catch (err) {
       console.error(`Erro de gameloop: ${err}`)
@@ -368,7 +379,7 @@ export class AppComponent implements OnInit {
       y1,
       y2
     } = this.themeService.getDrawParams();
-
+    debugger;
     for (let px = 0; px < 4; px++) {
       for (let py = 0; py < 4; py++) {
         let rotate = this.pieceRotate(px, py, this.actualPiece.rotation);
@@ -377,6 +388,7 @@ export class AppComponent implements OnInit {
           let index = (((posX + (px * BLOCK_SIZE)) / BLOCK_SIZE) + ((((posY + (py * BLOCK_SIZE)) / BLOCK_SIZE) - 1) * GRIDCOLS));
           if (index < GRIDCOLS * 6) {
             this.isGameOver = true;
+            this.matchVariables.setGameOver(this.isGameOver);
           } else {
             this.gridVector[index] = {
               value: 1,

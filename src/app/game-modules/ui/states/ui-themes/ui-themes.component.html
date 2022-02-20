@@ -1,0 +1,7 @@
+<div class="themes" (wheel)="scroll($event)">
+  <ng-container *ngFor="let item of themes">
+    <div class="menu-button" (click)="selectTheme(item)">
+      {{item.name}}
+    </div>
+  </ng-container>
+</div>

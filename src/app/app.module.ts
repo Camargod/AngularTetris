@@ -11,6 +11,7 @@ import { UiStateControllerComponent } from './game-modules/ui/ui-state-controlle
 import { UiHomeComponent } from './game-modules/ui/states/ui-home/ui-home.component';
 import { UiTimerComponent } from './game-modules/ui/states/ui-timer/ui-timer.component';
 import { UiMenuComponent } from './game-modules/ui/states/ui-menu/ui-menu.component';
+import { UiThemesComponent } from './game-modules/ui/states/ui-themes/ui-themes.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { UiMenuComponent } from './game-modules/ui/states/ui-menu/ui-menu.compon
     UiStateControllerComponent,
     UiTimerComponent,
     UiHomeComponent,
-    UiMenuComponent
+    UiMenuComponent,
+    UiThemesComponent
   ],
   imports: [
     BrowserModule,

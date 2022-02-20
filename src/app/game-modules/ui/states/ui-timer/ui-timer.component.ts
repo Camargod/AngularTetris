@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { MatchVariablesService } from 'src/app/game-modules/match-variables/match-variables.service';
 import { SocketService } from 'src/app/game-modules/socket/socket.service';
 import { UserService } from 'src/app/game-modules/user/user.service';
-import { UiStateControllerService } from '../../ui-state-controller/ui-state-controller.service';
+import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controller/ui-state-controller.service';
 
 @Component({
   selector: 'app-ui-timer',
@@ -24,6 +24,7 @@ export class UiTimerComponent implements OnInit, OnDestroy {
       this.timer = time;
       if(time == 0){
         this.uiState.hideUi();
+        this.uiState.startGame();
       }
     })
     this.playerSubscription = this.matchVariables.in_match_players.subscribe((playersNumber)=> {
@@ -34,6 +35,14 @@ export class UiTimerComponent implements OnInit, OnDestroy {
         this.userService.authenticate();
       }
     })
+  }
+
+  startSingleplayer(){
+    this.uiState.hideUi();
+    this.uiState.changeState(UiStatesEnum.CLOSE);
+    this.uiState.startGame();
+    this.matchVariables.stopGameListening();
+    this.ngOnDestroy();
   }
 
   ngOnDestroy(): void {

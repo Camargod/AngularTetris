@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { UiCloseComponent } from '../states/ui-close/ui-close.component';
 import { UiHomeComponent } from '../states/ui-home/ui-home.component';
 import { UiMenuComponent } from '../states/ui-menu/ui-menu.component';
+import { UiThemesComponent } from '../states/ui-themes/ui-themes.component';
 import { UiTimerComponent } from '../states/ui-timer/ui-timer.component';
 
 @Injectable({
@@ -11,7 +12,7 @@ import { UiTimerComponent } from '../states/ui-timer/ui-timer.component';
 export class UiStateControllerService {
   _page : BehaviorSubject<{name:string, component:any}> = new BehaviorSubject(UiStates[0]);
   _uiVisible = new BehaviorSubject(true);
-
+  _gameStart = new BehaviorSubject(true);
 
   constructor() { }
 
@@ -33,17 +34,23 @@ export class UiStateControllerService {
   hideUi(){
     this._uiVisible.next(false);
   }
+
+  startGame(){
+    this._gameStart.next(false);
+  }
 }
 
 export const UiStates = [
   {name:"home", component:UiHomeComponent},
   {name:"timer", component:UiTimerComponent},
   {name:"menu", component:UiMenuComponent},
-  {name:"closeState", component: UiCloseComponent}
+  {name:"closeState", component: UiCloseComponent},
+  {name:"themes", component:UiThemesComponent}
 ]
 export const UiStatesEnum = {
   "HOME":"home",
   "TIMER": "timer",
   "MENU": "menu",
-  "CLOSE": "closeState"
+  "CLOSE": "closeState",
+  "THEMES": "themes"
 }

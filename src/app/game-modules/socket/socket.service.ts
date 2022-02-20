@@ -10,6 +10,7 @@ import { environment } from "src/environments/environment";
 
 export class SocketService {
   socket ?: Socket;
+  public isSingleplayer = false;
   public _eventBehavior : BehaviorSubject<{key:number,value:string}> = new BehaviorSubject({key:0,value:"0"})
   public isConnected = new BehaviorSubject(false);
   socketConnect(){
@@ -20,8 +21,12 @@ export class SocketService {
     })
   }
 
+  socketDisconnect(){
+    this.socket?.disconnect();
+  }
+
   socketMsg(key : SocketEventClientEnumerator, value: any){
-    if(this.socket!.connected) this.socket!.emit(SocketEventClientEnumerator[key],value);
+    if(this.socket!.connected && this.isSingleplayer) this.socket!.emit(SocketEventClientEnumerator[key],value);
     else console.warn("Socket não está aberto");
   }
 

@@ -5,3 +5,18 @@ body {
     padding: 0;
     overflow: hidden;
 }
+
+.menu-button{
+  background-color: white;
+  border-radius: 12px;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  font-size: 48px;
+  background-repeat: no-repeat;
+  &:hover{
+    transform: scale(1.01);
+    cursor: pointer;
+  }
+}

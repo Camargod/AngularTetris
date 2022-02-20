@@ -19,7 +19,7 @@ export class ThemeService {
   changeTheme(selectedTheme: string) {
     this.selectedThemeFile = selectedTheme;
     localStorage.setItem("selectedTheme", selectedTheme)
-    location.reload();
+    // location.reload();
   }
 
   loadNewTheme(){

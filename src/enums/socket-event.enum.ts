@@ -13,5 +13,6 @@ export enum SocketEventServerEnumerator{
   "ALL_CHALLENGER_GRID" = 204,
   "RECEIVED_DAMAGE" = 205,
   "IN_MATCH_PLAYERS" = 206,
+  "MATCH_SPEEDUP"= 207,
   "DISCONNECTED_BY_SERVER" = 299
 }
