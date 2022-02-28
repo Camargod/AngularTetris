@@ -19,14 +19,15 @@ export class UserService{
 
   authenticate(){
     if(!this.auth0User){
-      let subs = this.auth.user$.subscribe((user)=>{
+      let subs = this.auth.getUser().subscribe((user)=>{
         if(user){
           this.setUser(user);
-          this.socketService.socketMsg(this.autenticateEnum,this.auth0User?.nickname || this.auth0User?.email);
-          subs.unsubscribe();
+          this.socketService.socketMsg(this.autenticateEnum,user.nickname || user.email);
+          // subs.unsubscribe();
         }
-      })
+      });
     }
+    this.socketService.socketMsg(this.autenticateEnum,this.auth0User?.nickname || this.auth0User?.email);
   }
 
   setUser(user : User){

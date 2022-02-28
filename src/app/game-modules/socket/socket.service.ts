@@ -29,8 +29,18 @@ export class SocketService {
   }
 
   socketMsg(key : SocketEventClientEnumerator, value: any){
-    if(this.socket!.connected && this.isSingleplayer) this.socket!.emit(SocketEventClientEnumerator[key],value);
-    else console.warn("Socket não está aberto");
+    if(this.socket!.connected && !this.isSingleplayer){
+      this.socket!.emit(SocketEventClientEnumerator[key],value);
+      console.log(SocketEventClientEnumerator[key]);
+    }
+    else if(this.isSingleplayer){
+      let obs = this.isConnected.subscribe((isConnected)=>{
+        if(isConnected) {
+          this.socket!.emit(SocketEventClientEnumerator[key],value);
+          obs.unsubscribe();
+        }
+      })
+    }
   }
 
   private eventHandler(key : any, value : any){

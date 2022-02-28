@@ -1,6 +1,6 @@
 <div class="menu">
   <ng-container *ngFor="let button of menuItems">
-    <div class="menu-button" [style.background-image]="'url('+button.background + ')'" (click)="selectOption(button)">{{button.label}}</div>
+    <div class="menu-button" [style.background-color]="button?.backgroundColor" [style.background-image]="'url('+button.background + ')'" (click)="selectOption(button)">{{button.label}}</div>
   </ng-container>
 </div>
 
