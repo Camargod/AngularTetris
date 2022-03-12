@@ -37,7 +37,7 @@ export class SocketService {
       let obs = this.isConnected.subscribe((isConnected)=>{
         if(isConnected) {
           this.socket!.emit(SocketEventClientEnumerator[key],value);
-          obs.unsubscribe();
+          if(!obs.closed) obs.unsubscribe();
         }
       })
     }

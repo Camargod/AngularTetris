@@ -40,7 +40,7 @@ export class UiStateControllerService {
   }
 }
 
-export const UiStates = [
+const UiStates = [
   {name:"home", component:UiHomeComponent},
   {name:"timer", component:UiTimerComponent},
   {name:"menu", component:UiMenuComponent},

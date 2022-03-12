@@ -21,18 +21,19 @@ constructor(
   public in_match_players = new BehaviorSubject<number>(0);
   public otherPlayersGrid = new BehaviorSubject<PlayersGrids>({});
   public match_speed = new BehaviorSubject<number>(500);
-
+  public isSingleplayer = new BehaviorSubject(false);
   private socketSubscription ?: Subscription;
 
   startGameListening(){
     this.socketService.isSingleplayer = false;
     this.socketService.socketConnect();
     this.socketSubscription = this.socketService._eventBehavior.subscribe((message)=>{
-      this.socketMessageHandler(message)
+      this.socketMessageHandler(message);
     })
   }
 
   stopGameListening(){
+    this.isSingleplayer.next(true);
     this.socketService.socketDisconnect();
     this.socketSubscription?.unsubscribe();
     this.socketService.isSingleplayer = true;
@@ -63,7 +64,6 @@ constructor(
               return user.socketId != this.socketService.socket?.id;
             });
             let grids : PlayersGrids = Parser.convertToPlayersGrid(newUsers);
-            debugger;
             this.otherPlayersGrid.next(grids);
             break
           case SocketEventServerEnumerator.RECEIVED_DAMAGE:

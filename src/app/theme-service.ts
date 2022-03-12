@@ -19,7 +19,7 @@ export class ThemeService {
   changeTheme(selectedTheme: string) {
     this.selectedThemeFile = selectedTheme;
     localStorage.setItem("selectedTheme", selectedTheme)
-    // location.reload();
+    this.loadNewTheme();
   }
 
   loadNewTheme(){
@@ -33,6 +33,7 @@ export class ThemeService {
           if(index == 7){
             observable.next();
             observable.complete();
+            this.selectedThemeChanged.next(null);
           }
         };
       }
@@ -47,11 +48,11 @@ export class ThemeService {
     };
   }
 
-  getTileSize() {
+  private getTileSize() {
     return Math.floor(this.image!.width);
   }
 
-  getTileHeight() {
+  private getTileHeight() {
     return Math.floor(this.image!.height);
   }
 
@@ -69,26 +70,26 @@ export class ThemeService {
     }
   }
 
-  setTileObservable(tileNumber: number): Observable < HTMLImageElement > {
-    let imgSrc = "";
-    if (tileNumber == undefined) {
-      imgSrc = `assets/themes/${localStorage.getItem("selectedTheme")}/${tileNumber}.png`;
-    } else {
-      imgSrc = `assets/themes/${localStorage.getItem("selectedTheme")}/0.png`;
-    }
-    return new Observable(function (observer) {
-      const img = new Image();
-      img.src = imgSrc;
-      img.onload = function () {
-        //while(img.width == undefined || img.width == 0){}
-        observer.next(img);
-        observer.complete();
-      }
-      img.onerror = function (err) {
-        observer.error(err);
-      }
-    });
-  }
+  // setTileObservable(tileNumber: number): Observable < HTMLImageElement > {
+  //   let imgSrc = "";
+  //   if (tileNumber == undefined) {
+  //     imgSrc = `assets/themes/${localStorage.getItem("selectedTheme")}/${tileNumber}.png`;
+  //   } else {
+  //     imgSrc = `assets/themes/${localStorage.getItem("selectedTheme")}/0.png`;
+  //   }
+  //   return new Observable(function (observer) {
+  //     const img = new Image();
+  //     img.src = imgSrc;
+  //     img.onload = function () {
+  //       //while(img.width == undefined || img.width == 0){}
+  //       observer.next(img);
+  //       observer.complete();
+  //     }
+  //     img.onerror = function (err) {
+  //       observer.error(err);
+  //     }
+  //   });
+  // }
 
   getBackgroundUrl() {
     let selectedTheme = localStorage.getItem("selectedTheme");
@@ -96,6 +97,13 @@ export class ThemeService {
     //     return `url(assets/themes/theme01/fundo.png)`;
     // }
     return `url(assets/themes/${selectedTheme}/fundo.png)`;
+  }
+
+
+  setDefaultTheme(){
+    if(!localStorage.getItem("selectedTheme")){
+      this.changeTheme(Themes[0].fileName);
+    }
   }
 }
 

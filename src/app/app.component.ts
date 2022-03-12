@@ -11,6 +11,7 @@ import { TetrisGridPiece } from './game-modules/objects/tetris-grid-piece';
 import { EnemiesViewComponent } from './game-modules/view/enemies-view/enemies-view.component';
 import { Subscription } from 'rxjs';
 import { UiStateControllerService } from './game-modules/ui/ui-state-controller/ui-state-controller.service';
+import { skip } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -26,8 +27,6 @@ export class AppComponent implements OnInit {
   @ViewChild("piecescanvas", {static: true}) piecesCanvas !: ElementRef < HTMLCanvasElement > ;
   @ViewChild("fallingpiecescanvas", {static: true}) fallingPiecesCanvas !: ElementRef < HTMLCanvasElement > ;
   @ViewChild("interfaceHUD", {static: true}) interfaceHUD !: ElementRef <HTMLCanvasElement>;
-
-  @ViewChild("themeSelect",{static:true}) themeSelect !: ElementRef<HTMLSelectElement>;
 
   @ViewChild("gameDiv", {static: true}) gameDiv !: ElementRef <HTMLDivElement>;
 
@@ -69,7 +68,8 @@ export class AppComponent implements OnInit {
   isPausedSubscription ?: Subscription;
   hasImageLoaded: boolean = false;
   themeList = Themes;
-
+  isSingleplayer = false;
+  _isSingleplayerSubscription ?: Subscription;
   themeSoundManager: SoundClass;
 
   gamePontuation = 0;
@@ -140,6 +140,10 @@ export class AppComponent implements OnInit {
     this.isPausedSubscription = this.uiStateControllerService._gameStart.subscribe((isPaused)=>{
       this.isPaused = isPaused
     })
+    this._isSingleplayerSubscription = this.matchVariables.isSingleplayer.subscribe((isSingleplayer)=>{
+      debugger;
+      this.isSingleplayer = isSingleplayer;
+    })
   }
 
   waitImageLoad() {
@@ -155,19 +159,14 @@ export class AppComponent implements OnInit {
       this.draw()
       this.gameDraw();
     })
+
+    this.themeService.selectedThemeChanged.pipe(skip(1)).subscribe(()=>{
+      this.grid();
+    })
   }
 
   ngAfterViewInit(): void {
-    this.setSelectActualTheme();
     this.setBackgroundByTheme();
-  }
-
-  setSelectActualTheme(){
-    let actualTheme = localStorage.getItem("selectedTheme");
-
-    this.themeSelect.nativeElement.selectedIndex = this.themeList.findIndex((themeItem)=>{
-      return themeItem.fileName == actualTheme;
-    })
   }
 
   draw() {
@@ -274,6 +273,8 @@ export class AppComponent implements OnInit {
     Faz o desenho da grid.
   */
   grid() {
+    this.canvasGridContext!.clearRect(0,0,this.gridCanvas.nativeElement.width,this.gridCanvas.nativeElement.height);
+
     let {
       x1,
       x2,
@@ -336,7 +337,6 @@ export class AppComponent implements OnInit {
 
 
       if(this.isGameOver) {
-        alert("Você perdeu");
         // location.reload();
       }
     } catch (err) {
@@ -379,7 +379,6 @@ export class AppComponent implements OnInit {
       y1,
       y2
     } = this.themeService.getDrawParams();
-    debugger;
     for (let px = 0; px < 4; px++) {
       for (let py = 0; py < 4; py++) {
         let rotate = this.pieceRotate(px, py, this.actualPiece.rotation);
@@ -388,7 +387,6 @@ export class AppComponent implements OnInit {
           let index = (((posX + (px * BLOCK_SIZE)) / BLOCK_SIZE) + ((((posY + (py * BLOCK_SIZE)) / BLOCK_SIZE) - 1) * GRIDCOLS));
           if (index < GRIDCOLS * 6) {
             this.isGameOver = true;
-            this.matchVariables.setGameOver(this.isGameOver);
           } else {
             this.gridVector[index] = {
               value: 1,
@@ -398,6 +396,9 @@ export class AppComponent implements OnInit {
           }
         }
       }
+    }
+    if(this.isGameOver){
+      this.matchVariables.setGameOver(this.isGameOver);
     }
     this.posY = 30;
     this.posX = BLOCK_SIZE * 6;

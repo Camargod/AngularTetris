@@ -11,23 +11,23 @@
 
   <div class="info">
     <span class="info-background">
-      <select #themeSelect aria-placeholder="Tema" (change)="onChangeTheme($event)">
+      <!-- <select #themeSelect aria-placeholder="Tema" (change)="onChangeTheme($event)">
         <ng-container *ngFor="let item of themeList">
           <option value="{{item.fileName}}">{{item.name}}</option>
         </ng-container>
-      </select>
+      </select> -->
 
     <!-- <div class = "tempo">Tempo para começar: {{timer}}</div><br>
     <label class="pontuacao">Pontuação: {{gamePontuation}}</label><br>
     <label class = "players">Players: {{players}}</label> -->
-      <div>Tempo para começar: {{timer}}</div>
+      <div *ngIf="isSingleplayer">Tempo para começar: {{timer}}</div>
       <label>Pontuação: {{gamePontuation}} </label>
       <label>Players: {{players}}</label>
 
-      <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
+      <!-- <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
         <button type="submit">Test autenticate</button>
         <input id="nickname" type="text" formControlName="nickname">
-      </form>
+      </form> -->
     </span>
   </div>
   <ui-state-controller (onToggle)="toggleUi($event)" [style.display]="isUiEnabled ? 'flex' : 'none'"></ui-state-controller>
