@@ -12,6 +12,7 @@ import { EnemiesViewComponent } from './game-modules/view/enemies-view/enemies-v
 import { Subscription } from 'rxjs';
 import { UiStateControllerService } from './game-modules/ui/ui-state-controller/ui-state-controller.service';
 import { skip } from 'rxjs/operators';
+import GridUtils from './game-modules/utils/grid-utils';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,8 @@ export class AppComponent implements OnInit {
   @ViewChild("gridcanvas", {static: true}) gridCanvas !: ElementRef < HTMLCanvasElement > ;
   @ViewChild("piecescanvas", {static: true}) piecesCanvas !: ElementRef < HTMLCanvasElement > ;
   @ViewChild("fallingpiecescanvas", {static: true}) fallingPiecesCanvas !: ElementRef < HTMLCanvasElement > ;
+  @ViewChild("debugcanvas",{static:true}) debugCanvas !: ElementRef<HTMLCanvasElement>;
+  @ViewChild("trashcanvas", {static:true}) trashCanvas !: ElementRef <HTMLCanvasElement>;
   @ViewChild("interfaceHUD", {static: true}) interfaceHUD !: ElementRef <HTMLCanvasElement>;
 
   @ViewChild("gameDiv", {static: true}) gameDiv !: ElementRef <HTMLDivElement>;
@@ -36,6 +39,8 @@ export class AppComponent implements OnInit {
   piecesCanvasContext !: CanvasRenderingContext2D | null;
   fallingPiecesCanvasContext !: CanvasRenderingContext2D | null;
   interfaceHUDCanvasContext !: CanvasRenderingContext2D | null;
+  debugCanvasContext !: CanvasRenderingContext2D | null;
+  trashCanvasContext !: CanvasRenderingContext2D | null;
 
   /*
     Vetor de grid, contendo a informação da casa e a cor da peça que está nela.
@@ -72,15 +77,24 @@ export class AppComponent implements OnInit {
   _isSingleplayerSubscription ?: Subscription;
   themeSoundManager: SoundClass;
 
+
   gamePontuation = 0;
 
   isUiEnabled = true;
+
+  accumulatedTrash = 0;
+  eventsLeftForTrash = 5;
+
+  playersOnFocus : Array<String> = [];
 
   //Variáveis do socket
   timer = 0;
   _timerSubscription ?: Subscription;
   players = 0;
   _playersSubscription ?: Subscription;
+  _trashReceive ?: Subscription;
+  _playersToBeFocused ?: Subscription;
+
 
   autenticateForm = this.formBuilder.group({
     nickname: localStorage.getItem("user") ? localStorage.getItem("user") : '',
@@ -141,19 +155,14 @@ export class AppComponent implements OnInit {
       this.isPaused = isPaused
     })
     this._isSingleplayerSubscription = this.matchVariables.isSingleplayer.subscribe((isSingleplayer)=>{
-      debugger;
       this.isSingleplayer = isSingleplayer;
+    })
+    this._trashReceive = this.matchVariables.damage_received.subscribe((trashHeight)=>{
+      this.accumulatedTrash += trashHeight;
     })
   }
 
   waitImageLoad() {
-    // debugger;
-    // let subscription = this.themeService.setTileObservable(0).subscribe(()=>{
-    //   this.hasImageLoaded = true;
-    //   this.draw()
-    //   this.gameDraw();
-    // });
-    // subscription.unsubscribe();
     this.themeService.loadNewTheme().subscribe(()=>{
       this.hasImageLoaded = true;
       this.draw()
@@ -171,8 +180,7 @@ export class AppComponent implements OnInit {
 
   draw() {
     this.grid();
-    // this.drawHud();
-    // this.gridArrayDebug();
+    this.drawHud();
   }
   /*
     Traz para o tipo de contexto as referencias de elemento HTML
@@ -181,7 +189,9 @@ export class AppComponent implements OnInit {
     this.canvasGridContext = this.gridCanvas.nativeElement.getContext('2d');
     this.piecesCanvasContext = this.piecesCanvas.nativeElement.getContext('2d');
     this.fallingPiecesCanvasContext = this.fallingPiecesCanvas.nativeElement.getContext('2d');
-    // this.interfaceHUDCanvasContext = this.interfaceHUD.nativeElement.getContext('2d');
+    this.debugCanvasContext = this.debugCanvas.nativeElement.getContext('2d');
+    this.trashCanvasContext = this.trashCanvas.nativeElement.getContext('2d');
+    this.interfaceHUDCanvasContext = this.interfaceHUD.nativeElement.getContext('2d');
   }
 
   drawHud(){
@@ -190,26 +200,24 @@ export class AppComponent implements OnInit {
     this.interfaceHUDCanvasContext!.fillRect(this.interfaceHUD!.nativeElement.width * 0.70,800,300,250);
     this.interfaceHUDCanvasContext!.fillRect(this.interfaceHUD!.nativeElement.width * 0.70,1220,300,250);
 
-    window.requestAnimationFrame(()=>{this.drawHud()})
+    // window.requestAnimationFrame(()=>{this.drawHud()})
   }
 
 
-  /*
-    Define tamanho para o canvas.
-
-    Precisa ser ajustado depois para r∑esponsividade
-  */
   setCanvasSize() {
     this.fallingPiecesCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
     this.canvasGridContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
     this.piecesCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
+    this.debugCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
+    this.trashCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
+    this.interfaceHUDCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
   }
 
   /*
     Coloca uma nova peça no jogo.
   */
   pieceSet() {
-    this.actualPiece = new TPiece(this.fallingPiecesCanvasContext!);
+    this.actualPiece = new TPiece();
   }
 
   setBackgroundByTheme(){
@@ -227,6 +235,7 @@ export class AppComponent implements OnInit {
         };
       }
     }
+    console.log("Tamanho da grid original: " + this.gridVector.length);
   }
   /*
     Rotação de matriz para validação da peça por x e y da mesma.
@@ -256,9 +265,11 @@ export class AppComponent implements OnInit {
           let rotate = this.pieceRotate(px, py, actualRotation);
           if (this.actualPiece.shape![rotate!] == 1) {
             let index = (((currentX + (px * BLOCK_SIZE)) / BLOCK_SIZE) + ((((currentY + (py * BLOCK_SIZE)) / BLOCK_SIZE) - 1) * GRIDCOLS));
+            if(index > this.gridVector.length){
+              throw `Validação de index estourou os limites, (((${currentX} + (${px} * ${BLOCK_SIZE})) / ${BLOCK_SIZE}) + ((((${currentY} + (${py} * ${BLOCK_SIZE})) / ${BLOCK_SIZE}) - 1 * ${GRIDCOLS}));`
+            }
             let colision = (this.gridVector[index].value == 9 || this.gridVector[index].value == 1) ? true : false;
             if (colision) {
-              console.log(colision);
               return colision;
             }
           }
@@ -282,7 +293,6 @@ export class AppComponent implements OnInit {
       y2
     } = this.themeService.getDrawParams();
 
-
     for (let r = 6; r <= ROWS + 1; r++) {
       for (let c = 0; c < COLS; c++) {
         if (r != ROWS + 1) {
@@ -295,10 +305,11 @@ export class AppComponent implements OnInit {
     Faz o desenho de grid com numeração de cada casa e o seu valor.
   */
   gridArrayDebug() {
+    this.debugCanvasContext?.clearRect(0,0,this.debugCanvas.nativeElement.width,this.debugCanvas.nativeElement.height);
     for (let c = 0; c < GRIDCOLS; c++) {
-      for (let r = 5; r < GRIDROWS; r++) {
-        this.canvasGridContext!.fillText(this.gridVector[r * GRIDCOLS + c].value.toString(), c * BLOCK_SIZE + 12, r * BLOCK_SIZE + 50);
-        this.canvasGridContext!.stroke();
+      for (let r = 6; r < GRIDROWS; r++) {
+        this.debugCanvasContext!.fillText(this.gridVector[r * GRIDCOLS + c].value.toString(), c * BLOCK_SIZE + 12 + (BLOCK_SIZE * LATERAL_PADDING) - BLOCK_SIZE, r * BLOCK_SIZE + 50 + (BLOCK_SIZE * TOP_PADDING) - BLOCK_SIZE);
+        this.debugCanvasContext!.stroke();
       }
     }
   }
@@ -320,7 +331,8 @@ export class AppComponent implements OnInit {
             if (this.colision(this.posX, this.posY + BLOCK_SIZE, this.actualPiece.rotation)) {
               this.saveTetromino(this.posX, this.posY);
 
-              this.clearFullLines(this.posY);
+              this.clearFullLines();
+              this.trashEventTrigger();
               // this.gridArrayDebug();
               this.actualPiece.spawn();
             }
@@ -331,6 +343,7 @@ export class AppComponent implements OnInit {
             this.tetrominoDraw();
             this.useDelay = false;
             this.delayTime = 0;
+            this.gridArrayDebug();
           }
           window.requestAnimationFrame(() => this.gameDraw());
         }, this.gameTime + (this.useDelay ? this.delayTime : 0));
@@ -383,8 +396,11 @@ export class AppComponent implements OnInit {
       for (let py = 0; py < 4; py++) {
         let rotate = this.pieceRotate(px, py, this.actualPiece.rotation);
 
-        if (this.actualPiece.shape![rotate!] == 1) {
-          let index = (((posX + (px * BLOCK_SIZE)) / BLOCK_SIZE) + ((((posY + (py * BLOCK_SIZE)) / BLOCK_SIZE) - 1) * GRIDCOLS));
+        if (this.actualPiece.shape![rotate] == 1) {
+          const colIndex = ((posX + (px * BLOCK_SIZE)) / BLOCK_SIZE);
+          let index = (colIndex + ((((posY + (py * BLOCK_SIZE)) / BLOCK_SIZE) - 1) * GRIDCOLS));
+          if(colIndex > 10) console.error("Coluna invalida para inserção");
+          console.log("Tetromino na coluna: " + colIndex);
           if (index < GRIDCOLS * 6) {
             this.isGameOver = true;
           } else {
@@ -410,7 +426,8 @@ export class AppComponent implements OnInit {
     NECESSARIO MUDAR O ALGORITMO
     Pode se realizar essa validação com base na posição Y e Y + 4 convertidos no indices de vetor como intervalo, assim evita ser iterado toda vez a grita toda.
   */
-  clearFullLines(lastPosxY : number) {
+  clearFullLines() {
+    let cleanOnceOrMore = false;
     for (let r = ROWS; r >= 0; r--) {
       let isFilled = true;
       for (let c = 1; c < GRIDCOLS - 1; c++) {
@@ -421,6 +438,7 @@ export class AppComponent implements OnInit {
         }
       }
       if (isFilled) {
+        cleanOnceOrMore = true;
         for (let indexReset = r * GRIDCOLS + 1; indexReset <= r * GRIDCOLS + COLS; indexReset++) {
           this.gridVector[indexReset] = {
             value: 0
@@ -441,8 +459,12 @@ export class AppComponent implements OnInit {
         this.redrawAllTetrominos();
         this.gameTime -= 6;
         this.gamePontuation += 50;
+        if(this.accumulatedTrash >= 0){
+          this.accumulatedTrash--;
+        }
       }
     }
+    if(cleanOnceOrMore && this.eventsLeftForTrash < 5) this.eventsLeftForTrash++;
   }
 
   redrawAllTetrominos() {
@@ -464,6 +486,20 @@ export class AppComponent implements OnInit {
       }
     }
     window.requestAnimationFrame(()=>{});
+  }
+
+  trashEventTrigger(){
+    if(this.accumulatedTrash > 0) this.eventsLeftForTrash--;
+    if(this.eventsLeftForTrash == 0){
+      this.setGarbageOnGrid(this.accumulatedTrash);
+      this.accumulatedTrash = 0;
+      this.eventsLeftForTrash = 5;
+    }
+  }
+
+  setGarbageOnGrid(trashHeight:number){
+    GridUtils.gridTrashLineup(this.gridVector,trashHeight);
+    this.redrawAllTetrominos();
   }
 
   onChangeTheme(themeFileString : any){

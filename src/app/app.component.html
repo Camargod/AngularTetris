@@ -1,10 +1,12 @@
 <div class="game" #gameDiv>
   <enemies-view #viewsManager></enemies-view>
   <div class="game-body">
+    <canvas width="800" height="1520" class="trash-canvas game-canvas" #trashcanvas></canvas>
+    <canvas width="800" height="1520" class="debug-canvas game-canvas" #debugcanvas></canvas>
     <canvas width="800" height="1520" class="piece-canvas game-canvas" #piecescanvas></canvas>
     <canvas width="800" height="1520" class="piece-canvas game-canvas" #fallingpiecescanvas></canvas>
     <canvas width="800" height="1520" class="game-grid game-canvas" #gridcanvas></canvas>
-    <!-- <canvas width="800" height="1520" class="interface-hud game-canvas" #interfaceHUD></canvas> -->
+    <canvas width="800" height="1520" class="interface-hud game-canvas" #interfaceHUD></canvas>
   </div>
 
   <!--Telas das pontuações-->
@@ -23,6 +25,7 @@
       <div *ngIf="isSingleplayer">Tempo para começar: {{timer}}</div>
       <label>Pontuação: {{gamePontuation}} </label>
       <label>Players: {{players}}</label>
+      <!-- <button (click)="setGarbageOnGrid()">Testar lixo</button> -->
 
       <!-- <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
         <button type="submit">Test autenticate</button>

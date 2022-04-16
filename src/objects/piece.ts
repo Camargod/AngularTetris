@@ -15,7 +15,7 @@ export default class TPiece {
     [0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0] // J
   ]
 
-  constructor(private ctx: CanvasRenderingContext2D) {
+  constructor() {
     this.spawn();
   }
 

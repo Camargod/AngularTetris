@@ -53,7 +53,9 @@
       padding: 10px;
     }
 }
-
+.debug-canvas{
+  z-index: 6;
+}
 .game-canvas{
     position: absolute;
     //top: -140px;
