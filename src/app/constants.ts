@@ -6,7 +6,8 @@ export const BLOCK_SIZE = 30;
 export const LATERAL_PADDING = 1.7;
 export const CANVAS_SCALING = 2;
 export const TOP_PADDING = -2.5;
-export enum KEY 
+export const TRASH_LEVEL = 16;
+export enum KEY
 {
     LEFT = 37,
     UP = 38,

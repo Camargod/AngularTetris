@@ -25,13 +25,26 @@
       <div *ngIf="isSingleplayer">Tempo para começar: {{timer}}</div>
       <label>Pontuação: {{gamePontuation}} </label>
       <label>Players: {{players}}</label>
-      <!-- <button (click)="setGarbageOnGrid()">Testar lixo</button> -->
+      <button (click)="setGarbageOnGrid(1)">Testar lixo +1</button>
 
       <!-- <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
         <button type="submit">Test autenticate</button>
         <input id="nickname" type="text" formControlName="nickname">
       </form> -->
     </span>
+  </div>
+
+  <div class="focus-modes">
+    <div class="modes">
+      <ng-container *ngFor="let mode of attackModes">
+        <div [ngClass]="mode.name != '' ? 'attack-mode' : ''" [style.width.%]="mode.size">
+          <div class="mode-key">
+            {{mode.key}}
+          </div>
+          {{mode.name}}
+        </div>
+      </ng-container>
+    </div>
   </div>
   <ui-state-controller (onToggle)="toggleUi($event)" [style.display]="isUiEnabled ? 'flex' : 'none'"></ui-state-controller>
 </div>

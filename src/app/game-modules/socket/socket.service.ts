@@ -4,6 +4,8 @@ import { BehaviorSubject, Observable, Subscriber } from "rxjs";
 import { io, Socket } from "socket.io-client";
 import { SocketEventClientEnumerator } from "src/enums/socket-event.enum";
 import { environment } from "src/environments/environment";
+import * as parser from "src/app/game-modules/socket/parser/socket-parser"
+
 @Injectable({
     providedIn:'root'
 })
@@ -13,8 +15,12 @@ export class SocketService {
   public isSingleplayer = false;
   public _eventBehavior : BehaviorSubject<{key:number,value:string}> = new BehaviorSubject({key:0,value:"0"})
   public isConnected = new BehaviorSubject(false);
+
   socketConnect(){
-    this.socket = io(environment.server || "http://localhost:3000");
+    this.socket = io(environment.server || "http://localhost:3000",
+    {
+      parser: parser
+    });
     this.socket.on("connect", ()=>{
       this.isConnected.next(true);
     })

@@ -1,5 +1,5 @@
 import {Component,ViewChild,ElementRef,OnInit,HostListener} from '@angular/core';
-import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS, LATERAL_PADDING, CANVAS_SCALING, TOP_PADDING} from "./constants";
+import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS, LATERAL_PADDING, CANVAS_SCALING, TOP_PADDING, TRASH_LEVEL} from "./constants";
 import TPiece from 'src/objects/piece';
 import GameUtils from './game-modules/utils/game-utils';
 import { Themes,ThemeService} from './theme-service';
@@ -95,6 +95,14 @@ export class AppComponent implements OnInit {
   _trashReceive ?: Subscription;
   _playersToBeFocused ?: Subscription;
 
+  attackModes = [
+    {name:"KO",size:60, key:1},
+    {name:"RANDOM",size:49, key:2},
+    {name:"",size:1},
+    {name:"BADGES",size:49, key:3},
+    {name:"ATTACKERS",size:60, key:4}
+  ];
+
 
   autenticateForm = this.formBuilder.group({
     nickname: localStorage.getItem("user") ? localStorage.getItem("user") : '',
@@ -144,22 +152,23 @@ export class AppComponent implements OnInit {
       if(timer == 0) {
         this.isPaused = false;
       }
-    })
+    });
     this._playersSubscription = this.matchVariables.in_match_players.subscribe((players)=>{
       this.players = players;
-    })
+    });
     this._gameTimeSubscription = this.matchVariables.match_speed.subscribe((match_speed)=>{
       this.gameTime = match_speed;
-    })
+    });
     this.isPausedSubscription = this.uiStateControllerService._gameStart.subscribe((isPaused)=>{
       this.isPaused = isPaused
-    })
+    });
     this._isSingleplayerSubscription = this.matchVariables.isSingleplayer.subscribe((isSingleplayer)=>{
       this.isSingleplayer = isSingleplayer;
-    })
+    });
     this._trashReceive = this.matchVariables.damage_received.subscribe((trashHeight)=>{
-      this.accumulatedTrash += trashHeight;
-    })
+      if(trashHeight <= TRASH_LEVEL - trashHeight) this.accumulatedTrash += trashHeight;
+      this.drawTrashLayer();
+    });
   }
 
   waitImageLoad() {
@@ -314,7 +323,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-
   /*
     Desenho de jogo.
   */
@@ -461,6 +469,7 @@ export class AppComponent implements OnInit {
         this.gamePontuation += 50;
         if(this.accumulatedTrash >= 0){
           this.accumulatedTrash--;
+          this.drawTrashLayer();
         }
       }
     }
@@ -488,6 +497,19 @@ export class AppComponent implements OnInit {
     window.requestAnimationFrame(()=>{});
   }
 
+  drawTrashLayer(){
+    this.trashCanvasContext?.clearRect(0,0,this.trashCanvas.nativeElement.width,this.trashCanvas.nativeElement.height);
+    let {
+      x1,
+      x2,
+      y1,
+      y2
+    } = this.themeService.getDrawParams();
+    for(let i = TRASH_LEVEL - this.accumulatedTrash; i <= TRASH_LEVEL; i++){
+      this.trashCanvasContext?.drawImage(this.themeService.themeImages[0],x1,y2,x2,y2,0,this.trashCanvas.nativeElement.height - (BLOCK_SIZE * i),BLOCK_SIZE,BLOCK_SIZE);
+    }
+  }
+
   trashEventTrigger(){
     if(this.accumulatedTrash > 0) this.eventsLeftForTrash--;
     if(this.eventsLeftForTrash == 0){
@@ -498,8 +520,7 @@ export class AppComponent implements OnInit {
   }
 
   setGarbageOnGrid(trashHeight:number){
-    GridUtils.gridTrashLineup(this.gridVector,trashHeight);
-    this.redrawAllTetrominos();
+    this.accumulatedTrash++;
   }
 
   onChangeTheme(themeFileString : any){

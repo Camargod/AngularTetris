@@ -108,3 +108,43 @@ select{
     height: 100vh;
     display: block;
 }
+
+.focus-modes{
+  position: absolute;
+  width: calc(100vw - 10px);
+  height: calc(100vh - 10px);
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  top: 0px;
+  .modes{
+    border-radius: 4px;
+    background-color: whitesmoke;
+    width: 22%;
+    min-width: 200px;
+    height: 120px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    .attack-mode{
+      text-align: center;
+      border: 1px black solid;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 22px;
+      position: relative;
+      padding: 2px 0px;
+      .mode-key{
+        position: absolute;
+        border-radius: 50px;
+        border: 1px black solid;
+        font-size: 18px;
+        left: 2%;
+        width: 22px;
+      }
+    }
+  }
+}

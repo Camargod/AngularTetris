@@ -2,7 +2,8 @@ export enum SocketEventClientEnumerator{
   "GRID_UPDATE" = 102,
   "PIECE_GRID_UPDATE" = 103,
   "GAME_OVER" = 104,
-  "AUTENTICATE" = 105
+  "AUTENTICATE" = 105,
+  "GET_ENEMIES_FOCUS" = 106,
 }
 
 export enum SocketEventServerEnumerator{
