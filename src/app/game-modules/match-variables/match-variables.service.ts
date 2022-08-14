@@ -96,4 +96,7 @@ constructor(
   setGameOver(value : boolean){
     this.socketService.socketMsg(SocketEventClientEnumerator.GAME_OVER,value);
   }
+  setEnemyAttack(damage : Number){
+    if(damage > 0) this.socketService.socketMsg(SocketEventClientEnumerator.SEND_DAMAGE,Number.parseInt(damage.toString()));
+  }
 }

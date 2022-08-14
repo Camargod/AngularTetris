@@ -439,6 +439,7 @@ export class AppComponent implements OnInit {
   */
   clearFullLines() {
     let cleanOnceOrMore = false;
+    let rowsCleaned = 0;
     for (let r = ROWS; r >= 0; r--) {
       let isFilled = true;
       for (let c = 1; c < GRIDCOLS - 1; c++) {
@@ -450,6 +451,7 @@ export class AppComponent implements OnInit {
       }
       if (isFilled) {
         cleanOnceOrMore = true;
+        rowsCleaned++;
         for (let indexReset = r * GRIDCOLS + 1; indexReset <= r * GRIDCOLS + COLS; indexReset++) {
           this.gridVector[indexReset] = {
             value: 0
@@ -476,6 +478,7 @@ export class AppComponent implements OnInit {
       }
     }
     if(cleanOnceOrMore && this.eventsLeftForTrash < 5) this.eventsLeftForTrash++;
+    this.matchVariables.setEnemyAttack(rowsCleaned);
   }
 
   redrawAllTetrominos() {
@@ -505,7 +508,7 @@ export class AppComponent implements OnInit {
       if(this.gridVector[rightWallIndex]) this.gridVector[rightWallIndex].value = 9;
     }
   }
-  
+
 
   drawTrashIndicator(){
     this.trashCanvasContext?.clearRect(0,0,this.trashCanvas.nativeElement.width,this.trashCanvas.nativeElement.height);

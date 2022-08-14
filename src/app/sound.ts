@@ -3,12 +3,12 @@ export class SoundClass {
   constructor() {}
 
   setNewAudio(soundName: string) {
-    this.audio = new Audio(`assets/themes/${soundName}.mp3`);
-    this.audio.volume = .12;
-    this.audio.load();
-    this.audio.onload = () => {
-      this.audio!.play();
-    }
+    // this.audio = new Audio(`assets/themes/${soundName}.mp3`);
+    // this.audio.volume = .12;
+    // this.audio.load();
+    // this.audio.onload = () => {
+    //   this.audio!.play();
+    // }
   }
 }
 
