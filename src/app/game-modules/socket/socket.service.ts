@@ -39,7 +39,7 @@ export class SocketService {
       this.socket!.emit(SocketEventClientEnumerator[key],value);
       console.log(SocketEventClientEnumerator[key]);
     }
-    else if(this.isSingleplayer){
+    else if(!this.isSingleplayer){
       let obs = this.isConnected.subscribe((isConnected)=>{
         if(isConnected) {
           this.socket!.emit(SocketEventClientEnumerator[key],value);

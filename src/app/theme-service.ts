@@ -24,13 +24,15 @@ export class ThemeService {
 
   loadNewTheme(){
     return new Observable((observable)=>{
+      let loadedImages = 0;
       for(let index = 0; index <= 7; index++){
         let image = new Image();
         image.src = `assets/themes/${localStorage.getItem("selectedTheme")}/${index}.png`;
         image.onload = () => {
+          loadedImages++;
           this.themeImages[index] = image;
 
-          if(index == 7){
+          if(loadedImages == 8){
             observable.next();
             observable.complete();
             this.selectedThemeChanged.next(null);

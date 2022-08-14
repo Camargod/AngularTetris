@@ -167,7 +167,6 @@ export class AppComponent implements OnInit {
     });
     this._trashReceive = this.matchVariables.damage_received.subscribe((trashHeight)=>{
       if(trashHeight <= TRASH_LEVEL - trashHeight) this.accumulatedTrash += trashHeight;
-      this.drawTrashLayer();
     });
   }
 
@@ -341,17 +340,20 @@ export class AppComponent implements OnInit {
 
               this.clearFullLines();
               this.trashEventTrigger();
-              // this.gridArrayDebug();
+              this.gridArrayDebug();
               this.actualPiece.spawn();
             }
-            this.views.drawViews();
 
             this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
             this.posY += BLOCK_SIZE;
+
             this.tetrominoDraw();
+            this.drawTrashIndicator();
+            this.views.drawViews();
+
             this.useDelay = false;
             this.delayTime = 0;
-            this.gridArrayDebug();
+
           }
           window.requestAnimationFrame(() => this.gameDraw());
         }, this.gameTime + (this.useDelay ? this.delayTime : 0));
@@ -426,6 +428,7 @@ export class AppComponent implements OnInit {
     }
     this.posY = 30;
     this.posX = BLOCK_SIZE * 6;
+    this.gambiColuna();
     this.matchVariables.setGridUpdate(this.gridVector);
   }
   /*
@@ -467,9 +470,8 @@ export class AppComponent implements OnInit {
         this.redrawAllTetrominos();
         this.gameTime -= 6;
         this.gamePontuation += 50;
-        if(this.accumulatedTrash >= 0){
+        if(this.accumulatedTrash > 0){
           this.accumulatedTrash--;
-          this.drawTrashLayer();
         }
       }
     }
@@ -494,10 +496,18 @@ export class AppComponent implements OnInit {
         }
       }
     }
-    window.requestAnimationFrame(()=>{});
   }
 
-  drawTrashLayer(){
+  //Call this a gambiarra, I call as no time to debug which matrix loop is setting the last column to 0 and breaking colision
+  gambiColuna(){
+    for(let r = 0; r <= GRIDROWS; r++){
+      let rightWallIndex = r * GRIDCOLS + GRIDCOLS;
+      if(this.gridVector[rightWallIndex]) this.gridVector[rightWallIndex].value = 9;
+    }
+  }
+  
+
+  drawTrashIndicator(){
     this.trashCanvasContext?.clearRect(0,0,this.trashCanvas.nativeElement.width,this.trashCanvas.nativeElement.height);
     let {
       x1,
@@ -506,21 +516,22 @@ export class AppComponent implements OnInit {
       y2
     } = this.themeService.getDrawParams();
     for(let i = TRASH_LEVEL - this.accumulatedTrash; i <= TRASH_LEVEL; i++){
-      this.trashCanvasContext?.drawImage(this.themeService.themeImages[0],x1,y2,x2,y2,0,this.trashCanvas.nativeElement.height - (BLOCK_SIZE * i),BLOCK_SIZE,BLOCK_SIZE);
+      this.trashCanvasContext?.drawImage(this.themeService.themeImages[0],x1,y1,x2,y2,0,this.trashCanvas.nativeElement.height - (BLOCK_SIZE * i),BLOCK_SIZE,BLOCK_SIZE);
     }
   }
 
   trashEventTrigger(){
     if(this.accumulatedTrash > 0) this.eventsLeftForTrash--;
     if(this.eventsLeftForTrash == 0){
-      this.setGarbageOnGrid(this.accumulatedTrash);
+      GridUtils.gridTrashLineup(this.gridVector,this.accumulatedTrash);
+      this.redrawAllTetrominos();
       this.accumulatedTrash = 0;
       this.eventsLeftForTrash = 5;
     }
   }
 
   setGarbageOnGrid(trashHeight:number){
-    this.accumulatedTrash++;
+    this.accumulatedTrash+= trashHeight;
   }
 
   onChangeTheme(themeFileString : any){

@@ -8,10 +8,10 @@ export default class GridUtils{
     const whiteSpaceColumn = this.getFreeColumn();
     console.log(`Inserindo linha de lixo com tamanho de ${height}, espaço em branco na coluna ${whiteSpaceColumn}`);
     for(let col = 1; col < GRIDCOLS - 1;col++){
-      for(let row = GRIDROWS - 1 - height; row <= GRIDROWS - 1 - height;row++){
+      for(let row = GRIDROWS - 1 - height; row <= GRIDROWS - 1;row++){
         const index = (row * GRIDCOLS) + col;
         if(col != whiteSpaceColumn){
-          grid[index].themeNumber = 1;
+          grid[index].themeNumber = 1; 
           grid[index].value = 1;
         }
       }
