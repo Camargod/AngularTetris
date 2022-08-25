@@ -95,10 +95,10 @@ export class AppComponent implements OnInit {
   _trashReceive ?: Subscription;
   _playersToBeFocused ?: Subscription;
 
-  attackModes = [
+  attackModes : Array<FocusButtonItem> = [
     {name:"KO",size:60, key:1},
     {name:"RANDOM",size:49, key:2},
-    {name:"",size:1},
+    {name:"",size:1,key:0},
     {name:"BADGES",size:49, key:3},
     {name:"ATTACKERS",size:60, key:4}
   ];
@@ -107,6 +107,7 @@ export class AppComponent implements OnInit {
   autenticateForm = this.formBuilder.group({
     nickname: localStorage.getItem("user") ? localStorage.getItem("user") : '',
   });
+
 
   constructor(
     private themeService: ThemeService,
@@ -519,7 +520,16 @@ export class AppComponent implements OnInit {
       y2
     } = this.themeService.getDrawParams();
     for(let i = TRASH_LEVEL - this.accumulatedTrash; i <= TRASH_LEVEL; i++){
-      this.trashCanvasContext?.drawImage(this.themeService.themeImages[0],x1,y1,x2,y2,0,this.trashCanvas.nativeElement.height - (BLOCK_SIZE * i),BLOCK_SIZE,BLOCK_SIZE);
+      console.log({
+        image: this.themeService.themeImages[0],
+        imgX1:0,
+        imgY1:0,
+        imgX2:this.themeService.themeImages[0].width,
+        imgY2:this.themeService.themeImages[0].height,
+        cnvX1: 0,
+        cnvY1: this.trashCanvas.nativeElement.height - (BLOCK_SIZE * i)
+      })
+      this.trashCanvasContext?.drawImage(this.themeService.themeImages[0],0,0,this.themeService.themeImages[0].width,this.themeService.themeImages[0].height,0,this.trashCanvas.nativeElement.height - (BLOCK_SIZE * i),BLOCK_SIZE,BLOCK_SIZE);
     }
   }
 
@@ -547,4 +557,28 @@ export class AppComponent implements OnInit {
   toggleUi(value : boolean){
     this.isUiEnabled = value;
   }
+  @HostListener("window:keyup", ['$event'])
+  handleFocusChange(event : KeyboardEvent){
+    this.attackModes.find((mode)=> {
+      if(mode.key.toString() == event.key.toString()){
+        this.matchVariables.setAttackMode(mode.name);
+        console.log(mode);
+        this.attackModes.forEach(previousModes => previousModes.isEnabled = false);
+        mode.isEnabled = true;
+        return true;
+      }
+      return false;
+    })
+  }
+
+  handleFocusChangeClick(mode:FocusButtonItem){
+    this.matchVariables.setAttackMode(mode.name);
+  }
+}
+
+class FocusButtonItem {
+    name!: string;
+    size!: number;
+    key!: number;
+    isEnabled ?: boolean = false;
 }

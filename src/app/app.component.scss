@@ -118,6 +118,7 @@ select{
   align-items: flex-end;
   justify-content: flex-end;
   top: 0px;
+  z-index: 7;
   .modes{
     border-radius: 4px;
     background-color: whitesmoke;
@@ -145,6 +146,10 @@ select{
         left: 2%;
         width: 22px;
       }
+    }
+    .attack-mode-selected {
+      background-color: black !important;
+      color: whitesmoke !important;
     }
   }
 }

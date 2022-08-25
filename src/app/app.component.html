@@ -37,9 +37,9 @@
   <div class="focus-modes">
     <div class="modes">
       <ng-container *ngFor="let mode of attackModes">
-        <div [ngClass]="mode.name != '' ? 'attack-mode' : ''" [style.width.%]="mode.size">
+        <div [ngClass]="(mode.name != '' ? 'attack-mode ' : '') + (mode.isEnabled ? 'attack-mode-selected' : '')" [style.width.%]="mode.size">
           <div class="mode-key">
-            {{mode.key}}
+            {{mode.key != 0 ? mode.key  : ""}}
           </div>
           {{mode.name}}
         </div>

@@ -12,7 +12,7 @@ import * as parser from "src/app/game-modules/socket/parser/socket-parser"
 
 export class SocketService {
   socket ?: Socket;
-  public isSingleplayer = false;
+  public isSingleplayer = true;
   public _eventBehavior : BehaviorSubject<{key:number,value:string}> = new BehaviorSubject({key:0,value:"0"})
   public isConnected = new BehaviorSubject(false);
 
@@ -35,7 +35,7 @@ export class SocketService {
   }
 
   socketMsg(key : SocketEventClientEnumerator, value: any){
-    if(this.socket!.connected && !this.isSingleplayer){
+    if(this.socket?.connected && !this.isSingleplayer){
       this.socket!.emit(SocketEventClientEnumerator[key],value);
       console.log(SocketEventClientEnumerator[key]);
     }
