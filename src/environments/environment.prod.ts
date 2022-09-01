@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  server: "https://angular-tetris-server.herokuapp.com/"
+  server: "https://tetrisverse-server.onrender.com"
 };
