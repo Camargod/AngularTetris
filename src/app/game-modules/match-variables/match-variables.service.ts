@@ -67,7 +67,7 @@ constructor(
             this.otherPlayersGrid.next(grids);
             break
           case SocketEventServerEnumerator.RECEIVED_DAMAGE:
-            this.damage_received.next(this.damage_received.value + Number.parseInt(event.value));
+            this.damage_received.next(Number.parseInt(event.value));
             break
           case SocketEventServerEnumerator.IN_MATCH_PLAYERS:
             this.in_match_players.next(Number.parseInt(event.value));

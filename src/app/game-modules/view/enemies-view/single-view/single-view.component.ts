@@ -36,8 +36,8 @@ export class SingleViewComponent implements AfterViewInit, OnChanges{
     for (let r = 1; r <= GRIDROWS - 2; r++) {
       for (let c = 1; c <= GRIDCOLS - 1; c++) {
         let index = r * GRIDCOLS + c;
-        if (this.grid[index].value != 0 && this.grid[index].value != 9) {
-          if (this.grid[index].themeNumber) {
+        if (this.grid[index]?.value != 0 && this.grid[index]?.value != 9) {
+          if (this.grid[index]?.themeNumber) {
             let {
               x1,
               x2,

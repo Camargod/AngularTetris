@@ -26,6 +26,8 @@
       <label>Pontuação: {{gamePontuation}} </label>
       <label>Players: {{players}}</label>
       <button (click)="setGarbageOnGrid(1)">Testar lixo +1</button>
+      <label>Resta {{eventsLeftForTrash}} para {{accumulatedTrash}} de lixo cair</label>
+      <button (click)="isPaused = !isPaused">{{isPaused ? "Voltar" : "Pausar"}} Jogo</button>
 
       <!-- <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
         <button type="submit">Test autenticate</button>

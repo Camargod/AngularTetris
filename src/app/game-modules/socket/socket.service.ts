@@ -25,7 +25,7 @@ export class SocketService {
       this.isConnected.next(true);
     })
     this.socket.onAny((key,value)=>{
-        console.log(`key: ${key} value: ${value}`);
+        // console.log(`key: ${key} value: ${value}`);
         this._eventBehavior.next(this.eventHandler(key,value));
     })
   }

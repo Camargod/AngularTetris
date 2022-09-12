@@ -144,7 +144,7 @@ export class AppComponent implements OnInit {
     this.pieceSet()
     this.setBounds();
     this.themeSoundManager.setNewAudio(AudioMap[AudioMapNames.main])
-    this.themeSoundManager.audio!.loop = true;
+    // this.themeSoundManager.audio!.loop = true;
   }
 
   socketStart(){
@@ -167,6 +167,7 @@ export class AppComponent implements OnInit {
       this.isSingleplayer = isSingleplayer;
     });
     this._trashReceive = this.matchVariables.damage_received.subscribe((trashHeight)=>{
+      console.log(`Recebeu lixo: ${trashHeight}`);
       if(trashHeight <= TRASH_LEVEL - trashHeight) this.accumulatedTrash += trashHeight;
     });
   }
@@ -503,13 +504,13 @@ export class AppComponent implements OnInit {
   }
 
   //Call this a gambiarra, I call as no time to debug which matrix loop is setting the last column to 0 and breaking colision
+  //Todo: não está funcionando :|
   gambiColuna(){
     for(let r = 0; r <= GRIDROWS; r++){
       let rightWallIndex = r * GRIDCOLS + GRIDCOLS;
       if(this.gridVector[rightWallIndex]) this.gridVector[rightWallIndex].value = 9;
     }
   }
-
 
   drawTrashIndicator(){
     this.trashCanvasContext?.clearRect(0,0,this.trashCanvas.nativeElement.width,this.trashCanvas.nativeElement.height);
@@ -519,17 +520,14 @@ export class AppComponent implements OnInit {
       y1,
       y2
     } = this.themeService.getDrawParams();
-    for(let i = TRASH_LEVEL - this.accumulatedTrash; i <= TRASH_LEVEL; i++){
+    for(let i = TRASH_LEVEL - this.accumulatedTrash; i < TRASH_LEVEL; i++){
+      const heightToDraw = this.trashCanvas.nativeElement.height - (BLOCK_SIZE * (TRASH_LEVEL - i)) - 815;
       console.log({
-        image: this.themeService.themeImages[0],
-        imgX1:0,
-        imgY1:0,
-        imgX2:this.themeService.themeImages[0].width,
-        imgY2:this.themeService.themeImages[0].height,
-        cnvX1: 0,
-        cnvY1: this.trashCanvas.nativeElement.height - (BLOCK_SIZE * i)
+        cnvY1: heightToDraw,
+        tshIndx:i
       })
-      this.trashCanvasContext?.drawImage(this.themeService.themeImages[0],0,0,this.themeService.themeImages[0].width,this.themeService.themeImages[0].height,0,this.trashCanvas.nativeElement.height - (BLOCK_SIZE * i),BLOCK_SIZE,BLOCK_SIZE);
+
+      this.trashCanvasContext?.drawImage(this.themeService.themeImages[0],0,0,this.themeService.themeImages[0].width,this.themeService.themeImages[0].height,0,heightToDraw,BLOCK_SIZE,BLOCK_SIZE);
     }
   }
 
