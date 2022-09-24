@@ -11,7 +11,7 @@ export default class GridUtils{
       for(let row = GRIDROWS - 1 - height; row <= GRIDROWS - 1;row++){
         const index = (row * GRIDCOLS) + col;
         if(col != whiteSpaceColumn){
-          grid[index].themeNumber = 1; 
+          grid[index].themeNumber = 1;
           grid[index].value = 1;
         }
       }
@@ -46,7 +46,7 @@ export default class GridUtils{
   }
 
   private static getFreeColumn() : number{
-    const columnPreview = Math.floor(Math.random() * GRIDCOLS);
+    const columnPreview = Math.floor(Math.random() * (GRIDCOLS - 1));
     if(columnPreview >= 1) return columnPreview;
     return columnPreview + 1;
   }

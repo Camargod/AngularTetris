@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 import { UiStateControllerService } from './game-modules/ui/ui-state-controller/ui-state-controller.service';
 import { skip } from 'rxjs/operators';
 import GridUtils from './game-modules/utils/grid-utils';
+import { Animation, AnimationEnum } from './game-modules/objects/animation';
 
 @Component({
   selector: 'app-root',
@@ -108,6 +109,11 @@ export class AppComponent implements OnInit {
     nickname: localStorage.getItem("user") ? localStorage.getItem("user") : '',
   });
 
+  //Animations
+  animations : Map<number,Animation> = new Map([
+    [AnimationEnum.trashIndicatorShake,new Animation(AnimationEnum.trashIndicatorShake,false,1.7,()=>{})]
+  ])
+
 
   constructor(
     private themeService: ThemeService,
@@ -168,7 +174,10 @@ export class AppComponent implements OnInit {
     });
     this._trashReceive = this.matchVariables.damage_received.subscribe((trashHeight)=>{
       console.log(`Recebeu lixo: ${trashHeight}`);
-      if(trashHeight <= TRASH_LEVEL - trashHeight) this.accumulatedTrash += trashHeight;
+      if(trashHeight <= TRASH_LEVEL - trashHeight){
+        this.accumulatedTrash += trashHeight;
+        this.animations.get(AnimationEnum.trashIndicatorShake)?.startAnimation();
+      }
     });
   }
 
@@ -188,8 +197,53 @@ export class AppComponent implements OnInit {
     this.setBackgroundByTheme();
   }
 
+      /*
+    Desenho de jogo.
+  */
+    gameDraw() {
+      try {
+          setTimeout(()=>{
+            this.delayTime++;
+          },1)
+          setTimeout(() => {
+            if (!this.isGameOver && !this.isPaused) {
+              this.lastPosX = this.posX;
+              this.lastPosY = this.posY;
+
+              if (this.colision(this.posX, this.posY + BLOCK_SIZE, this.actualPiece.rotation)) {
+                this.saveTetromino(this.posX, this.posY);
+
+                this.clearFullLines();
+                this.trashEventTrigger();
+                this.gridArrayDebug();
+                this.actualPiece.spawn();
+              }
+
+              this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
+              this.posY += BLOCK_SIZE;
+
+              this.tetrominoDraw();
+              this.drawTrashIndicator();
+              this.views.drawViews();
+
+              this.useDelay = false;
+              this.delayTime = 0;
+
+            }
+            window.requestAnimationFrame(() => this.gameDraw());
+          }, this.gameTime + (this.useDelay ? this.delayTime : 0));
+
+        if(this.isGameOver) {
+          // location.reload();
+        }
+      } catch (err) {
+        console.error(`Erro de gameloop: ${err}`)
+      }
+    }
+
   draw() {
     this.grid();
+    this.animationLifecycle();
     this.drawHud();
   }
   /*
@@ -276,7 +330,7 @@ export class AppComponent implements OnInit {
           if (this.actualPiece.shape![rotate!] == 1) {
             let index = (((currentX + (px * BLOCK_SIZE)) / BLOCK_SIZE) + ((((currentY + (py * BLOCK_SIZE)) / BLOCK_SIZE) - 1) * GRIDCOLS));
             if(index > this.gridVector.length){
-              throw `Validação de index estourou os limites, (((${currentX} + (${px} * ${BLOCK_SIZE})) / ${BLOCK_SIZE}) + ((((${currentY} + (${py} * ${BLOCK_SIZE})) / ${BLOCK_SIZE}) - 1 * ${GRIDCOLS}));`
+              // throw `Validação de index estourou os limites, (((${currentX} + (${px} * ${BLOCK_SIZE})) / ${BLOCK_SIZE}) + ((((${currentY} + (${py} * ${BLOCK_SIZE})) / ${BLOCK_SIZE}) - 1 * ${GRIDCOLS}));`
             }
             let colision = (this.gridVector[index].value == 9 || this.gridVector[index].value == 1) ? true : false;
             if (colision) {
@@ -324,50 +378,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-  /*
-    Desenho de jogo.
-  */
-  gameDraw() {
-    try {
-        setTimeout(()=>{
-          this.delayTime++;
-        },1)
-        setTimeout(() => {
-          if (!this.isGameOver && !this.isPaused) {
-            this.lastPosX = this.posX;
-            this.lastPosY = this.posY;
-
-            if (this.colision(this.posX, this.posY + BLOCK_SIZE, this.actualPiece.rotation)) {
-              this.saveTetromino(this.posX, this.posY);
-
-              this.clearFullLines();
-              this.trashEventTrigger();
-              this.gridArrayDebug();
-              this.actualPiece.spawn();
-            }
-
-            this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
-            this.posY += BLOCK_SIZE;
-
-            this.tetrominoDraw();
-            this.drawTrashIndicator();
-            this.views.drawViews();
-
-            this.useDelay = false;
-            this.delayTime = 0;
-
-          }
-          window.requestAnimationFrame(() => this.gameDraw());
-        }, this.gameTime + (this.useDelay ? this.delayTime : 0));
-
-
-      if(this.isGameOver) {
-        // location.reload();
-      }
-    } catch (err) {
-      console.error(`Erro de gameloop: ${err}`)
-    }
-  }
   /*
     Desenha a peça atual
   */
@@ -476,6 +486,7 @@ export class AppComponent implements OnInit {
         this.gamePontuation += 50;
         if(this.accumulatedTrash > 0){
           this.accumulatedTrash--;
+          this.accumulatedTrash == 0 ? this.eventsLeftForTrash = 5 : "";
         }
       }
     }
@@ -514,20 +525,11 @@ export class AppComponent implements OnInit {
 
   drawTrashIndicator(){
     this.trashCanvasContext?.clearRect(0,0,this.trashCanvas.nativeElement.width,this.trashCanvas.nativeElement.height);
-    let {
-      x1,
-      x2,
-      y1,
-      y2
-    } = this.themeService.getDrawParams();
+
+    let x  = this.animations.get(AnimationEnum.trashIndicatorShake)?.enabled ?  Math.random() * 10 : 0;
     for(let i = TRASH_LEVEL - this.accumulatedTrash; i < TRASH_LEVEL; i++){
       const heightToDraw = this.trashCanvas.nativeElement.height - (BLOCK_SIZE * (TRASH_LEVEL - i)) - 815;
-      console.log({
-        cnvY1: heightToDraw,
-        tshIndx:i
-      })
-
-      this.trashCanvasContext?.drawImage(this.themeService.themeImages[0],0,0,this.themeService.themeImages[0].width,this.themeService.themeImages[0].height,0,heightToDraw,BLOCK_SIZE,BLOCK_SIZE);
+      this.trashCanvasContext?.drawImage(this.themeService.themeImages[0],0,0,this.themeService.themeImages[0].width,this.themeService.themeImages[0].height,x,heightToDraw,BLOCK_SIZE,BLOCK_SIZE);
     }
   }
 
@@ -543,6 +545,8 @@ export class AppComponent implements OnInit {
 
   setGarbageOnGrid(trashHeight:number){
     this.accumulatedTrash+= trashHeight;
+    this.drawTrashIndicator();
+    this.animations.get(AnimationEnum.trashIndicatorShake)?.startAnimation();
   }
 
   onChangeTheme(themeFileString : any){
@@ -571,6 +575,20 @@ export class AppComponent implements OnInit {
 
   handleFocusChangeClick(mode:FocusButtonItem){
     this.matchVariables.setAttackMode(mode.name);
+  }
+
+  validateTrashShake(){
+    if(this.animations.get(AnimationEnum.trashIndicatorShake)?.enabled){
+      this.drawTrashIndicator();
+    }
+  }
+
+  animationLifecycle(){
+    this.validateTrashShake()
+    setTimeout(()=>{
+      requestAnimationFrame(()=>this.animationLifecycle());
+    },1000/60)
+
   }
 }
 

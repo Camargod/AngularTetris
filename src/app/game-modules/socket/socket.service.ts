@@ -17,17 +17,22 @@ export class SocketService {
   public isConnected = new BehaviorSubject(false);
 
   socketConnect(){
-    this.socket = io(environment.server || "http://localhost:3000",
-    {
-      parser: parser
-    });
-    this.socket.on("connect", ()=>{
-      this.isConnected.next(true);
-    })
-    this.socket.onAny((key,value)=>{
-        // console.log(`key: ${key} value: ${value}`);
-        this._eventBehavior.next(this.eventHandler(key,value));
-    })
+    try{
+      this.socket = io(environment.server || "http://localhost:3000",
+      {
+        parser: parser
+      });
+      this.socket.on("connect", ()=>{
+        this.isConnected.next(true);
+      })
+      this.socket.onAny((key,value)=>{
+          // console.log(`key: ${key} value: ${value}`);
+          this._eventBehavior.next(this.eventHandler(key,value));
+      })
+    }
+    catch{
+
+    }
   }
 
   socketDisconnect(){
