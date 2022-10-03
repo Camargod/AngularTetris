@@ -12,12 +12,14 @@ export class UiThemesComponent implements OnInit {
   constructor(private themeService : ThemeService, private uiState : UiStateControllerService) { }
 
   themes = Themes;
-
+  paths : Array<String> = [];
   ngOnInit() {
+    this.themes.forEach((t,i)=>{
+      this.paths[i] = this.themeService.getBackgroundUrlThemeTile(t);
+    })
   }
 
   scroll(event : WheelEvent){
-    console.log(event);
     (event.target as HTMLDivElement).scrollLeft += event.deltaY;
   }
 

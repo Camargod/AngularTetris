@@ -101,6 +101,10 @@ export class ThemeService {
     return `url(assets/themes/${selectedTheme}/fundo.png)`;
   }
 
+  getBackgroundUrlThemeTile(theme : {name:String,fileName:String}) {
+    return `url(assets/themes/${theme.fileName}/preview.png)`;
+  }
+
 
   setDefaultTheme(){
     if(!localStorage.getItem("selectedTheme")){
