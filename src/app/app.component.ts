@@ -470,7 +470,7 @@ export class AppComponent implements OnInit {
           };
         }
         for (let rDown = r; rDown >= 0; rDown--) {
-          for (let c = 1; c <= GRIDCOLS - 1; c++) {
+          for (let c = 1; c < GRIDCOLS - 1; c++) {
             if (rDown != 0) {
               this.gridVector[rDown * GRIDCOLS + c] = this.gridVector[(rDown * GRIDCOLS + c) - 12]
             } else {
