@@ -16,6 +16,7 @@ export class UiTimerComponent implements OnInit, OnDestroy {
   players = 0;
   playerSubscription ?: Subscription;
   isConnectedSubscription ?: Subscription;
+
   constructor(private matchVariables : MatchVariablesService, private uiState : UiStateControllerService, private userService : UserService, private socketService : SocketService) { }
 
   ngOnInit() {
@@ -35,6 +36,12 @@ export class UiTimerComponent implements OnInit, OnDestroy {
         this.userService.authenticate();
       }
     })
+  }
+
+  back(){
+    this.uiState.changeState(UiStatesEnum.MENU);
+    this.matchVariables.stopGameListening();
+    this.ngOnDestroy();
   }
 
   startSingleplayer(){

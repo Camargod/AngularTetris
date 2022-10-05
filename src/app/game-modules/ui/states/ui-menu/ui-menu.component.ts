@@ -16,8 +16,8 @@ export class UiMenuComponent implements OnInit {
   menuItems : Array<MenuItem> = [
     {label:"Play",state:UiStatesEnum.TIMER,backgroundColor:"#ff7403",background:"/assets/ui/menu/PlayIcon.png"/*background:"https://scontent.fcgh3-1.fna.fbcdn.net/v/t1.6435-9/70414585_374489033241716_3048322032967090176_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_eui2=AeHtEIpy9oEok9GYhdRv8aZJ3yCfF8B5QvvfIJ8XwHlC-8K52FVGW_LAsDh--HpFERKm-g7mmUDQeyK5KAb6xLHm&_nc_ohc=efSfKsK7kakAX-5oGdM&_nc_ht=scontent.fcgh3-1.fna&oh=00_AT8Ij4Y-BflCgtTQ4GtPaeBnoU6YZ5cs08W_0PhaRhG7Ig&oe=61EF84CF"*/},
     {label:"Themes",state: UiStatesEnum.THEMES,background:"/assets/ui/menu/Themes.png"},
-    {label:"Stats",background:"assets/ui/menu/Stats.png"},
-    {label:"Config",background:"assets/ui/menu/Config.png"}
+    {label:"Stats",state:UiStatesEnum.STATS,background:"assets/ui/menu/Stats.png"},
+    {label:"Config",state:UiStatesEnum.CONFIG,background:"assets/ui/menu/Config.png"}
   ]
 
   user ?: User | undefined | null;

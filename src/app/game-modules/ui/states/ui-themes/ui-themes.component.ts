@@ -25,6 +25,10 @@ export class UiThemesComponent implements OnInit {
 
   selectTheme(theme : {name:string, fileName:string}){
     this.themeService.changeTheme(theme.fileName);
+    this.back();
+  }
+
+  back(){
     this.uiState.changeState(UiStatesEnum.MENU);
   }
 }

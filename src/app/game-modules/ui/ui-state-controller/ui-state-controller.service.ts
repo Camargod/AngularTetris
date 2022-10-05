@@ -1,8 +1,10 @@
 import { Component, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { UiCloseComponent } from '../states/ui-close/ui-close.component';
+import { UiConfigComponent } from '../states/ui-config/ui-config.component';
 import { UiHomeComponent } from '../states/ui-home/ui-home.component';
 import { UiMenuComponent } from '../states/ui-menu/ui-menu.component';
+import { UiStatsComponent } from '../states/ui-stats/ui-stats.component';
 import { UiThemesComponent } from '../states/ui-themes/ui-themes.component';
 import { UiTimerComponent } from '../states/ui-timer/ui-timer.component';
 
@@ -45,12 +47,16 @@ const UiStates = [
   {name:"timer", component:UiTimerComponent},
   {name:"menu", component:UiMenuComponent},
   {name:"closeState", component: UiCloseComponent},
-  {name:"themes", component:UiThemesComponent}
+  {name:"themes", component:UiThemesComponent},
+  {name:"config", component:UiConfigComponent},
+  {name:"stats", component:UiStatsComponent}
 ]
 export const UiStatesEnum = {
   "HOME":"home",
   "TIMER": "timer",
   "MENU": "menu",
   "CLOSE": "closeState",
-  "THEMES": "themes"
+  "THEMES": "themes",
+  "CONFIG": "config",
+  "STATS": "stats"
 }
