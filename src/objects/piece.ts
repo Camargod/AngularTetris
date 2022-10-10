@@ -1,4 +1,4 @@
-export default class TPiece {
+export class TPiece {
   x?: number;
   y?: number;
   color?: string;
@@ -19,9 +19,8 @@ export default class TPiece {
     this.spawn();
   }
 
-  spawn() {
-    let number = Math.round(Math.random() * 6);
-    // let number = 0;
+  spawn(nextPiece ?: number) {
+    let number = nextPiece != undefined ? nextPiece : Math.round(Math.random() * 6);
     this.shape = this.tetrominos[number];
     this.rotation = 0;
     this.pieceNumberId = number + 1;

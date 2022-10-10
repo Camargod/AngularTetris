@@ -14,5 +14,4 @@ export default class GameUtils
         }
         return (((posY - BLOCK_SIZE) / BLOCK_SIZE) * GRIDCOLS)
     }
-
 }

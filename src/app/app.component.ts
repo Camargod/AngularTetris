@@ -1,6 +1,5 @@
 import {Component,ViewChild,ElementRef,OnInit,HostListener} from '@angular/core';
 import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS, LATERAL_PADDING, CANVAS_SCALING, TOP_PADDING, TRASH_LEVEL} from "./constants";
-import TPiece from 'src/objects/piece';
 import GameUtils from './game-modules/utils/game-utils';
 import { Themes,ThemeService} from './theme-service';
 import { AudioMap,AudioMapNames,SoundClass} from './sound';
@@ -14,6 +13,8 @@ import { UiStateControllerService } from './game-modules/ui/ui-state-controller/
 import { skip } from 'rxjs/operators';
 import GridUtils from './game-modules/utils/grid-utils';
 import { Animation, AnimationEnum } from './game-modules/objects/animation';
+import { TPiece } from 'src/objects/piece';
+import { TetrominoGen } from './game-modules/utils/tetromino-gen';
 
 @Component({
   selector: 'app-root',
@@ -49,7 +50,6 @@ export class AppComponent implements OnInit {
   gridVector !: Array <TetrisGridPiece> ;
 
   initalPos: number = 0;
-  actualPiece !: TPiece;
 
   posX: number = BLOCK_SIZE * 6;
   posY: number = 0;
@@ -64,8 +64,7 @@ export class AppComponent implements OnInit {
   delta: number = 0;
   fps: number = 0;
 
-  gameTime = 500;
-  _gameTimeSubscription ?: Subscription;
+
   delayTime = 0;
   useDelay = false;
 
@@ -75,9 +74,10 @@ export class AppComponent implements OnInit {
   hasImageLoaded: boolean = false;
   themeList = Themes;
   isSingleplayer = false;
-  _isSingleplayerSubscription ?: Subscription;
+
   themeSoundManager: SoundClass;
 
+  actualPiece : TPiece = new TPiece();
 
   gamePontuation = 0;
 
@@ -90,11 +90,19 @@ export class AppComponent implements OnInit {
 
   //Variáveis do socket
   timer = 0;
-  _timerSubscription ?: Subscription;
   players = 0;
+
+  //Variaveis híbridas
+  piecesQueue : Array<number> = [];
+  gameTime = 500;
+
+  _timerSubscription ?: Subscription;
   _playersSubscription ?: Subscription;
   _trashReceive ?: Subscription;
   _playersToBeFocused ?: Subscription;
+  _piecesQueueSubscription ?: Subscription;
+  _isSingleplayerSubscription ?: Subscription;
+  _gameTimeSubscription ?: Subscription;
 
   attackModes : Array<FocusButtonItem> = [
     {name:"KO",size:60, key:1},
@@ -120,7 +128,8 @@ export class AppComponent implements OnInit {
     private matchVariables : MatchVariablesService,
     private movementService : MovementService,
     private formBuilder: FormBuilder,
-    private uiStateControllerService : UiStateControllerService
+    private uiStateControllerService : UiStateControllerService,
+    private tetrominoGen : TetrominoGen
   ) {
     this.themeSoundManager = new SoundClass();
   }
@@ -171,6 +180,9 @@ export class AppComponent implements OnInit {
     });
     this._isSingleplayerSubscription = this.matchVariables.isSingleplayer.subscribe((isSingleplayer)=>{
       this.isSingleplayer = isSingleplayer;
+      if(isSingleplayer){
+        this.piecesQueue = this.tetrominoGen.shuffle();
+      }
     });
     this._trashReceive = this.matchVariables.damage_received.subscribe((trashHeight)=>{
       console.log(`Recebeu lixo: ${trashHeight}`);
@@ -179,6 +191,9 @@ export class AppComponent implements OnInit {
         this.animations.get(AnimationEnum.trashIndicatorShake)?.startAnimation();
       }
     });
+    this._piecesQueueSubscription = this.matchVariables.nextPieces.subscribe((pieces)=>{
+      this.piecesQueue.push(...pieces)
+    })
   }
 
   waitImageLoad() {
@@ -216,7 +231,7 @@ export class AppComponent implements OnInit {
                 this.clearFullLines();
                 this.trashEventTrigger();
                 this.gridArrayDebug();
-                this.actualPiece.spawn();
+                this.actualPiece.spawn(this.piecesQueue.shift());
               }
 
               this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
@@ -440,7 +455,6 @@ export class AppComponent implements OnInit {
     }
     this.posY = 30;
     this.posX = BLOCK_SIZE * 6;
-    this.gambiColuna();
     this.matchVariables.setGridUpdate(this.gridVector);
   }
   /*
@@ -511,15 +525,6 @@ export class AppComponent implements OnInit {
           }
         }
       }
-    }
-  }
-
-  //Call this a gambiarra, I call as no time to debug which matrix loop is setting the last column to 0 and breaking colision
-  //Todo: não está funcionando :|
-  gambiColuna(){
-    for(let r = 0; r <= GRIDROWS; r++){
-      let rightWallIndex = r * GRIDCOLS + GRIDCOLS;
-      if(this.gridVector[rightWallIndex]) this.gridVector[rightWallIndex].value = 9;
     }
   }
 

@@ -22,6 +22,7 @@ constructor(
   public otherPlayersGrid = new BehaviorSubject<PlayersGrids>({});
   public match_speed = new BehaviorSubject<number>(500);
   public isSingleplayer = new BehaviorSubject(false);
+  public nextPieces = new BehaviorSubject([]);
   private socketSubscription ?: Subscription;
 
   startGameListening(){
@@ -77,6 +78,9 @@ constructor(
             break;
           case SocketEventServerEnumerator.MATCH_SPEEDUP:
             this.match_speed.next(Number.parseInt(event.value));
+            break;
+          case SocketEventServerEnumerator.RECEIVE_PIECES_QUEUE:
+            this.nextPieces.next(event.value);
             break;
           default:
             break
