@@ -32,6 +32,7 @@
     "@angular-devkit/build-angular": "^13.1.2",
     "@angular/cli": "~13.1.2",
     "@angular/compiler-cli": "~13.1.1",
+    "@types/component-emitter": "^1.2.11",
     "@types/events": "^3.0.0",
     "@types/jasmine": "~3.8.0",
     "@types/node": "^12.11.1",
