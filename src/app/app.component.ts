@@ -69,6 +69,7 @@ export class AppComponent implements OnInit{
 
   delayTime = 0;
   useDelay = false;
+  isTurboOn = false;
 
   isGameOver: boolean = false;
   isPaused = true;
@@ -135,13 +136,11 @@ export class AppComponent implements OnInit{
 
   /*
     Movimento de peças, por evento de keydown
-
-    Necessita trocar a variavel KeyCode, deprecated.
   */
   @HostListener('window:keydown', ['$event'])
-  keyEvent(event: KeyboardEvent) {
-    if (event.keyCode && this.movementService.keyMap[event.keyCode] && !this.isGameOver) {
-      this.movementService.keyMap[event.keyCode](this);
+  keyDownEvent(event: KeyboardEvent) {
+    if (event.key && this.movementService.keyDownMap[event.key] && !this.isGameOver) {
+      this.movementService.keyDownMap[event.key](this);
     }
   }
 
@@ -219,31 +218,7 @@ export class AppComponent implements OnInit{
             this.delayTime++;
           },1)
           setTimeout(() => {
-            if (!this.isGameOver && !this.isPaused) {
-              this.lastPosX = this.posX;
-              this.lastPosY = this.posY;
-
-              if (this.colision(this.posX, this.posY + BLOCK_SIZE, this.actualPiece.rotation)) {
-                this.saveTetromino(this.posX, this.posY);
-
-                this.clearFullLines();
-                this.trashEventTrigger();
-                // this.gridArrayDebug();
-                this.actualPiece.spawn(this.piecesQueue.shift());
-                this.drawNextPieces();
-              }
-
-              this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
-              this.posY += BLOCK_SIZE;
-
-              this.tetrominoDraw();
-              this.drawTrashIndicator();
-              this.views.drawViews();
-
-              this.useDelay = false;
-              this.delayTime = 0;
-
-            }
+            this.gameFrame();
             window.requestAnimationFrame(() => this.gameDraw());
           }, this.gameTime + (this.useDelay ? this.delayTime : 0));
       } catch (err) {
@@ -251,9 +226,37 @@ export class AppComponent implements OnInit{
       }
     }
 
+    gameFrame(){
+      if (!this.isGameOver && !this.isPaused) {
+        this.lastPosX = this.posX;
+        this.lastPosY = this.posY;
+
+        if (this.colision(this.posX, this.posY + BLOCK_SIZE, this.actualPiece.rotation)) {
+          this.saveTetromino(this.posX, this.posY);
+          this.isTurboOn = false;
+          this.clearFullLines();
+          this.trashEventTrigger();
+          // this.gridArrayDebug();
+          this.actualPiece.spawn(this.piecesQueue.shift());
+          this.drawNextPieces();
+        }
+
+        this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
+        this.posY += BLOCK_SIZE;
+
+        this.tetrominoDraw();
+        this.drawTrashIndicator();
+        this.views.drawViews();
+
+        this.useDelay = false;
+        this.delayTime = 0;
+
+      }
+    }
+
   draw() {
     this.grid();
-    this.animationLifecycle();
+    this.realtimeLifecycle();
     this.drawHud();
   }
   /*
@@ -607,10 +610,17 @@ export class AppComponent implements OnInit{
     }
   }
 
-  animationLifecycle(){
+  validateTurbo(){
+    if(this.isTurboOn){
+      this.gameFrame();
+    }
+  }
+
+  realtimeLifecycle(){
     this.validateTrashShake()
+    this.validateTurbo();
     setTimeout(()=>{
-      requestAnimationFrame(()=>this.animationLifecycle());
+      requestAnimationFrame(()=>this.realtimeLifecycle());
     },1000/60)
   }
 }
