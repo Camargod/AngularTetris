@@ -1,4 +1,4 @@
-import {Component,ViewChild,ElementRef,OnInit,HostListener} from '@angular/core';
+import {Component,ViewChild,ElementRef,OnInit,HostListener, AfterContentInit} from '@angular/core';
 import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS, LATERAL_PADDING, CANVAS_SCALING, TOP_PADDING, TRASH_LEVEL} from "./constants";
 import GameUtils from './game-modules/utils/game-utils';
 import { Themes,ThemeService} from './theme-service';
@@ -9,19 +9,20 @@ import { FormBuilder } from '@angular/forms';
 import { TetrisGridPiece } from './game-modules/objects/tetris-grid-piece';
 import { EnemiesViewComponent } from './game-modules/view/enemies-view/enemies-view.component';
 import { Subscription } from 'rxjs';
-import { UiStateControllerService } from './game-modules/ui/ui-state-controller/ui-state-controller.service';
+import { UiStateControllerService, UiStatesEnum } from './game-modules/ui/ui-state-controller/ui-state-controller.service';
 import { skip } from 'rxjs/operators';
 import GridUtils from './game-modules/utils/grid-utils';
 import { Animation, AnimationEnum } from './game-modules/objects/animation';
 import { TPiece } from 'src/objects/piece';
 import { TetrominoGen } from './game-modules/utils/tetromino-gen';
+import { overrideCanvas, OverridedCanvas2DContext } from './game-modules/objects/CanvsRenderingContext2DCustom';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit{
   title = 'Online Tetris';
 
   //Diretivas de leitura de ElementosHtml do Canvas para controle direto da API do mesmo.
@@ -32,6 +33,7 @@ export class AppComponent implements OnInit {
   @ViewChild("debugcanvas",{static:true}) debugCanvas !: ElementRef<HTMLCanvasElement>;
   @ViewChild("trashcanvas", {static:true}) trashCanvas !: ElementRef <HTMLCanvasElement>;
   @ViewChild("interfaceHUD", {static: true}) interfaceHUD !: ElementRef <HTMLCanvasElement>;
+  @ViewChild("queuecanvas", {static: true}) queueHUD !: ElementRef <HTMLCanvasElement>;
 
   @ViewChild("gameDiv", {static: true}) gameDiv !: ElementRef <HTMLDivElement>;
 
@@ -43,7 +45,7 @@ export class AppComponent implements OnInit {
   interfaceHUDCanvasContext !: CanvasRenderingContext2D | null;
   debugCanvasContext !: CanvasRenderingContext2D | null;
   trashCanvasContext !: CanvasRenderingContext2D | null;
-
+  queueHUDContext !: OverridedCanvas2DContext | null;
   /*
     Vetor de grid, contendo a informação da casa e a cor da peça que está nela.
   */
@@ -74,8 +76,6 @@ export class AppComponent implements OnInit {
   hasImageLoaded: boolean = false;
   themeList = Themes;
   isSingleplayer = false;
-
-  themeSoundManager: SoundClass;
 
   actualPiece : TPiece = new TPiece();
 
@@ -131,7 +131,6 @@ export class AppComponent implements OnInit {
     private uiStateControllerService : UiStateControllerService,
     private tetrominoGen : TetrominoGen
   ) {
-    this.themeSoundManager = new SoundClass();
   }
 
   /*
@@ -141,7 +140,7 @@ export class AppComponent implements OnInit {
   */
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    if (event.keyCode && this.movementService.keyMap[event.keyCode]) {
+    if (event.keyCode && this.movementService.keyMap[event.keyCode] && !this.isGameOver) {
       this.movementService.keyMap[event.keyCode](this);
     }
   }
@@ -158,8 +157,6 @@ export class AppComponent implements OnInit {
     this.setCanvasSize();
     this.pieceSet()
     this.setBounds();
-    this.themeSoundManager.setNewAudio(AudioMap[AudioMapNames.main])
-    // this.themeSoundManager.audio!.loop = true;
   }
 
   socketStart(){
@@ -182,17 +179,18 @@ export class AppComponent implements OnInit {
       this.isSingleplayer = isSingleplayer;
       if(isSingleplayer){
         this.piecesQueue = this.tetrominoGen.shuffle();
+        this.drawNextPieces();
       }
     });
     this._trashReceive = this.matchVariables.damage_received.subscribe((trashHeight)=>{
-      console.log(`Recebeu lixo: ${trashHeight}`);
       if(trashHeight <= TRASH_LEVEL - trashHeight){
-        this.accumulatedTrash += trashHeight;
+        this.setGarbageOnGrid(trashHeight);
         this.animations.get(AnimationEnum.trashIndicatorShake)?.startAnimation();
       }
     });
     this._piecesQueueSubscription = this.matchVariables.nextPieces.subscribe((pieces)=>{
-      this.piecesQueue.push(...pieces)
+      this.piecesQueue.push(...pieces);
+      this.drawNextPieces();
     })
   }
 
@@ -230,8 +228,9 @@ export class AppComponent implements OnInit {
 
                 this.clearFullLines();
                 this.trashEventTrigger();
-                this.gridArrayDebug();
+                // this.gridArrayDebug();
                 this.actualPiece.spawn(this.piecesQueue.shift());
+                this.drawNextPieces();
               }
 
               this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
@@ -247,10 +246,6 @@ export class AppComponent implements OnInit {
             }
             window.requestAnimationFrame(() => this.gameDraw());
           }, this.gameTime + (this.useDelay ? this.delayTime : 0));
-
-        if(this.isGameOver) {
-          // location.reload();
-        }
       } catch (err) {
         console.error(`Erro de gameloop: ${err}`)
       }
@@ -271,6 +266,8 @@ export class AppComponent implements OnInit {
     this.debugCanvasContext = this.debugCanvas.nativeElement.getContext('2d');
     this.trashCanvasContext = this.trashCanvas.nativeElement.getContext('2d');
     this.interfaceHUDCanvasContext = this.interfaceHUD.nativeElement.getContext('2d');
+    this.queueHUDContext = this.queueHUD.nativeElement.getContext("2d") as OverridedCanvas2DContext;
+    overrideCanvas(this.queueHUDContext!);
   }
 
   drawHud(){
@@ -290,6 +287,7 @@ export class AppComponent implements OnInit {
     this.debugCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
     this.trashCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
     this.interfaceHUDCanvasContext!.scale(CANVAS_SCALING,CANVAS_SCALING);
+    this.queueHUDContext!.scale(CANVAS_SCALING - 1,CANVAS_SCALING - 1);
   }
 
   /*
@@ -440,6 +438,9 @@ export class AppComponent implements OnInit {
           console.log("Tetromino na coluna: " + colIndex);
           if (index < GRIDCOLS * 6) {
             this.isGameOver = true;
+            this.matchVariables.setGameOver(this.isGameOver);
+            this.uiStateControllerService.changeState(UiStatesEnum.GAME_OVER);
+            this.uiStateControllerService.toggleUi();
           } else {
             this.gridVector[index] = {
               value: 1,
@@ -450,10 +451,7 @@ export class AppComponent implements OnInit {
         }
       }
     }
-    if(this.isGameOver){
-      this.matchVariables.setGameOver(this.isGameOver);
-    }
-    this.posY = 30;
+    this.posY = BLOCK_SIZE;
     this.posX = BLOCK_SIZE * 6;
     this.matchVariables.setGridUpdate(this.gridVector);
   }
@@ -578,6 +576,27 @@ export class AppComponent implements OnInit {
     })
   }
 
+  drawNextPieces(){
+    const visibleNextPieces = 4;
+
+    this.queueHUDContext?.clearRect(0,0,this.queueHUDContext.canvas.width,this.queueHUDContext.canvas.height);
+    this.queueHUDContext?.roundRect(this.queueHUDContext.canvas.width - 240, 210, BLOCK_SIZE * 6, 160 + visibleNextPieces*4*BLOCK_SIZE,4);
+    this.queueHUDContext!.fillStyle = "rgba(0, 0, 0, 0.4)";
+    this.queueHUDContext?.fill();
+    for(let nextPieceI = 0; nextPieceI <= visibleNextPieces; nextPieceI++){
+      for(let r = 0; r <= 4; r++){
+        for(let c = 0; c <= 4; c++){
+          const index = this.pieceRotate(c,r,1);
+          const piece = this.piecesQueue[nextPieceI];
+          const tetrominoBodyIndex = this.actualPiece.tetrominos[piece][index];
+          if(tetrominoBodyIndex == 1){
+            this.queueHUDContext?.drawImage(this.themeService.themeImages[piece + 1],this.queueHUDContext.canvas.width - 240 + (BLOCK_SIZE * (c + 1)),210 + ((120 * nextPieceI) + (r * BLOCK_SIZE)), BLOCK_SIZE, BLOCK_SIZE);
+          }
+        }
+      }
+    }
+  }
+
   handleFocusChangeClick(mode:FocusButtonItem){
     this.matchVariables.setAttackMode(mode.name);
   }
@@ -593,7 +612,6 @@ export class AppComponent implements OnInit {
     setTimeout(()=>{
       requestAnimationFrame(()=>this.animationLifecycle());
     },1000/60)
-
   }
 }
 
@@ -603,3 +621,4 @@ class FocusButtonItem {
     key!: number;
     isEnabled ?: boolean = false;
 }
+

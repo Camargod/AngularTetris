@@ -5,6 +5,7 @@
     <canvas width="800" height="1520" class="debug-canvas game-canvas" #debugcanvas></canvas>
     <canvas width="800" height="1520" class="piece-canvas game-canvas" #piecescanvas></canvas>
     <canvas width="800" height="1520" class="piece-canvas game-canvas" #fallingpiecescanvas></canvas>
+    <canvas width="1100" height="1520" class="game-grid game-canvas" #queuecanvas></canvas>
     <canvas width="800" height="1520" class="game-grid game-canvas" #gridcanvas></canvas>
     <canvas width="800" height="1520" class="interface-hud game-canvas" #interfaceHUD></canvas>
   </div>
@@ -27,7 +28,7 @@
       <label>Players: {{players}}</label>
       <button (click)="setGarbageOnGrid(1)">Testar lixo +1</button>
       <label>Resta {{eventsLeftForTrash}} para {{accumulatedTrash}} de lixo cair</label>
-      <button (click)="isPaused = !isPaused">{{isPaused ? "Voltar" : "Pausar"}} Jogo</button>
+      <button *ngIf="isSingleplayer" (click)="isPaused = !isPaused">{{isPaused ? "Voltar" : "Pausar"}} Jogo</button>
 
       <!-- <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
         <button type="submit">Test autenticate</button>
@@ -36,7 +37,7 @@
     </span>
   </div>
 
-  <div class="focus-modes">
+  <div class="focus-modes" *ngIf="!isSingleplayer">
     <div class="modes">
       <ng-container *ngFor="let mode of attackModes">
         <div [ngClass]="(mode.name != '' ? 'attack-mode ' : '') + (mode.isEnabled ? 'attack-mode-selected' : '')" [style.width.%]="mode.size">

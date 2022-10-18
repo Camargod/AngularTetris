@@ -121,7 +121,7 @@ select{
   z-index: 7;
   .modes{
     border-radius: 4px;
-    background-color: whitesmoke;
+    background-color: rgba(245, 245, 245, 0.4);
     width: 22%;
     min-width: 200px;
     height: 120px;
@@ -130,6 +130,7 @@ select{
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
+    padding: 4px;
     .attack-mode{
       text-align: center;
       border: 1px black solid;
@@ -138,6 +139,7 @@ select{
       font-size: 22px;
       position: relative;
       padding: 2px 0px;
+      background: whitesmoke;
       .mode-key{
         position: absolute;
         border-radius: 50px;

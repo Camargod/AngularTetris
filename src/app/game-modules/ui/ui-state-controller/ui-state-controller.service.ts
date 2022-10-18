@@ -2,6 +2,7 @@ import { Component, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { UiCloseComponent } from '../states/ui-close/ui-close.component';
 import { UiConfigComponent } from '../states/ui-config/ui-config.component';
+import { UiGameoverComponent } from '../states/ui-gameover/ui-gameover.component';
 import { UiHomeComponent } from '../states/ui-home/ui-home.component';
 import { UiMenuComponent } from '../states/ui-menu/ui-menu.component';
 import { UiStatsComponent } from '../states/ui-stats/ui-stats.component';
@@ -30,7 +31,7 @@ export class UiStateControllerService {
   }
 
   toggleUi(){
-    this._uiVisible.next(!this._uiVisible.value);
+    this._uiVisible.next(true);
   }
 
   hideUi(){
@@ -49,7 +50,8 @@ const UiStates = [
   {name:"closeState", component: UiCloseComponent},
   {name:"themes", component:UiThemesComponent},
   {name:"config", component:UiConfigComponent},
-  {name:"stats", component:UiStatsComponent}
+  {name:"stats", component:UiStatsComponent},
+  {name:"game_over", component:UiGameoverComponent}
 ]
 export const UiStatesEnum = {
   "HOME":"home",
@@ -58,5 +60,6 @@ export const UiStatesEnum = {
   "CLOSE": "closeState",
   "THEMES": "themes",
   "CONFIG": "config",
-  "STATS": "stats"
+  "STATS": "stats",
+  "GAME_OVER": "game_over"
 }
