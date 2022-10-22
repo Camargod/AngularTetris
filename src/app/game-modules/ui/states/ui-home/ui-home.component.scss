@@ -1,9 +1,10 @@
 :host{
+  //background-image: url(/assets/ui/tetrisverse.png);
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-  img{
+  img {
     width: 35%;
   }
   background-color: cornsilk;
@@ -26,6 +27,10 @@
 }
 
 .key-press{
+  color:red;
+  cursor: pointer;
+  padding: 1% 1% 1% 1%;
+  border-radius: 4%;
   opacity: 0;
   animation-name: key-intro;
   animation-duration: 1.7s;
