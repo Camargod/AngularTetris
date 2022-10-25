@@ -1,13 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
 body {
     margin: 0;
     padding: 0;
     overflow: hidden;
+    font-family:Bebas Neue;
 }
 
 .menu-button{
   background-color: white;
+  text-shadow: 4px 4px 8px black;
+  color:white;
   border-radius: 12px;
   padding: 10px 20px;
   display: flex;
@@ -17,16 +21,109 @@ body {
   background-repeat: no-repeat;
   background-size:cover;
   background-position: center;
+  transition: .5s;
   &:hover{
-    transform: scale(1.01);
+    transform: scale(1.02);
+    transition: .5s;
     cursor: pointer;
   }
 }
 
 .back-btn{
+  font-family: Bebas Neue;
+  font-weight: 500;
+  letter-spacing:1px;
+  font-size: 15px;
+  padding: 1.0% 0.5% 1.0% 0.5%;
+  color:black;
+  background-color: orange;
   position: absolute;
-  left: 10px;
-  top: 10px;
+  left: 30px;
+  top: 30px;
+  border-radius: 5%;
+  transition: .5s;
+  &:hover{
+    cursor:pointer;
+    transform: scale(1.2);
+    transition: .5s;
+    opacity: 1;
+    box-shadow: inset 0 0 0 30px #b60000;
+    color: rgb(255, 255, 255);
+  }
 }
+
+.submenu-language-btn{
+  font-family: Bebas Neue;
+  font-weight: 500;
+  letter-spacing:1px;
+  font-size: 30px;
+  padding: 1.0% 0.5% 1.0% 0.5%;
+  color:black;
+  background-color: orange;
+  position: absolute;
+  top: 400px;
+  border-radius: 5%;
+  transition: .5s;
+  &:hover{
+    cursor:pointer;
+    transform: scale(1.2);
+    transition: .5s;
+    opacity: 1;
+    box-shadow: inset 0 0 0 80px #b60000;
+    color: rgb(255, 255, 255);
+  }
+}
+
+.submenu-control-btn{
+  font-family: Bebas Neue;
+  font-weight: 500px;
+  letter-spacing:1px;
+  font-size: 30px;
+  padding: 1.0% 0.5% 1.0% 0.5%;
+  color:black;
+  background-color: orange;
+  position: absolute;
+  top: 500px;
+  border-radius: 5%;
+  transition: .5s;
+  &:hover{
+    cursor:pointer;
+    transform: scale(1.2);
+    transition: .5s;
+    opacity: 1;
+    box-shadow: inset 0 0 0 80px #b60000;
+    color: rgb(255, 255, 255);
+  }
+}
+
+.submenu-volume-btn{
+  font-family: Bebas Neue;
+  font-weight: 500;
+  letter-spacing:1px;
+  font-size: 30px;
+  padding: .8% 1.2% .8% 1.2%;
+  color:black;
+  background-color: orange;
+  position: absolute;
+  top:600px;
+  border-radius: 5%;
+  transition: .5s;
+  &:hover{
+    cursor:pointer;
+    transform: scale(1.2);
+    transition: .5s;
+    opacity: 1;
+    box-shadow: inset 0 0 0 80px #b60000;
+    color: rgb(255, 255, 255);
+  }
+  
+}
+
+.config-buttons{
+  display: flex;
+  justify-content: center;
+}
+
+
 
 
