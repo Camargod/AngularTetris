@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { SocketEventClientEnumerator, SocketEventServerEnumerator } from 'src/enums/socket-event.enum';
-import { PlayersGrids } from '../objects/players-grids';
-import { User } from '../objects/server/user';
-import { TetrisGridPiece } from '../objects/tetris-grid-piece';
+import { PlayersGrids } from '../../objects/players-grids';
+import { User } from '../../objects/server/user';
+import { TetrisGridPiece } from '../../objects/tetris-grid-piece';
 import { SocketService } from '../socket/socket.service';
-import { Parser } from '../utils/parser';
+import { Parser } from '../../utils/parser';
 
 @Injectable({
   providedIn: 'root'

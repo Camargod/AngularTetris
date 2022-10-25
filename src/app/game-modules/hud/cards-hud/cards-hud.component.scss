@@ -1,0 +1,38 @@
+:host{
+  position: absolute;
+  right: 0px;
+  width: 30%;
+  height: calc(80% - 20px);
+  width: 29%;
+  padding: 16px;
+}
+
+.card-hud{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  .card{
+    display: flex;
+    padding: 4px;
+    background-color: rgba(128, 128, 128, 0.75);
+    border-radius: 4px;
+    img{
+      height: 20vh;
+      margin-right: 14px;
+    }
+    & + .card {
+      margin-top: 10px;
+    }
+  }
+
+  .cards-info{
+    min-height: 40px;
+    max-height: 100px;
+  }
+}
