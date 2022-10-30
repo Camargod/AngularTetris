@@ -1,10 +1,9 @@
 import {Component,ViewChild,ElementRef,OnInit,HostListener, AfterContentInit} from '@angular/core';
-import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS, LATERAL_PADDING, CANVAS_SCALING, TOP_PADDING, TRASH_LEVEL} from "./constants";
+import {COLS,BLOCK_SIZE,ROWS,GRIDCOLS,KEY,GRIDROWS, LATERAL_PADDING, CANVAS_SCALING, TOP_PADDING, TRASH_LEVEL} from "./game-modules/utils/constants";
 import GameUtils from './game-modules/utils/game-utils';
-import { Themes,ThemeService} from './theme-service';
-import { AudioMap,AudioMapNames,SoundClass} from './sound';
+import { Themes,ThemeService} from './game-modules/services/themes/theme-service';
 import { MatchVariablesService } from './game-modules/services/match-variables/match-variables.service';
-import { MovementService } from './game-modules/movement/movement.service';
+import { MovementService } from './game-modules/services/movement/movement.service';
 import { FormBuilder } from '@angular/forms';
 import { TetrisGridPiece } from './game-modules/objects/tetris-grid-piece';
 import { EnemiesViewComponent } from './game-modules/hud/enemies-view/enemies-view.component';
@@ -13,7 +12,7 @@ import { UiStateControllerService, UiStatesEnum } from './game-modules/ui/ui-sta
 import { skip } from 'rxjs/operators';
 import GridUtils from './game-modules/utils/grid-utils';
 import { Animation, AnimationEnum } from './game-modules/objects/animation';
-import { TPiece } from 'src/objects/piece';
+import { TPiece } from 'src/app/game-modules/objects/piece';
 import { TetrominoGen } from './game-modules/utils/tetromino-gen';
 import { overrideCanvas, OverridedCanvas2DContext } from './game-modules/objects/CanvsRenderingContext2DCustom';
 
@@ -39,13 +38,13 @@ export class AppComponent implements OnInit{
 
   @ViewChild("viewsManager",{static:true}) views !: EnemiesViewComponent;
 
-  canvasGridContext !: CanvasRenderingContext2D | null;
-  piecesCanvasContext !: CanvasRenderingContext2D | null;
-  fallingPiecesCanvasContext !: CanvasRenderingContext2D | null;
-  interfaceHUDCanvasContext !: CanvasRenderingContext2D | null;
-  debugCanvasContext !: CanvasRenderingContext2D | null;
-  trashCanvasContext !: CanvasRenderingContext2D | null;
-  queueHUDContext !: OverridedCanvas2DContext | null;
+  canvasGridContext !: CanvasRenderingContext2D;
+  piecesCanvasContext !: CanvasRenderingContext2D;
+  fallingPiecesCanvasContext !: CanvasRenderingContext2D;
+  interfaceHUDCanvasContext !: CanvasRenderingContext2D;
+  debugCanvasContext !: CanvasRenderingContext2D ;
+  trashCanvasContext !: CanvasRenderingContext2D;
+  queueHUDContext !: OverridedCanvas2DContext;
   /*
     Vetor de grid, contendo a informação da casa e a cor da peça que está nela.
   */
@@ -79,6 +78,8 @@ export class AppComponent implements OnInit{
   isSingleplayer = false;
 
   actualPiece : TPiece = new TPiece();
+  holdedPiece : TPiece = new TPiece();
+  canSwap = true;
 
   gamePontuation = 0;
 
@@ -235,6 +236,7 @@ export class AppComponent implements OnInit{
         if (this.colision(this.posX, this.posY + BLOCK_SIZE, this.actualPiece.rotation)) {
           this.saveTetromino(this.posX, this.posY);
           this.isTurboOn = false;
+          this.canSwap = true;
           this.clearFullLines();
           this.trashEventTrigger();
           // this.gridArrayDebug();
@@ -251,7 +253,6 @@ export class AppComponent implements OnInit{
 
         this.useDelay = false;
         this.delayTime = 0;
-
       }
     }
 
@@ -264,12 +265,12 @@ export class AppComponent implements OnInit{
     Traz para o tipo de contexto as referencias de elemento HTML
   */
   prepareCanvasContexts() {
-    this.canvasGridContext = this.gridCanvas.nativeElement.getContext('2d');
-    this.piecesCanvasContext = this.piecesCanvas.nativeElement.getContext('2d');
-    this.fallingPiecesCanvasContext = this.fallingPiecesCanvas.nativeElement.getContext('2d');
-    this.debugCanvasContext = this.debugCanvas.nativeElement.getContext('2d');
-    this.trashCanvasContext = this.trashCanvas.nativeElement.getContext('2d');
-    this.interfaceHUDCanvasContext = this.interfaceHUD.nativeElement.getContext('2d');
+    this.canvasGridContext = this.gridCanvas.nativeElement.getContext('2d')!;
+    this.piecesCanvasContext = this.piecesCanvas.nativeElement.getContext('2d')!;
+    this.fallingPiecesCanvasContext = this.fallingPiecesCanvas.nativeElement.getContext('2d')!;
+    this.debugCanvasContext = this.debugCanvas.nativeElement.getContext('2d')!;
+    this.trashCanvasContext = this.trashCanvas.nativeElement.getContext('2d')!;
+    this.interfaceHUDCanvasContext = this.interfaceHUD.nativeElement.getContext('2d')!;
     this.queueHUDContext = this.queueHUD.nativeElement.getContext("2d") as OverridedCanvas2DContext;
     overrideCanvas(this.queueHUDContext!);
   }
@@ -299,6 +300,7 @@ export class AppComponent implements OnInit{
   */
   pieceSet() {
     this.actualPiece = new TPiece();
+    this.holdedPiece.pieceNumberId = -1;
   }
 
   setBackgroundByTheme(){
@@ -316,7 +318,6 @@ export class AppComponent implements OnInit{
         };
       }
     }
-    console.log("Tamanho da grid original: " + this.gridVector.length);
   }
   /*
     Rotação de matriz para validação da peça por x e y da mesma.
@@ -438,8 +439,6 @@ export class AppComponent implements OnInit{
         if (this.actualPiece.shape![rotate] == 1) {
           const colIndex = ((posX + (px * BLOCK_SIZE)) / BLOCK_SIZE);
           let index = (colIndex + ((((posY + (py * BLOCK_SIZE)) / BLOCK_SIZE) - 1) * GRIDCOLS));
-          if(colIndex > 10) console.error("Coluna invalida para inserção");
-          console.log("Tetromino na coluna: " + colIndex);
           if (index < GRIDCOLS * 6) {
             this.isGameOver = true;
             this.matchVariables.setGameOver(this.isGameOver);
@@ -455,9 +454,13 @@ export class AppComponent implements OnInit{
         }
       }
     }
+    this.resetTetrominoPosition()
+    this.matchVariables.setGridUpdate(this.gridVector);
+  }
+
+  resetTetrominoPosition() {
     this.posY = BLOCK_SIZE;
     this.posX = BLOCK_SIZE * 6;
-    this.matchVariables.setGridUpdate(this.gridVector);
   }
   /*
     Limpa as linhas cheias.
@@ -583,9 +586,28 @@ export class AppComponent implements OnInit{
   drawNextPieces(){
     const visibleNextPieces = 4;
     const x1 = this.queueHUDContext!.canvas.width - 220;
+    const y1Pieces = 210, y1Hold = y1Pieces + (BLOCK_SIZE * 4 * (visibleNextPieces + 1)) + 40;
 
     this.queueHUDContext?.clearRect(0,0,this.queueHUDContext.canvas.width,this.queueHUDContext.canvas.height);
-    this.queueHUDContext?.roundRect(x1, 210, BLOCK_SIZE * 6, 160 + visibleNextPieces*4*BLOCK_SIZE,4);
+    this.queueHUDContext?.roundRect(x1, y1Hold, BLOCK_SIZE * 6, 4*BLOCK_SIZE, 4);
+    this.queueHUDContext!.fillStyle = "rgba(0, 0, 0, 0.4)";
+    this.queueHUDContext?.fill();
+    if(this.holdedPiece.pieceNumberId != -1){
+      for(let r = 0; r <= 4; r++){
+        for(let c = 0; c <= 4; c++){
+          const index = this.pieceRotate(c,r,1);
+          const piece = this.holdedPiece.pieceNumberId - 1;
+          const tetrominoBodyIndex = this.holdedPiece.tetrominos[piece][index];
+          if(tetrominoBodyIndex == 1){
+            let image = this.canSwap ? this.themeService.themeImages[piece + 1] : this.themeService.themeImages[0];
+            this.queueHUDContext?.drawImage(image,x1 + (BLOCK_SIZE * (c + 1)),y1Hold +(r * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
+          }
+        }
+      }
+    }
+
+
+    this.queueHUDContext?.roundRect(x1, y1Pieces, BLOCK_SIZE * 6, 160 + visibleNextPieces*4*BLOCK_SIZE,4);
     this.queueHUDContext!.fillStyle = "rgba(0, 0, 0, 0.4)";
     this.queueHUDContext?.fill();
     for(let nextPieceI = 0; nextPieceI <= visibleNextPieces; nextPieceI++){
@@ -595,7 +617,7 @@ export class AppComponent implements OnInit{
           const piece = this.piecesQueue[nextPieceI];
           const tetrominoBodyIndex = this.actualPiece.tetrominos[piece][index];
           if(tetrominoBodyIndex == 1){
-            this.queueHUDContext?.drawImage(this.themeService.themeImages[piece + 1],x1 + (BLOCK_SIZE * (c + 1)),210 + ((120 * nextPieceI) + (r * BLOCK_SIZE)), BLOCK_SIZE, BLOCK_SIZE);
+            this.queueHUDContext?.drawImage(this.themeService.themeImages[piece + 1],x1 + (BLOCK_SIZE * (c + 1)),y1Pieces + ((120 * nextPieceI) + (r * BLOCK_SIZE)), BLOCK_SIZE, BLOCK_SIZE);
           }
         }
       }
@@ -615,6 +637,24 @@ export class AppComponent implements OnInit{
   validateTurbo(){
     if(this.isTurboOn){
       this.gameFrame();
+    }
+  }
+
+  swapPiece(){
+    if(this.canSwap){
+      this.canSwap = false;
+      if(this.holdedPiece.pieceNumberId == -1){
+        this.holdedPiece.spawn(this.actualPiece.pieceNumberId - 1);
+        this.actualPiece.spawn(this.piecesQueue.shift()!);
+        this.drawNextPieces();
+      } else {
+        let pieceA = this.actualPiece;
+        this.actualPiece = this.holdedPiece;
+        this.holdedPiece = pieceA;
+        this.actualPiece.spawn(this.actualPiece.pieceNumberId - 1);
+        this.drawNextPieces();
+      }
+      this.resetTetrominoPosition();
     }
   }
 

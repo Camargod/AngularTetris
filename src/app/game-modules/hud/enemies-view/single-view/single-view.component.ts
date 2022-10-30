@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core";
-import { BLOCK_SIZE, GRIDCOLS, GRIDROWS, LATERAL_PADDING, TOP_PADDING } from "src/app/constants";
+import { BLOCK_SIZE, GRIDCOLS, GRIDROWS, LATERAL_PADDING, TOP_PADDING } from "src/app/game-modules/utils/constants";
 import { TetrisGridPiece } from "src/app/game-modules/objects/tetris-grid-piece";
-import { ThemeService } from "src/app/theme-service";
+import { ThemeService } from "src/app/game-modules/services/themes/theme-service";
 
 @Component({
     selector: 'single-view',

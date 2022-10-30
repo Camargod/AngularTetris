@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { SocketEventClientEnumerator, SocketEventServerEnumerator } from 'src/enums/socket-event.enum';
+import { SocketEventClientEnumerator, SocketEventServerEnumerator } from 'src/app/game-modules/enums/socket-event.enum';
 import { PlayersGrids } from '../../objects/players-grids';
 import { User } from '../../objects/server/user';
 import { TetrisGridPiece } from '../../objects/tetris-grid-piece';

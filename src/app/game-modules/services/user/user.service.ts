@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AuthService, User } from "@auth0/auth0-angular";
 import { pipe } from "rxjs";
-import { SocketEventClientEnumerator } from "src/enums/socket-event.enum";
+import { SocketEventClientEnumerator } from "src/app/game-modules/enums/socket-event.enum";
 import { SocketService } from "../socket/socket.service";
 
 @Injectable({

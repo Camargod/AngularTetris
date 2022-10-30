@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Themes, ThemeService } from 'src/app/theme-service';
+import { Themes, ThemeService } from 'src/app/game-modules/services/themes/theme-service';
 import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controller/ui-state-controller.service';
 
 @Component({

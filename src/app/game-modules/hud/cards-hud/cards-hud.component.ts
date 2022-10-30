@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Cards } from '../../objects/cards';
 
 @Component({
@@ -26,9 +26,29 @@ export class CardsHudComponent implements OnInit {
     }
   ];
 
+  keys : any = {
+    "Enter": this.onKeyEnter,
+    "-": this.changeOrder
+  }
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  @HostListener("window:keydown", ['$event'])
+  handleKeys(event: KeyboardEvent){
+    if(event.key && this.keys[event.key]) (this.keys[event.key] as Function).bind(this)();
+  }
+
+  onKeyEnter(){
+    let cardToBeUsed = this.cardsMock.shift();
+    console.log(cardToBeUsed);
+  }
+
+  changeOrder(){
+    let changedCard = this.cardsMock.shift();
+    if(changedCard != undefined) this.cardsMock.push(changedCard);
   }
 
 }

@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { MatchVariablesService } from 'src/app/game-modules/services/match-variables/match-variables.service';
 import { SocketService } from 'src/app/game-modules/services/socket/socket.service';
 import { UserService } from 'src/app/game-modules/services/user/user.service';
-import { AudioMap, AudioMapNames, SoundClass } from 'src/app/sound';
+import { AudioMap, AudioMapNames, SoundClass } from 'src/app/game-modules/utils/sound';
 import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controller/ui-state-controller.service';
 
 @Component({

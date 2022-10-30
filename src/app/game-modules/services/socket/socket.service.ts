@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subscriber } from "rxjs";
 
 import { io, Socket } from "socket.io-client";
-import { SocketEventClientEnumerator } from "src/enums/socket-event.enum";
+import { SocketEventClientEnumerator } from "src/app/game-modules/enums/socket-event.enum";
 import { environment } from "src/environments/environment";
 import * as parser from "src/app/game-modules/services/socket/parser/socket-parser"
 
