@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { Subscription } from "rxjs";
-import { MatchVariablesService } from "../../match-variables/match-variables.service";
+import { MatchVariablesService } from "../../services/match-variables/match-variables.service";
 import { PlayersGrids } from "../../objects/players-grids";
 import { SingleViewComponent } from "./single-view/single-view.component";
 

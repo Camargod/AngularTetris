@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { MatchVariablesService } from 'src/app/game-modules/match-variables/match-variables.service';
-import { SocketService } from 'src/app/game-modules/socket/socket.service';
-import { UserService } from 'src/app/game-modules/user/user.service';
+import { MatchVariablesService } from 'src/app/game-modules/services/match-variables/match-variables.service';
+import { SocketService } from 'src/app/game-modules/services/socket/socket.service';
+import { UserService } from 'src/app/game-modules/services/user/user.service';
 import { AudioMap, AudioMapNames, SoundClass } from 'src/app/sound';
 import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controller/ui-state-controller.service';
 

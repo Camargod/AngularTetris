@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, Subscriber } from "rxjs";
 import { io, Socket } from "socket.io-client";
 import { SocketEventClientEnumerator } from "src/enums/socket-event.enum";
 import { environment } from "src/environments/environment";
-import * as parser from "src/app/game-modules/socket/parser/socket-parser"
+import * as parser from "src/app/game-modules/services/socket/parser/socket-parser"
 
 @Injectable({
     providedIn:'root'

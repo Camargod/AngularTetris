@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controller/ui-state-controller.service';
 import { AuthService, User } from '@auth0/auth0-angular';
-import { UserService } from 'src/app/game-modules/user/user.service';
+import { UserService } from 'src/app/game-modules/services/user/user.service';
 import { ThemeService } from 'src/app/theme-service';
 
 @Component({
