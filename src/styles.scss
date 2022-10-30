@@ -41,11 +41,11 @@ body {
   left: 30px;
   top: 30px;
   border-radius: 5%;
-  transition: .5s;
+  transition: .3s;
   &:hover{
     cursor:pointer;
     transform: scale(1.2);
-    transition: .5s;
+    transition: .3s;
     opacity: 1;
     box-shadow: inset 0 0 0 30px #b60000;
     color: rgb(255, 255, 255);
@@ -79,7 +79,7 @@ body {
   font-weight: 500px;
   letter-spacing:1px;
   font-size: 30px;
-  padding: 1.0% 0.5% 1.0% 0.5%;
+  padding: 1.0% 0.8% 1.0% 0.8%;
   color:black;
   background-color: orange;
   position: absolute;
@@ -101,7 +101,7 @@ body {
   font-weight: 500;
   letter-spacing:1px;
   font-size: 30px;
-  padding: .8% 1.2% .8% 1.2%;
+  padding: .8% 1.4% .8% 1.4%;
   color:black;
   background-color: orange;
   position: absolute;
