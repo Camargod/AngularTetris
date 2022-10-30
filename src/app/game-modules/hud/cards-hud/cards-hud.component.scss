@@ -2,7 +2,6 @@
   position: absolute;
   right: 0px;
   width: 30%;
-  height: calc(80% - 20px);
   width: 29%;
   padding: 16px;
 }
@@ -16,7 +15,12 @@
   padding: 6px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  .hud-title{
+    padding: 4px;
+    color: white;
+    margin: 0;
+    font-size: calc(0.9vw + 1em);
+  }
   .card{
     display: flex;
     padding: 4px;
@@ -29,10 +33,26 @@
     & + .card {
       margin-top: 10px;
     }
+    .card-texts{
+      padding: 0.2vw;
+      p{
+        margin: 0;
+      }
+      .card-title{
+        font-size: calc(0.7vw + 1em);
+      }
+      .card-desc{
+        font-size: calc(0.5vw + 1em);
+      }
+    }
   }
 
   .cards-info{
-    min-height: 40px;
-    max-height: 100px;
+    padding: 10px 4px 0 4px;
+    p{
+      color: white;
+      margin: 0;
+      font-size: calc(0.5vw + 1em);
+    }
   }
 }

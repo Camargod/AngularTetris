@@ -4,7 +4,7 @@ export class TPiece {
   color?: string;
   shape?: number[];
   rotation: number = 0;
-  pieceNumberId = 0;
+  pieceNumberId = -1;
   tetrominos = [
     [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], // |
     [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0], // T

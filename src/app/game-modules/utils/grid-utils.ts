@@ -1,4 +1,4 @@
-import { GRIDCOLS, GRIDROWS } from "src/app/constants";
+import { GRIDCOLS, GRIDROWS } from "src/app/game-modules/utils/constants";
 import { TetrisGridPiece } from "../objects/tetris-grid-piece";
 
 export default class GridUtils{

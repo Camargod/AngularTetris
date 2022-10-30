@@ -1,4 +1,4 @@
-import { BLOCK_SIZE, COLS, GRIDCOLS, GRIDROWS } from '../../constants';
+import { BLOCK_SIZE, COLS, GRIDCOLS, GRIDROWS } from './constants';
 
 export default class GameUtils
 {

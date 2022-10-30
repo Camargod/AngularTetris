@@ -6,7 +6,7 @@ import {
 } from "src/app/app.component";
 import {
   BLOCK_SIZE
-} from "src/app/constants";
+} from "src/app/game-modules/utils/constants";
 
 @Injectable({
   providedIn: 'root'
@@ -66,12 +66,17 @@ export class MovementService {
     scope.isTurboOn = true;
   }
 
+  swapPiece(scope : AppComponent){
+    scope.swapPiece();
+  }
+
   keyDownMap: any = {
     "ArrowLeft": this.keyLeft,
     "ArrowUp": this.rotateLeft,
     "z": this.rotateRight,
     "ArrowRight": this.keyRight,
     "ArrowDown": this.keyDown,
-    "Shift": this.turbo
+    "Shift": this.turbo,
+    "/": this.swapPiece
   }
 }
