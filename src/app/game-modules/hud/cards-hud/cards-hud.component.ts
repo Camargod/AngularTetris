@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { Cards } from '../../objects/cards';
+import { Card } from '../../objects/cards';
 
 @Component({
   selector: 'cards-hud',
@@ -8,21 +8,24 @@ import { Cards } from '../../objects/cards';
 })
 export class CardsHudComponent implements OnInit {
 
-  cardsMock : Array<Cards> = [
+  cardsMock : Array<Card> = [
     {
       "name": "Double damage",
       "image": "/assets/cards/fortify.png",
-      "description": "Aumenta o dano por 3 rodadas"
+      "description": "Aumenta o dano por 3 rodadas",
+      "identifier": "DOUBLE_DAMAGE"
     },
     {
       "name": "Freeze",
       "image": "/assets/cards/freeze.png",
-      "description": "Congela seu tabuleiro (Tome um arzinho)"
+      "description": "Congela seu tabuleiro (Tome um arzinho)",
+      "identifier": "FREEZE"
     },
     {
       "name": "Speedup",
       "image": "/assets/cards/speedup.png",
-      "description": "Aumenta temporariamente a velocidade do adversario."
+      "description": "Aumenta temporariamente a velocidade do adversario.",
+      "identifier": "SPEEDUP"
     }
   ];
 

@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  server: "https://tetrisverse-server.onrender.com"
+  server: "https://server-g6vjof55ta-uc.a.run.app"
 };

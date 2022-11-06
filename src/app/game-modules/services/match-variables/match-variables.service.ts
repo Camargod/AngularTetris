@@ -6,6 +6,7 @@ import { User } from '../../objects/server/user';
 import { TetrisGridPiece } from '../../objects/tetris-grid-piece';
 import { SocketService } from '../socket/socket.service';
 import { Parser } from '../../utils/parser';
+import { Card } from '../../objects/cards';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,7 @@ constructor(
   public match_speed = new BehaviorSubject<number>(500);
   public isSingleplayer = new BehaviorSubject(false);
   public nextPieces = new BehaviorSubject([]);
+  public receivedCardFromEnemy = new BehaviorSubject<Card>({} as Card);
   private socketSubscription ?: Subscription;
 
   startGameListening(){
