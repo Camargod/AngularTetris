@@ -1,5 +1,5 @@
 <body>
-    <button class="back-btn" (click)="back()">Voltar</button> 
+    <button class="back-btn" (click)="back()">Voltar</button>
     <div class="stats-display-flex">
     <div class="cube">
         <div class="green-cube">
@@ -15,8 +15,8 @@
 
 <div class="content">
     <div class="mainInfo">
-      <h1>Fernando</h1>
-      <span>Brasil</span>
+      <h1>{{user?.nickname}}</h1>
+      <span>{{user?.email}}</span>
       <div class="aboutMe">
         <h3>Sobre</h3>
         Estatísticas de jogadas do jogador. Vitórias, derrotas, e peças mais usadas no jogo.
@@ -24,26 +24,26 @@
     </div>
     <div class="matchStats">
       <div class="backgroundText">Partidas</div>
-      <canvas id="gameStats" width="180" height="180"></canvas>
+      <canvas class="gameStats" #gameStats width="180" height="180"></canvas>
     </div>
-  
+
     <div class="matchStats">
       <div class="backgroundText">Funções</div>
-      <canvas id="roleStats" width="180" height="180"></canvas>
+      <canvas class="roleStats" #roleStats width="180" height="180"></canvas>
     </div>
-  
+
     <div class="clearFix"></div>
-  
+
     <div class="col">
       <h2>Vitórias com cada Tema</h2>
       <div class="resizing">
-        <canvas id="champData"></canvas>
+        <canvas #champData></canvas>
       </div>
     </div>
     <div class="col middle">
       <h2>Tempo em jogo</h2>
       <div class="resizing">
-        <canvas id="timeData"></canvas>
+        <canvas #timeData></canvas>
       </div>
     </div>
     <div class="col">

@@ -65,17 +65,17 @@ body {
   height: 240px;
   position: relative;
 }
-#gameStats, #roleStats {
+.gameStats, .roleStats {
   position: absolute;
   top: 0; bottom: 0; right: 20px;
   margin: auto;
 }
-#champData {
+.champData {
   position: absolute;
   top: 0; bottom: 0; right: -10px;
   margin: auto;
 }
-#timeData {
+.timeData {
   position: absolute;
   top: 0; bottom: 0; left: 0; right: 0;
   margin: auto;

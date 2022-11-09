@@ -13,6 +13,7 @@ import { UiTimerComponent } from './game-modules/ui/states/ui-timer/ui-timer.com
 import { UiMenuComponent } from './game-modules/ui/states/ui-menu/ui-menu.component';
 import { UiThemesComponent } from './game-modules/ui/states/ui-themes/ui-themes.component';
 import { CardsHudComponent } from './game-modules/hud/cards-hud/cards-hud.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { CardsHudComponent } from './game-modules/hud/cards-hud/cards-hud.compon
       domain: 'tetrisverse.us.auth0.com',
       clientId: 'BCeKlUlczhTXiT7gVoD4iLzoikwOolnJ'
     }),
+    NgChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
