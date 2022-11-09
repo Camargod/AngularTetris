@@ -6,6 +6,7 @@ import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controlle
   selector: 'app-ui-config',
   templateUrl: './ui-config.component.html',
   styleUrls: ['./ui-config.component.scss']
+  
 })
 export class UiConfigComponent implements OnInit {
 
