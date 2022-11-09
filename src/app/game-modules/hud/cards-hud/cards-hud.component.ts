@@ -1,5 +1,8 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { Card } from '../../objects/cards';
+import { SocketEventClientEnumerator } from '../../enums/socket-event.enum';
+import { Card, cards } from '../../objects/cards';
+import { CardsService } from '../../services/cards/cards-service';
+import { SocketService } from '../../services/socket/socket.service';
 
 @Component({
   selector: 'cards-hud',
@@ -9,32 +12,17 @@ import { Card } from '../../objects/cards';
 export class CardsHudComponent implements OnInit {
 
   cardsMock : Array<Card> = [
-    {
-      "name": "Double damage",
-      "image": "/assets/cards/fortify.png",
-      "description": "Aumenta o dano por 3 rodadas",
-      "identifier": "DOUBLE_DAMAGE"
-    },
-    {
-      "name": "Freeze",
-      "image": "/assets/cards/freeze.png",
-      "description": "Congela seu tabuleiro (Tome um arzinho)",
-      "identifier": "FREEZE"
-    },
-    {
-      "name": "Speedup",
-      "image": "/assets/cards/speedup.png",
-      "description": "Aumenta temporariamente a velocidade do adversario.",
-      "identifier": "SPEEDUP"
-    }
+    cards[0],
+    cards[1],
+    cards[2]
   ];
 
   keys : any = {
-    "Enter": this.onKeyEnter,
+    "Enter": this.onKeyEnter.bind(this),
     "-": this.changeOrder
   }
 
-  constructor() { }
+  constructor(private socketService : SocketService, private cardsService : CardsService) { }
 
   ngOnInit() {
   }
@@ -46,7 +34,9 @@ export class CardsHudComponent implements OnInit {
 
   onKeyEnter(){
     let cardToBeUsed = this.cardsMock.shift();
-    console.log(cardToBeUsed);
+    this.socketService.socketMsg(SocketEventClientEnumerator.SEND_CARD,cardToBeUsed);
+    //POR FAVOR RETIRAR DEPOIS:
+    this.cardsService.applyCard(cardToBeUsed!);
   }
 
   changeOrder(){

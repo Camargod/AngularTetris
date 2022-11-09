@@ -12,6 +12,7 @@ export enum SocketEventServerEnumerator{
   "ATTACKED_BY"=210,
   "RECEIVE_PIECES_QUEUE"=211,
   "GET_CARD_RETURN"=212,
+  "RECEIVE_CARD_FROM_ENEMY"=213,
   "DISCONNECTED_BY_SERVER" = 299
 }
 
@@ -23,5 +24,4 @@ export enum SocketEventClientEnumerator{
   "GET_ENEMIES_FOCUS" = 106,
   "SEND_DAMAGE"=107,
   "SEND_CARD" = 108,
-  "GET_CARD" = 109,
 }

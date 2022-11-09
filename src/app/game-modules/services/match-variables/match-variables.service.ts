@@ -7,6 +7,7 @@ import { TetrisGridPiece } from '../../objects/tetris-grid-piece';
 import { SocketService } from '../socket/socket.service';
 import { Parser } from '../../utils/parser';
 import { Card } from '../../objects/cards';
+import { CardsService } from '../cards/cards-service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ import { Card } from '../../objects/cards';
 export class MatchVariablesService {
 
 constructor(
-  private socketService : SocketService
+  private socketService : SocketService,
+  private cardsService : CardsService
 ) { }
   public timer = new BehaviorSubject<number>(9999);
   public game_start = new BehaviorSubject<boolean>(false);
@@ -83,6 +85,9 @@ constructor(
             break;
           case SocketEventServerEnumerator.RECEIVE_PIECES_QUEUE:
             this.nextPieces.next(event.value);
+            break;
+          case SocketEventServerEnumerator.RECEIVE_CARD_FROM_ENEMY:
+            this.cardsService.applyCard(event.value as Card);
             break;
           default:
             break

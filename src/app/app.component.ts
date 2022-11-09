@@ -15,6 +15,7 @@ import { Animation, AnimationEnum } from './game-modules/objects/animation';
 import { TPiece } from 'src/app/game-modules/objects/piece';
 import { TetrominoGen } from './game-modules/utils/tetromino-gen';
 import { overrideCanvas, OverridedCanvas2DContext } from './game-modules/objects/CanvsRenderingContext2DCustom';
+import { CardsService } from './game-modules/services/cards/cards-service';
 
 @Component({
   selector: 'app-root',
@@ -72,7 +73,9 @@ export class AppComponent implements OnInit{
 
   isGameOver: boolean = false;
   isPaused = true;
+  isFrozen = false;
   isPausedSubscription ?: Subscription;
+  _isFrozenSubscription ?: Subscription;
   hasImageLoaded: boolean = false;
   themeList = Themes;
   isSingleplayer = false;
@@ -131,7 +134,8 @@ export class AppComponent implements OnInit{
     private movementService : MovementService,
     private formBuilder: FormBuilder,
     private uiStateControllerService : UiStateControllerService,
-    private tetrominoGen : TetrominoGen
+    private tetrominoGen : TetrominoGen,
+    private cardsService : CardsService
   ) {
   }
 
@@ -189,10 +193,12 @@ export class AppComponent implements OnInit{
       }
     });
     this._piecesQueueSubscription = this.matchVariables.nextPieces.subscribe((pieces)=>{
-      console.log(pieces);
       this.piecesQueue.push(...pieces);
       if(pieces.length > 0)this.drawNextPieces();
     })
+    this._isFrozenSubscription = this.cardsService.isFrozen.subscribe((isFrozen)=>{
+      this.isFrozen = isFrozen;
+    });
   }
 
   waitImageLoad() {
@@ -229,7 +235,7 @@ export class AppComponent implements OnInit{
     }
 
     gameFrame(){
-      if (!this.isGameOver && !this.isPaused) {
+      if (!this.isGameOver && !this.isPaused && !this.isFrozen) {
         this.lastPosX = this.posX;
         this.lastPosY = this.posY;
 
@@ -242,6 +248,7 @@ export class AppComponent implements OnInit{
           // this.gridArrayDebug();
           this.actualPiece.spawn(this.piecesQueue.shift());
           this.drawNextPieces();
+          this.cardsService.turns.next(this.cardsService.turns.value + 1);
         }
 
         this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
