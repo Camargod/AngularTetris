@@ -14,22 +14,27 @@ import {
 export class MovementService {
 
   keyLeft(scope: AppComponent) {
-    if (!scope.colision(scope.posX - BLOCK_SIZE, scope.posY, scope.actualPiece.rotation)) {
+    let inversion = scope.cardsService.inversedCommands ? -1 : 1;
+    if (!scope.colision(scope.posX - BLOCK_SIZE * inversion, scope.posY, scope.actualPiece.rotation)) {
       scope.fallingPiecesCanvasContext!.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
-      scope.posX -= BLOCK_SIZE;
+      scope.posX -= BLOCK_SIZE * inversion;
       scope.tetrominoDraw();
     }
   }
 
   keyRight(scope: AppComponent) {
-    if (!scope.colision(scope.posX + BLOCK_SIZE, scope.posY, scope.actualPiece.rotation)) {
+    let inversion = scope.cardsService.inversedCommands ? -1 : 1;
+
+    if (!scope.colision(scope.posX + BLOCK_SIZE * inversion, scope.posY, scope.actualPiece.rotation)) {
       scope.fallingPiecesCanvasContext!.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
-      scope.posX += BLOCK_SIZE;
+      scope.posX += BLOCK_SIZE * inversion;
       scope.tetrominoDraw();
     }
   }
 
-  rotateLeft(scope: AppComponent) {
+  rotateLeft(scope: AppComponent, ignoreInverse = true) {
+    if(!ignoreInverse && scope.cardsService.inversedCommands) this.rotateRight.bind(this)(scope, false);
+
     if (!scope.colision(scope.posX, scope.posY, scope.actualPiece.rotation + 1)) {
       if (scope.actualPiece.rotation == 3) {
         scope.actualPiece.rotation = 0;
@@ -40,8 +45,8 @@ export class MovementService {
       scope.tetrominoDraw();
     }
   }
-  rotateRight(scope: AppComponent) {
-
+  rotateRight(scope: AppComponent, ignoreInverse = true) {
+    if(!ignoreInverse && scope.cardsService.inversedCommands) this.rotateLeft.bind(this)(scope, false);
     if (!scope.colision(scope.posX, scope.posY, scope.actualPiece.rotation - 1 < 0 ? 3 : scope.actualPiece.rotation - 1)) {
       if (scope.actualPiece.rotation == 0) {
         scope.actualPiece.rotation = 3;

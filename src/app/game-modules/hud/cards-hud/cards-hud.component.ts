@@ -14,7 +14,7 @@ export class CardsHudComponent implements OnInit {
   cardsMock : Array<Card> = [
     cards[0],
     cards[1],
-    cards[2]
+    cards[3]
   ];
 
   keys : any = {

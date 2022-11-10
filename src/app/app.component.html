@@ -30,7 +30,7 @@
       <button (click)="setGarbageOnGrid(1)">Testar lixo +1</button>
       <label>Resta {{eventsLeftForTrash}} para {{accumulatedTrash}} de lixo cair</label>
       <button *ngIf="isSingleplayer" (click)="isPaused = !isPaused">{{isPaused ? "Voltar" : "Pausar"}} Jogo</button>
-
+      <label>Speed: {{this.gameTimer2}}</label>
       <!-- <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
         <button type="submit">Test autenticate</button>
         <input id="nickname" type="text" formControlName="nickname">

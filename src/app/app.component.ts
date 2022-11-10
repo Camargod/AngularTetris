@@ -100,6 +100,8 @@ export class AppComponent implements OnInit{
   //Variaveis híbridas
   piecesQueue : Array<number> = [];
   gameTime = 500;
+  //Maybe some effects can affect the original game time, the above is the original game time.
+  gameTimer2 = 0;
 
   _timerSubscription ?: Subscription;
   _playersSubscription ?: Subscription;
@@ -135,7 +137,7 @@ export class AppComponent implements OnInit{
     private formBuilder: FormBuilder,
     private uiStateControllerService : UiStateControllerService,
     private tetrominoGen : TetrominoGen,
-    private cardsService : CardsService
+    public cardsService : CardsService
   ) {
   }
 
@@ -221,6 +223,10 @@ export class AppComponent implements OnInit{
     Desenho de jogo.
   */
     gameDraw() {
+      let hasMultiplier = this.cardsService.speedMultiplier > 1;
+      let speedExtra = hasMultiplier ? this.gameTime * (0.125 * this.cardsService.speedMultiplier) : 0;
+      let speed = this.gameTime + (this.useDelay ? this.delayTime : 0) - speedExtra;
+      this.gameTimer2 = speed;
       try {
           setTimeout(()=>{
             this.delayTime++;
@@ -228,7 +234,7 @@ export class AppComponent implements OnInit{
           setTimeout(() => {
             this.gameFrame();
             window.requestAnimationFrame(() => this.gameDraw());
-          }, this.gameTime + (this.useDelay ? this.delayTime : 0));
+          }, speed);
       } catch (err) {
         console.error(`Erro de gameloop: ${err}`)
       }
@@ -517,7 +523,7 @@ export class AppComponent implements OnInit{
       }
     }
     if(cleanOnceOrMore && this.eventsLeftForTrash < 5) this.eventsLeftForTrash++;
-    this.matchVariables.setEnemyAttack(rowsCleaned);
+    this.matchVariables.setEnemyAttack(rowsCleaned * this.cardsService.damageMultiplier);
   }
 
   redrawAllTetrominos() {
