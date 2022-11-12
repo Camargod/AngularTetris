@@ -21,6 +21,8 @@ import { TetrisGameComponent } from './game-modules/game-view/tetris-game/tetris
 import { UiGameViewComponent } from './game-modules/ui/states/ui-game-view/ui-game-view.component';
 import { InfoHudComponent } from './game-modules/hud/info-hud/info-hud.component';
 import { NgChartsModule } from 'ng2-charts';
+import { UiConfigComponent } from './game-modules/ui/states/ui-config/ui-config.component';
+import { UiStatsComponent } from './game-modules/ui/states/ui-stats/ui-stats.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/translation/', '.json');
@@ -35,10 +37,12 @@ export function HttpLoaderFactory(http: HttpClient) {
     EnemiesViewComponent,
     SingleViewComponent,
     UiStateControllerComponent,
+    UiConfigComponent,
     UiTimerComponent,
     UiHomeComponent,
     UiMenuComponent,
     UiThemesComponent,
+    UiStatsComponent,
     CardsHudComponent,
     AttackModesComponent,
     TetrisGameComponent,
@@ -56,7 +60,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     TranslateModule.forRoot(
       {
-        defaultLanguage: 'pt-br',
+        defaultLanguage: localStorage.getItem('language') || 'en',
         loader:{
           provide: TranslateLoader,
           useFactory: HttpLoaderFactory,

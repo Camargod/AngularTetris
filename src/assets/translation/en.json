@@ -18,5 +18,8 @@
     }
   },
   "stats":{},
-  "config": {}
+  "config": {},
+  "ui": {
+    "back-button": "Back"
+  }
 }
