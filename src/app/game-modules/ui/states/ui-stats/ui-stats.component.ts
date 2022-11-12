@@ -44,7 +44,7 @@ export class UiStatsComponent implements OnInit {
         tension: 0.1
       },
       {
-        label: '2019',
+        label: 'Ano Passado',
         data: [28, 48, 40, 19, 86, 27, 90],
         fill: false,
         borderColor: 'rgb(255, 99, 132)',
@@ -66,7 +66,7 @@ export class UiStatsComponent implements OnInit {
     labels: ["Padrão", "Noir", "Tech", "Retro"],
     datasets: [
         {
-            label: "Data",
+            label: "Vitórias",
             fillColor: "rgba(220,220,220,0.5)",
             strokeColor: "rgba(220,220,220,0.8)",
             highlightFill: "rgba(220,220,220,0.75)",
@@ -74,7 +74,7 @@ export class UiStatsComponent implements OnInit {
             data: [65, 59, 80, 81]
         },
         {
-            label: "Data 2",
+            label: "Derrotas",
             fillColor: "rgba(151,187,205,0.5)",
             strokeColor: "rgba(151,187,205,0.8)",
             highlightFill: "rgba(151,187,205,0.75)",
