@@ -12,7 +12,8 @@ import {
 
 export class ThemeService {
   public selectedThemeFile = "theme01.png"
-  public selectedThemeChanged: BehaviorSubject < null > = new BehaviorSubject < null > (null);
+  public selectedThemeChanged: BehaviorSubject < boolean > = new BehaviorSubject < boolean > (false);
+  public loadedImages = new BehaviorSubject<number>(0);
   public image ?: HTMLImageElement;
   public themeImages : Array<HTMLImageElement> = [];
 
@@ -25,17 +26,18 @@ export class ThemeService {
   loadNewTheme(){
     return new Observable((observable)=>{
       let loadedImages = 0;
+      this.loadedImages.next(0);
       for(let index = 0; index <= 7; index++){
         let image = new Image();
         image.src = `assets/themes/${localStorage.getItem("selectedTheme")}/${index}.png`;
         image.onload = () => {
           loadedImages++;
           this.themeImages[index] = image;
+          this.loadedImages.next(this.loadedImages.value + 1);
 
           if(loadedImages == 8){
             observable.next();
             observable.complete();
-            this.selectedThemeChanged.next(null);
           }
         };
       }

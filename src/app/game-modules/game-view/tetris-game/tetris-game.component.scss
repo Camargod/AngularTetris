@@ -1,0 +1,46 @@
+.game-body
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: normal;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    .game-box
+    {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      flex: 1;
+      height: 100%;
+      border-style: solid;
+      background-color: white;
+      box-shadow: rgba(0, 0, 0, 0.16) 0 0 15px;
+      .game
+      {
+        flex: 1;
+      }
+      .score
+      {
+        flex: 1;
+      }
+    }
+}
+
+.debug-canvas{
+  z-index: 6;
+}
+.game-canvas{
+    position: absolute;
+    //top: -140px;
+    height: calc(100% - 20px);
+}
+.game-grid{
+    z-index: 3;
+}
+.game-box{
+    z-index: 2;
+}
+.piece-canvas{
+    z-index: 4;
+}

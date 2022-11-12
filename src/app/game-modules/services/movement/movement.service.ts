@@ -7,13 +7,14 @@ import {
 import {
   BLOCK_SIZE
 } from "src/app/game-modules/utils/constants";
+import { TetrisGameComponent } from "../../game-view/tetris-game/tetris-game.component";
 
 @Injectable({
   providedIn: 'root'
 })
 export class MovementService {
 
-  keyLeft(scope: AppComponent) {
+  keyLeft(scope: TetrisGameComponent) {
     let inversion = scope.cardsService.inversedCommands ? -1 : 1;
     if (!scope.colision(scope.posX - BLOCK_SIZE * inversion, scope.posY, scope.actualPiece.rotation)) {
       scope.fallingPiecesCanvasContext!.clearRect(scope.posX, scope.posY, scope.posX + (BLOCK_SIZE * 4), scope.posY + (BLOCK_SIZE * 4));
@@ -22,7 +23,7 @@ export class MovementService {
     }
   }
 
-  keyRight(scope: AppComponent) {
+  keyRight(scope: TetrisGameComponent) {
     let inversion = scope.cardsService.inversedCommands ? -1 : 1;
 
     if (!scope.colision(scope.posX + BLOCK_SIZE * inversion, scope.posY, scope.actualPiece.rotation)) {
@@ -32,7 +33,7 @@ export class MovementService {
     }
   }
 
-  rotateLeft(scope: AppComponent, ignoreInverse = true) {
+  rotateLeft(scope: TetrisGameComponent, ignoreInverse = true) {
     if(!ignoreInverse && scope.cardsService.inversedCommands) this.rotateRight.bind(this)(scope, false);
 
     if (!scope.colision(scope.posX, scope.posY, scope.actualPiece.rotation + 1)) {
@@ -45,7 +46,7 @@ export class MovementService {
       scope.tetrominoDraw();
     }
   }
-  rotateRight(scope: AppComponent, ignoreInverse = true) {
+  rotateRight(scope: TetrisGameComponent, ignoreInverse = true) {
     if(!ignoreInverse && scope.cardsService.inversedCommands) this.rotateLeft.bind(this)(scope, false);
     if (!scope.colision(scope.posX, scope.posY, scope.actualPiece.rotation - 1 < 0 ? 3 : scope.actualPiece.rotation - 1)) {
       if (scope.actualPiece.rotation == 0) {
@@ -58,7 +59,7 @@ export class MovementService {
     }
   }
 
-  keyDown(scope: AppComponent) {
+  keyDown(scope: TetrisGameComponent) {
     if (!scope.colision(scope.posX, scope.posY + BLOCK_SIZE, scope.actualPiece.rotation)) {
       scope.posY += BLOCK_SIZE;
       scope.fallingPiecesCanvasContext!.clearRect(0, 0, scope.fallingPiecesCanvas.nativeElement.width, scope.fallingPiecesCanvas.nativeElement.height);
@@ -67,11 +68,11 @@ export class MovementService {
     }
   }
 
-  turbo(scope: AppComponent) {
+  turbo(scope: TetrisGameComponent) {
     scope.isTurboOn = true;
   }
 
-  swapPiece(scope : AppComponent){
+  swapPiece(scope : TetrisGameComponent){
     scope.swapPiece();
   }
 

@@ -2,6 +2,7 @@ import { Component, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { UiCloseComponent } from '../states/ui-close/ui-close.component';
 import { UiConfigComponent } from '../states/ui-config/ui-config.component';
+import { UiGameViewComponent } from '../states/ui-game-view/ui-game-view.component';
 import { UiGameoverComponent } from '../states/ui-gameover/ui-gameover.component';
 import { UiHomeComponent } from '../states/ui-home/ui-home.component';
 import { UiMenuComponent } from '../states/ui-menu/ui-menu.component';
@@ -39,6 +40,7 @@ export class UiStateControllerService {
   }
 
   startGame(){
+    this.changeState(UiStatesEnum.GAME);
     this._gameStart.next(false);
   }
 }
@@ -51,7 +53,8 @@ const UiStates = [
   {name:"themes", component:UiThemesComponent},
   {name:"config", component:UiConfigComponent},
   {name:"stats", component:UiStatsComponent},
-  {name:"game_over", component:UiGameoverComponent}
+  {name:"game_over", component:UiGameoverComponent},
+  {name:"game", component:UiGameViewComponent},
 ]
 export const UiStatesEnum = {
   "HOME":"home",
@@ -61,5 +64,6 @@ export const UiStatesEnum = {
   "THEMES": "themes",
   "CONFIG": "config",
   "STATS": "stats",
-  "GAME_OVER": "game_over"
+  "GAME_OVER": "game_over",
+  "GAME": "game",
 }

@@ -1,0 +1,22 @@
+{
+  "main": {
+    "welcome": "Pressione qualquer tecla para começar"
+  },
+  "menu":{
+    "play": "Jogar",
+    "themes": "Temas",
+    "stats": "Estatisticas",
+    "config": "Configurações",
+    "welcome": "Olá {{user}}, seja bem vindo"
+  },
+  "play":{
+    "modes":{
+      "atk": "Atacantes",
+      "ko": "Nocatues",
+      "badges": "Insiginias",
+      "random": "Aleatório"
+    }
+  },
+  "stats":{},
+  "config": {}
+}

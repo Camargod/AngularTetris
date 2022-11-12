@@ -25,7 +25,6 @@ export class UiTimerComponent implements OnInit, OnDestroy {
     this.timerSubscription = this.matchVariables.timer.subscribe((time)=>{
       this.timer = time;
       if(time == 0){
-        this.uiState.hideUi();
         this.uiState.startGame();
         this.startMusic();
       }
@@ -52,8 +51,6 @@ export class UiTimerComponent implements OnInit, OnDestroy {
   }
 
   startSingleplayer(){
-    this.uiState.hideUi();
-    this.uiState.changeState(UiStatesEnum.CLOSE);
     this.uiState.startGame();
     this.startMusic();
     this.matchVariables.stopGameListening();

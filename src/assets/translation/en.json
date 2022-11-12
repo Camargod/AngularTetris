@@ -1,0 +1,22 @@
+{
+  "main": {
+    "welcome": "Press any button to start"
+  },
+  "menu":{
+    "play": "Play",
+    "themes": "Themes",
+    "stats": "Stats",
+    "config": "Settings",
+    "welcome": "Hey {{user}}! Be welcome to the game!"
+  },
+  "play":{
+    "modes":{
+      "atk": "Attackers",
+      "ko": "K.O's",
+      "badges": "Badges",
+      "random": "Random"
+    }
+  },
+  "stats":{},
+  "config": {}
+}

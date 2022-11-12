@@ -13,7 +13,21 @@ import { UiTimerComponent } from './game-modules/ui/states/ui-timer/ui-timer.com
 import { UiMenuComponent } from './game-modules/ui/states/ui-menu/ui-menu.component';
 import { UiThemesComponent } from './game-modules/ui/states/ui-themes/ui-themes.component';
 import { CardsHudComponent } from './game-modules/hud/cards-hud/cards-hud.component';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { AttackModesComponent } from './game-modules/hud/attack-modes/attack-modes.component';
+import { TetrisGameComponent } from './game-modules/game-view/tetris-game/tetris-game.component';
+import { UiGameViewComponent } from './game-modules/ui/states/ui-game-view/ui-game-view.component';
+import { InfoHudComponent } from './game-modules/hud/info-hud/info-hud.component';
 
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, '../assets/translation/', '.json');
+}
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, '../assets/translation/', '.json');
+}
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,16 +38,31 @@ import { CardsHudComponent } from './game-modules/hud/cards-hud/cards-hud.compon
     UiHomeComponent,
     UiMenuComponent,
     UiThemesComponent,
-    CardsHudComponent
+    CardsHudComponent,
+    AttackModesComponent,
+    TetrisGameComponent,
+    UiGameViewComponent,
+    InfoHudComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     ReactiveFormsModule,
     AuthModule.forRoot({
       domain: 'tetrisverse.us.auth0.com',
       clientId: 'BCeKlUlczhTXiT7gVoD4iLzoikwOolnJ'
     }),
+    TranslateModule.forRoot(
+      {
+        defaultLanguage: 'pt-br',
+        loader:{
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+        }
+      }
+    ),
   ],
   providers: [],
   bootstrap: [AppComponent]

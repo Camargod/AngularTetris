@@ -1,0 +1,12 @@
+<div class="focus-modes" *ngIf="isSingleplayer">
+  <div class="modes">
+    <ng-container *ngFor="let mode of attackModes">
+      <div [ngClass]="(mode.name != '' ? 'attack-mode ' : '') + (mode.isEnabled ? 'attack-mode-selected' : '')" [style.width.%]="mode.size">
+        <div class="mode-key">
+          {{mode.key != 0 ? (mode.key) : ""}}
+        </div>
+        {{mode.translateLabel | translate}}
+      </div>
+    </ng-container>
+  </div>
+</div>
