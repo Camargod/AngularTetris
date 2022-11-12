@@ -1,6 +1,7 @@
 @import "../../../../scss/ui";
 :host{
   @include ui_background;
+  background: #050505;
 }
 
 #statscanvas{
