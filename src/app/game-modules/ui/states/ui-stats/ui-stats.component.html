@@ -1,1 +1,60 @@
-<button class="back-btn" (click)="back()">Voltar</button>
+<body>
+    <button class="back-btn" (click)="back()">Voltar</button>
+    <div class="stats-display-flex">
+    <div class="cube">
+        <div class="green-cube">
+            <div class="top-green-cube"></div>
+            <div>
+                <span style="--i:0;"></span>
+                <span style="--i:1;"></span>
+                <span style="--i:2;"></span>
+                <span style="--i:3;"></span>
+            </div>
+        </div>
+    </div>
+
+<div class="content">
+    <div class="mainInfo">
+      <h1>{{user?.nickname}}</h1>
+      <span>{{user?.email}}</span>
+      <div class="aboutMe">
+        <h3>Sobre</h3>
+        Estatísticas de jogadas do jogador. Inclui vitórias, derrotas, tempo de jogo, temas com mais vitórias/derrotas, estilos de gameplay, quantidade de peças usadas, n° de fileiras destruídas, KDA e pontuação máxima.
+      </div>
+    </div>
+    <div class="matchStats">
+      <div class="backgroundText">Partidas</div>
+      <canvas class="gameStats" #gameStats width="180" height="180"></canvas>
+    </div>
+
+    <div class="matchStats">
+      <div class="backgroundText">Funções</div>
+      <canvas class="roleStats" #roleStats width="180" height="180"></canvas>
+    </div>
+
+    <div class="clearFix"></div>
+
+    <div class="col">
+      <div class="resizing">
+        <canvas #champData></canvas>
+      </div>
+    </div>
+    <div class="col middle">
+      <h2>Tempo em jogo</h2>
+      <div class="resizing">
+        <canvas #timeData></canvas>
+      </div>
+    </div>
+    <div class="col">
+      <h2>Estatísticas</h2>
+      <ul class="playerStats">
+        <li><span>Peças Usadas:</span> 1,476</li>
+        <li><span>Vitórias/Derrotas:</span> 8.45</li>
+        <li><span>Jogadores Derrotados:</span> 27</li>
+        <li><span>Fileiras Destruídas:</span> 144</li>
+        <li><span>Pontuação Máxima:</span> 980</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</body>

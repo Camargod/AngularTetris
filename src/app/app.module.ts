@@ -20,6 +20,7 @@ import { AttackModesComponent } from './game-modules/hud/attack-modes/attack-mod
 import { TetrisGameComponent } from './game-modules/game-view/tetris-game/tetris-game.component';
 import { UiGameViewComponent } from './game-modules/ui/states/ui-game-view/ui-game-view.component';
 import { InfoHudComponent } from './game-modules/hud/info-hud/info-hud.component';
+import { NgChartsModule } from 'ng2-charts';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/translation/', '.json');
@@ -63,6 +64,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         }
       }
     ),
+    NgChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

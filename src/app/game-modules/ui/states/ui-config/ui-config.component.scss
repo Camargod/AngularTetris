@@ -1,4 +1,5 @@
 @import "../../../../scss/ui";
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
 :host{
   @include ui_background;
@@ -22,4 +23,50 @@
       margin-right: 0px;
     }
   }
+}
+
+.config-title-button{
+  color: orange;
+  font-family:"Bebas Neue";
+  font-size: 100px;
+  padding-bottom: 20%;
+  text-transform: uppercase;
+  background-image: linear-gradient(
+    -225deg,
+    #231557 0%,
+    #44107a 29%,
+    #ff1361 67%,
+    #fff800 100%
+  );
+  background-size: auto auto;
+  background-clip: border-box;
+  background-size: 200% auto;
+  color: #fff;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textclip 2s linear infinite;
+  display: inline-block;
+
+  @keyframes textclip {
+    to {
+      background-position: 200% center;
+    }
+  }
+}
+
+.config-buttons{
+  box-shadow: 5px 4px 5px;
+  border: 1px solid;
+  margin: 5% 15% 8% 15%;
+}
+
+#language-btn{
+  color:white;
+  background-color: purple;
+}
+
+#volume-btn{
+  color:white;
+  background-color: green;
 }
