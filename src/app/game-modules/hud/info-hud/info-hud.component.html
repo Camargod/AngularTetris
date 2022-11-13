@@ -1,24 +1,14 @@
-  <!-- <div class="info">
+  <div class="info">
     <span class="info-background">
-      <!-- <select #themeSelect aria-placeholder="Tema" (change)="onChangeTheme($event)">
-        <ng-container *ngFor="let item of themeList">
-          <option value="{{item.fileName}}">{{item.name}}</option>
-        </ng-container>
-      </select> -->
-
-    <!-- <div class = "tempo">Tempo para começar: {{timer}}</div><br>
-    <label class="pontuacao">Pontuação: {{gamePontuation}}</label><br>
-    <label class = "players">Players: {{players}}</label>
-      <div *ngIf="isSingleplayer">Tempo para começar: {{timer}}</div>
-      <label>Pontuação: {{gamePontuation}} </label>
-      <label>Players: {{players}}</label>
-      <button (click)="setGarbageOnGrid(1)">Testar lixo +1</button>
-      <label>Resta {{eventsLeftForTrash}} para {{accumulatedTrash}} de lixo cair</label>
-      <button *ngIf="isSingleplayer" (click)="isPaused = !isPaused">{{isPaused ? "Voltar" : "Pausar"}} Jogo</button>
-      <label>Speed: {{this.gameTimer2}}</label>
+    <label class="pontuacao">Pontuação: {{game.gamePontuation}}</label><br>
+    <label class = "players">Players: {{game.players}}</label>
+    <button (click)="game.setGarbageOnGrid(1)">Testar lixo +1</button>
+    <label>Resta {{game.eventsLeftForTrash}} para {{game.accumulatedTrash}} de lixo cair</label>
+    <button *ngIf="game.isSingleplayer" (click)="game.isPaused = !game.isPaused">{{game.isPaused ? "Voltar" : "Pausar"}} Jogo</button>
+    <label>Speed: {{game.gameTimer2}}</label>
       <!-- <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
         <button type="submit">Test autenticate</button>
         <input id="nickname" type="text" formControlName="nickname">
-      </form>
+      </form>-->
     </span>
-  </div> -->
+  </div>

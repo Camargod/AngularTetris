@@ -78,6 +78,13 @@ export class CardsService {
     }
   }
 
+  resetEffects(){
+    this.activeEffects.forEach((card)=>{
+      this.cardsReverseMechanics[card.identifier]();
+    })
+    this.activeEffects.clear();
+  }
+
   private doubleDamage(){
     this.damageMultiplier = 2;
   }

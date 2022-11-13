@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { skip } from 'rxjs/operators';
@@ -22,7 +22,7 @@ import { TetrominoGen } from '../../utils/tetromino-gen';
   templateUrl: './tetris-game.component.html',
   styleUrls: ['./tetris-game.component.scss']
 })
-export class TetrisGameComponent implements OnInit {
+export class TetrisGameComponent implements OnInit, OnDestroy {
 
   @ViewChild("gridcanvas", {static: true}) gridCanvas !: ElementRef < HTMLCanvasElement > ;
   @ViewChild("piecescanvas", {static: true}) piecesCanvas !: ElementRef < HTMLCanvasElement > ;
@@ -105,6 +105,18 @@ export class TetrisGameComponent implements OnInit {
     _isSingleplayerSubscription ?: Subscription;
     _gameTimeSubscription ?: Subscription;
 
+    subscriptions = [
+      this._gameTimeSubscription
+      , this._isSingleplayerSubscription
+      , this._piecesQueueSubscription
+      , this._playersToBeFocused
+      , this._trashReceive
+      , this._timerSubscription
+      , this._playersSubscription
+      , this.isPausedSubscription
+      , this._isFrozenSubscription
+    ];
+
     constructor(
       private themeService: ThemeService,
       private matchVariables : MatchVariablesService,
@@ -114,13 +126,9 @@ export class TetrisGameComponent implements OnInit {
       public cardsService : CardsService
     ) {}
 
-
     animations : Map<number,Animation> = new Map([
       [AnimationEnum.trashIndicatorShake,new Animation(AnimationEnum.trashIndicatorShake,false,1.7,()=>{})]
     ])
-
-
-
 
     /*
       Movimento de peças, por evento de keydown
@@ -227,8 +235,7 @@ export class TetrisGameComponent implements OnInit {
           this.drawNextPieces();
           this.cardsService.turns.next(this.cardsService.turns.value + 1);
         }
-
-        this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
+        this.fallingPiecesCanvasContext.clearRect(0, 0, this.fallingPiecesCanvasContext.canvas.width, this.fallingPiecesCanvasContext.canvas.height);
         this.posY += BLOCK_SIZE;
 
         this.tetrominoDraw();
@@ -613,13 +620,18 @@ export class TetrisGameComponent implements OnInit {
     }
   }
 
-
-
   realtimeLifecycle(){
     this.validateTrashShake()
     this.validateTurbo();
     setTimeout(()=>{
       requestAnimationFrame(()=>this.realtimeLifecycle());
     },1000/60)
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      if(subscription) subscription.unsubscribe();
+    });
+    this.cardsService.resetEffects();
   }
 }

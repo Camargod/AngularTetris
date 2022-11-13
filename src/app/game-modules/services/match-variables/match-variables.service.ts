@@ -44,6 +44,18 @@ constructor(
     this.socketService.isSingleplayer = true;
   }
 
+  private resetMatchVariables(){
+    this.timer.next(9999);
+    this.game_start.next(false);
+    this.damage_received.next(0);
+    this.in_match_players.next(0);
+    this.otherPlayersGrid.next({});
+    this.match_speed.next(500);
+    this.isSingleplayer.next(false);
+    this.nextPieces.next([]);
+    this.receivedCardFromEnemy.next({} as Card);
+  }
+
   private socketMessageHandler(event: {key:number,value:any}){
     try{
       if(event){
@@ -106,6 +118,7 @@ constructor(
   }
   setGameOver(value : boolean){
     this.socketService.socketMsg(SocketEventClientEnumerator.GAME_OVER,value);
+    this.resetMatchVariables();
   }
   setEnemyAttack(damage : Number){
     if(damage > 0) this.socketService.socketMsg(SocketEventClientEnumerator.SEND_DAMAGE,Number.parseInt(damage.toString()));

@@ -1,8 +1,10 @@
 <enemies-view #viewsManager></enemies-view>
 
-<tetris-game [views]="views"></tetris-game>
+<tetris-game [views]="views" #game></tetris-game>
 
 
 <cards-hud></cards-hud>
 
 <attack-modes></attack-modes>
+
+<info-hud [game]="game"></info-hud>
