@@ -1,13 +1,19 @@
-<div class="config-buttons">
-    <p class="config-title-button">CONFIGURAÇÕES</p>
-    <div class="line">
-      <button class="submenu-language-btn" id="language-btn" (click)="back()">Linguagem</button>
-      <select aria-placeholder="Language" (change)="changeLanguage($event)">
-        <ng-container *ngFor="let item of languages">
-          <option value="{{item.code}}">{{item.label}}</option>
-        </ng-container>
-      </select>
+<div>
+    <div class="config-buttons">
+        <p class="config-title-button">{{'config.title' | translate}}</p>
+        <div class="line">
 
+          <select aria-placeholder="Language" (change)="changeLanguage($event)">
+            <ng-container *ngFor="let item of languages">
+              <option value="{{item.code}}">{{item.label}}</option>
+            </ng-container>
+          </select>
+
+        </div>
+        <button class="submenu-language-btn" id="language-btn" (click)="back()">Linguagem</button>
+        <button class="submenu-control-btn" id="control-btn"(click)="back()">Controle</button>
+        <button class="submenu-volume-btn" id="volume-btn"(click)="back()">Volume</button>
+        <button class="back-btn" (click)="back()">{{'ui.back-button' | translate}}</button>
     </div>
     <button class="submenu-control-btn" id="control-btn"(click)="back()">Controle</button>
     <button class="submenu-volume-btn" id="volume-btn"(click)="back()">Volume</button>

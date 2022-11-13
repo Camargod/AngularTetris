@@ -17,8 +17,22 @@
       "random": "Random"
     }
   },
-  "stats":{},
-  "config": {},
+  "stats":{
+    "about-title": "About",
+    "about-functions": "Role",
+    "about-matches": "Matches",
+    "about-statistics": "statistics",
+    "about-time": "Games played", 
+    "statistics-pieces": "Pieces used",
+    "statistics-KDA": "Wins/Loses",
+    "statistics-players-defeated": "Players defeated",
+    "statistics-rows-destroyed": "Rows destroyed",
+    "statistics-max-score": "Max score",
+    "about-text": "Player's Destroyed Stats. Wins, Losses, Game Pieces, Themes with Most Wins/Loses, Playing Styles Used, Number of Games Destroyed, KDA, and Maximum Last Piece."
+  },
+  "config": {
+    "title": "Settings"
+  },
   "ui": {
     "back-button": "Back"
   }
