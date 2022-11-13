@@ -17,8 +17,22 @@
       "random": "Aleatório"
     }
   },
-  "stats":{},
-  "config": {},
+  "stats":{
+    "about-title": "Sobre",
+    "about-functions": "Funções",
+    "about-matches": "Partidas",
+    "about-statistics": "Estatísticas",
+    "about-time": "Partidas jogadas",
+    "statistics-pieces": "Peças usadas",
+    "statistics-KDA": "Vitórias/Derrotas",
+    "statistics-players-defeated": "Jogadores derrotados",
+    "statistics-rows-destroyed": "Fileiras destruídas",
+    "statistics-max-score": "Pontuação máxima",
+    "about-text": "Estatísticas de jogadas do jogador. Inclui vitórias, derrotas, tempo de jogo, temas com mais vitórias/derrotas, estilos de gameplay, quantidade de peças usadas, n° de fileiras destruídas, KDA e pontuação máxima."
+  },
+  "config": {
+    "title": "Configurações"
+  },
   "ui": {
     "back-button": "Voltar"
   }

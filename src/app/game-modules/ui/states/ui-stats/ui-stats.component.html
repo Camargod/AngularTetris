@@ -18,17 +18,17 @@
       <h1>{{user?.nickname}}</h1>
       <span>{{user?.email}}</span>
       <div class="aboutMe">
-        <h3>Sobre</h3>
-        Estatísticas de jogadas do jogador. Inclui vitórias, derrotas, tempo de jogo, temas com mais vitórias/derrotas, estilos de gameplay, quantidade de peças usadas, n° de fileiras destruídas, KDA e pontuação máxima.
+        <h3>{{'stats.about-title' | translate}}</h3>
+        {{'stats.about-text' | translate}}
       </div>
     </div>
     <div class="matchStats">
-      <div class="backgroundText">Partidas</div>
+      <div class="backgroundText">{{'stats.about-matches' | translate}}</div>
       <canvas class="gameStats" #gameStats width="180" height="180"></canvas>
     </div>
 
     <div class="matchStats">
-      <div class="backgroundText">Funções</div>
+      <div class="backgroundText">{{'stats.about-functions' | translate}}</div>
       <canvas class="roleStats" #roleStats width="180" height="180"></canvas>
     </div>
 
@@ -40,19 +40,19 @@
       </div>
     </div>
     <div class="col middle">
-      <h2>Tempo em jogo</h2>
+      <h2>{{'stats.about-time' | translate}}</h2>
       <div class="resizing">
         <canvas #timeData></canvas>
       </div>
     </div>
     <div class="col">
-      <h2>Estatísticas</h2>
+      <h2>{{'stats.about-statistics' | translate}}</h2>
       <ul class="playerStats">
-        <li><span>Peças Usadas:</span> 1,476</li>
-        <li><span>Vitórias/Derrotas:</span> 8.45</li>
-        <li><span>Jogadores Derrotados:</span> 27</li>
-        <li><span>Fileiras Destruídas:</span> 144</li>
-        <li><span>Pontuação Máxima:</span> 980</li>
+        <li><span>{{'stats.statistics-pieces' | translate}}</span> 1,476</li>
+        <li><span>{{'stats.statistics-KDA' | translate}}</span> 8.45</li>
+        <li><span>{{'stats.statistics-players-defeated' | translate}}</span> 27</li>
+        <li><span>{{'stats.statistics-rows-destroyed' | translate}}</span> 144</li>
+        <li><span>{{'stats.statistics-max-score' | translate}}</span> 980</li> 
       </ul>
     </div>
   </div>
