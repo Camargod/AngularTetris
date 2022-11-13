@@ -35,5 +35,21 @@
   },
   "ui": {
     "back-button": "Voltar"
+  },
+  "themes":{
+    "default": "Tema Padrão",
+    "noir": "Noir",
+    "tech": "Tecnologia",
+    "retro": "Retrofuturista",
+    "fruits": "Frutas",
+    "default-2": "Tema Base 2",
+    "geometrics": "Geométricos",
+    "purple": "Roxo",
+    "blue": "Azul",
+    "green": "Verde",
+    "red": "Vermelho",
+    "foods": "Comidas",
+    "animals": "Animais"
   }
+  
 }

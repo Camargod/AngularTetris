@@ -1,7 +1,7 @@
 <div class="themes" (wheel)="scroll($event)">
   <ng-container *ngFor="let item of themes;let i = index">
     <div class="menu-button" [ngStyle]="{'background':this.paths[i]}" (click)="selectTheme(item)">
-      {{item.name}}
+      {{item.name | translate}}
     </div>
   </ng-container>
 </div>

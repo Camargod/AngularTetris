@@ -35,5 +35,20 @@
   },
   "ui": {
     "back-button": "Back"
+  },
+  "themes":{
+    "default": "Default",
+    "noir": "Noir",
+    "tech": "Technology",
+    "retro": "Retro",
+    "fruits": "Fruits",
+    "default-2": "Default 2",
+    "geometrics": "Geometrics",
+    "purple": "Purple",
+    "blue": "Blue",
+    "green": "Green",
+    "red": "Red",
+    "foods": "Foods",
+    "animals": "Animals"
   }
 }

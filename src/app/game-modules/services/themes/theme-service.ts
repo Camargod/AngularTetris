@@ -127,59 +127,59 @@ export enum ItemMap {
 }
 
 export const Themes = [{
-    name: "Tema base",
+    name: "themes.default",
     fileName: "theme01"
   },
   {
-    name: "Noir",
+    name: "themes.noir",
     fileName: "theme02"
   },
   {
-    name: "Tecnologia",
+    name: "themes.retro",
     fileName: "theme03"
   },
   {
-    name: "RetroFuturista",
+    name: "themes.tech",
     fileName: "theme04"
   },
   {
-    name: "Frutas",
+    name: "themes.fruits",
     fileName: "theme05"
   },
   {
-    name: "Tema Base 2",
+    name: "themes.default-2",
     fileName: "theme06"
   },
   {
-    name: "Geométricos",
+    name: "themes.geometrics",
     fileName: "theme07"
   },
   {
-    name: "😎😎😎😎😎😎😎",
+    name: "😎😎😎😎😎😎",
     fileName: "theme08"
   },
   {
-    name: "Roxo",
+    name: "themes.purple",
     fileName: "theme09"
   },
   {
-    name: "Azul",
+    name: "themes.blue",
     fileName: "theme10"
   },
   {
-    name: "Verde",
+    name: "themes.green",
     fileName: "theme11"
   },
   {
-    name: "Vermelho",
+    name: "themes.red",
     fileName: "theme12"
   },
   {
-    name: "Comidas",
+    name: "themes.foods",
     fileName: "theme13"
   },
   {
-    name: "Animais",
+    name: "themes.animals",
     fileName: "theme14"
   }
 ]
