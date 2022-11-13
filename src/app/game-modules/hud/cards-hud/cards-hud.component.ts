@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { SocketEventClientEnumerator } from '../../enums/socket-event.enum';
 import { Card, cards } from '../../objects/cards';
 import { CardsService } from '../../services/cards/cards-service';
+import { MatchVariablesService } from '../../services/match-variables/match-variables.service';
 import { SocketService } from '../../services/socket/socket.service';
 
 @Component({
@@ -22,7 +23,7 @@ export class CardsHudComponent implements OnInit {
     "-": this.changeOrder
   }
 
-  constructor(private socketService : SocketService, private cardsService : CardsService) { }
+  constructor(private socketService : SocketService, private cardsService : CardsService, private matchVariablesService : MatchVariablesService) { }
 
   ngOnInit() {
   }
@@ -34,9 +35,9 @@ export class CardsHudComponent implements OnInit {
 
   onKeyEnter(){
     let cardToBeUsed = this.cardsMock.shift();
-    this.socketService.socketMsg(SocketEventClientEnumerator.SEND_CARD,cardToBeUsed);
+    if(cardToBeUsed) this.matchVariablesService.sendCard(cardToBeUsed);
     //POR FAVOR RETIRAR DEPOIS:
-    this.cardsService.applyCard(cardToBeUsed!);
+    //this.cardsService.applyCard(cardToBeUsed!);
   }
 
   changeOrder(){

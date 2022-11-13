@@ -22,7 +22,7 @@
     "about-functions": "Role",
     "about-matches": "Matches",
     "about-statistics": "statistics",
-    "about-time": "Games played", 
+    "about-time": "Games played",
     "statistics-pieces": "Pieces used",
     "statistics-KDA": "Wins/Loses",
     "statistics-players-defeated": "Players defeated",
@@ -35,5 +35,18 @@
   },
   "ui": {
     "back-button": "Back"
+  },
+  "gameover":{
+    "title": "Game over",
+    "score": "Score",
+    "speed": "Speed",
+    "rounds": "Rounds",
+    "lines": "Lines executed",
+    "damage": "Damage done",
+    "card_count": "Used cards",
+    "cards_received": "Adversary received cards",
+    "kos": "Knockouts",
+    "badges": "Badges",
+    "final_position": "Final Position"
   }
 }

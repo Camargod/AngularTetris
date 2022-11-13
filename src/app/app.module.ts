@@ -23,6 +23,7 @@ import { InfoHudComponent } from './game-modules/hud/info-hud/info-hud.component
 import { NgChartsModule } from 'ng2-charts';
 import { UiConfigComponent } from './game-modules/ui/states/ui-config/ui-config.component';
 import { UiStatsComponent } from './game-modules/ui/states/ui-stats/ui-stats.component';
+import { UiGameoverComponent } from './game-modules/ui/states/ui-gameover/ui-gameover.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/translation/', '.json');
@@ -47,7 +48,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     AttackModesComponent,
     TetrisGameComponent,
     UiGameViewComponent,
-    InfoHudComponent
+    InfoHudComponent,
+    UiGameoverComponent
   ],
   imports: [
     BrowserModule,

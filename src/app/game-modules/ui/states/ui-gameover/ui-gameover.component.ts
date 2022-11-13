@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LastMatchService } from 'src/app/game-modules/services/last-match/last-match.service';
 import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controller/ui-state-controller.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controlle
 })
 export class UiGameoverComponent implements OnInit {
 
-  constructor(private uiState : UiStateControllerService) { }
+  constructor(private uiState : UiStateControllerService, public lastMatch : LastMatchService) { }
 
   ngOnInit() {
   }

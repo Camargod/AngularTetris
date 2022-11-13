@@ -35,5 +35,18 @@
   },
   "ui": {
     "back-button": "Voltar"
+  },
+  "gameover":{
+    "title": "Fim de jogo",
+    "score": "Pontuação",
+    "speed": "Velocidade",
+    "rounds": "Rodadas",
+    "lines": "Linhas executadas",
+    "damage": "Dano causado",
+    "card_count": "Cartas usadas",
+    "cards_received": "Cartas recebidas de adversários",
+    "kos": "Nocautes",
+    "badges": "Insignias",
+    "final_position": "Posição final"
   }
 }

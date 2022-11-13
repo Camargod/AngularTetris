@@ -8,6 +8,7 @@ import { overrideCanvas, OverridedCanvas2DContext } from '../../objects/CanvsRen
 import { TPiece } from '../../objects/piece';
 import { TetrisGridPiece } from '../../objects/tetris-grid-piece';
 import { CardsService } from '../../services/cards/cards-service';
+import { LastMatchService } from '../../services/last-match/last-match.service';
 import { MatchVariablesService } from '../../services/match-variables/match-variables.service';
 import { MovementService } from '../../services/movement/movement.service';
 import { Themes, ThemeService } from '../../services/themes/theme-service';
@@ -123,7 +124,8 @@ export class TetrisGameComponent implements OnInit, OnDestroy {
       private movementService : MovementService,
       private uiStateControllerService : UiStateControllerService,
       private tetrominoGen : TetrominoGen,
-      public cardsService : CardsService
+      public cardsService : CardsService,
+      private lastMatchService : LastMatchService,
     ) {}
 
     animations : Map<number,Animation> = new Map([
@@ -492,6 +494,7 @@ export class TetrisGameComponent implements OnInit, OnDestroy {
         this.redrawAllTetrominos();
         this.gameTime -= 6;
         this.gamePontuation += 50;
+        this.lastMatchService.lastMatch.score = this.gamePontuation;
         if(this.accumulatedTrash > 0){
           this.accumulatedTrash--;
           this.accumulatedTrash == 0 ? this.eventsLeftForTrash = 5 : "";
@@ -500,6 +503,7 @@ export class TetrisGameComponent implements OnInit, OnDestroy {
     }
     if(cleanOnceOrMore && this.eventsLeftForTrash < 5) this.eventsLeftForTrash++;
     this.matchVariables.setEnemyAttack(rowsCleaned * this.cardsService.damageMultiplier);
+    this.lastMatchService.lastMatch.lines += rowsCleaned;
   }
 
   redrawAllTetrominos() {
