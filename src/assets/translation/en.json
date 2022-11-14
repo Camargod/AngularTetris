@@ -48,5 +48,23 @@
     "kos": "Knockouts",
     "badges": "Badges",
     "final_position": "Final Position"
+  },
+  "cards":{
+    "double_damage":{
+      "name": "Double damages",
+      "description": "Increases damage for 3 rounds"
+    },
+    "freeze":{
+      "name": "Freeze",
+      "description": "Stops you game (take a breeze)"
+    },
+    "speedup":{
+      "name": "Speed Up",
+      "description": "Temporary increase for your attacker game-speed (3 rounds limit)"
+    },
+    "inverse_commands":{
+      "name": "Inverse commands",
+      "description": "Inverts adversary controls for 3 rounds"
+    }
   }
 }

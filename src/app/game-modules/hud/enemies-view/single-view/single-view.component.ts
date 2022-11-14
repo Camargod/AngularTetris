@@ -28,7 +28,7 @@ export class SingleViewComponent implements AfterViewInit, OnChanges{
 
   setCanvasContext(){
     this.viewCanvasContext = this.viewCanvas!.nativeElement.getContext("2d");
-    this.viewCanvasContext!.scale(0.25, 0.25);
+    this.viewCanvasContext!.scale(1, 1);
   }
 
   gridDraw(){

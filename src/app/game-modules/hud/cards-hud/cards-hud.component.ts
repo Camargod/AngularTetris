@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { SocketEventClientEnumerator } from '../../enums/socket-event.enum';
 import { Card, cards } from '../../objects/cards';
 import { CardsService } from '../../services/cards/cards-service';
+import { LastMatchService } from '../../services/last-match/last-match.service';
 import { MatchVariablesService } from '../../services/match-variables/match-variables.service';
 import { SocketService } from '../../services/socket/socket.service';
 
@@ -17,13 +18,14 @@ export class CardsHudComponent implements OnInit {
     cards[1],
     cards[3]
   ];
+  localstorage = localStorage
 
   keys : any = {
     "Enter": this.onKeyEnter.bind(this),
     "-": this.changeOrder
   }
 
-  constructor(private socketService : SocketService, private cardsService : CardsService, private matchVariablesService : MatchVariablesService) { }
+  constructor(private socketService : SocketService, private cardsService : CardsService, private matchVariablesService : MatchVariablesService, public lastMatch : LastMatchService) { }
 
   ngOnInit() {
   }

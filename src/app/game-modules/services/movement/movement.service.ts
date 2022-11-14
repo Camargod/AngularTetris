@@ -8,6 +8,7 @@ import {
   BLOCK_SIZE
 } from "src/app/game-modules/utils/constants";
 import { TetrisGameComponent } from "../../game-view/tetris-game/tetris-game.component";
+import { AudioMap, AudioMapNames, SoundClassService } from "../sounds/sound-service";
 
 @Injectable({
   providedIn: 'root'
@@ -70,6 +71,8 @@ export class MovementService {
 
   turbo(scope: TetrisGameComponent) {
     scope.isTurboOn = true;
+    scope.soundService.setNewSecondaryAudio(AudioMap[AudioMapNames.oof],false);
+
   }
 
   swapPiece(scope : TetrisGameComponent){

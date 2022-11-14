@@ -3,7 +3,7 @@
         <p class="config-title-button">{{'config.title' | translate}}</p>
         <div class="line">
 
-          <select aria-placeholder="Language" (change)="changeLanguage($event)">
+          <select #select aria-placeholder="Language" (change)="changeLanguage($event)">
             <ng-container *ngFor="let item of languages">
               <option value="{{item.code}}">{{item.label}}</option>
             </ng-container>

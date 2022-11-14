@@ -62,7 +62,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     TranslateModule.forRoot(
       {
-        defaultLanguage: localStorage.getItem('language') || 'en',
+        defaultLanguage: localStorage.getItem('language')!,
         loader:{
           provide: TranslateLoader,
           useFactory: HttpLoaderFactory,

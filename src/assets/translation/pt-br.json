@@ -48,5 +48,23 @@
     "kos": "Nocautes",
     "badges": "Insignias",
     "final_position": "Posição final"
+  },
+  "cards":{
+    "double_damage":{
+      "name": "Dano duplo",
+      "description": "Aumenta o dano por 3 rodadas"
+    },
+    "freeze":{
+      "name": "Congelar",
+      "description": "Congela seu tabuleiro (Tome um arzinho)"
+    },
+    "speedup":{
+      "name": "Acelerar",
+      "description": "Aumenta temporariamente a velocidade do adversario."
+    },
+    "inverse_commands":{
+      "name": "Comandos invertidos",
+      "description": "Inverte os comandos do adversario por 3 rodadas"
+    }
   }
 }
