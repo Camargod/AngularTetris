@@ -2,7 +2,7 @@
     <span class="info-background">
     <label class="pontuacao">Pontuação: {{game.gamePontuation}}</label><br>
     <label class = "players">Players: {{game.players}}</label><br>
-    <!-- <button (click)="game.setGarbageOnGrid(1)">Testar lixo +1</button><br> -->
+    <button (click)="game.setGarbageOnGrid(1)">Testar lixo +1</button><br>
     <!-- <label>Resta {{game.eventsLeftForTrash}} para {{game.accumulatedTrash}} de lixo cair</label> -->
     <button *ngIf="game.isSingleplayer" (click)="game.isPaused = !game.isPaused">{{game.isPaused ? "Voltar" : "Pausar"}} Jogo</button>
     <!-- <label>Speed: {{game.gameTimer2}}</label> -->
