@@ -1,6 +1,6 @@
 <div class="card-hud">
   <div class="cards">
-    <p class="hud-title">Cartas</p>
+    <p class="hud-title">{{'cards.title' | translate}}</p>
     <div class="card" *ngFor="let card of cardsMock">
       <img [src]="'/assets/cards/'+ localstorage.getItem('language') + card.image"/>
       <div class="card-texts">
@@ -10,6 +10,6 @@
     </div>
   </div>
   <div class="cards-info">
-    <p>Rodadas para proxima carta: {{10 - lastMatch.lastMatch.rounds % 10}}</p>
+    <p>{{'cards.remaining_rounds' | translate:{rounds:10 - lastMatch.lastMatch.rounds % 10} }}</p>
   </div>
 </div>

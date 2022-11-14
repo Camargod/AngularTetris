@@ -50,6 +50,8 @@
     "final_position": "Posição final"
   },
   "cards":{
+    "title": "Cartas",
+    "remaining_rounds": "Rounds restatantes para conseguir uma carta: {{rounds}}",
     "double_damage":{
       "name": "Dano duplo",
       "description": "Aumenta o dano por 3 rodadas"

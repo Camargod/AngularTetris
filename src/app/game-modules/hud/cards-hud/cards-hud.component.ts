@@ -37,9 +37,14 @@ export class CardsHudComponent implements OnInit {
 
   onKeyEnter(){
     let cardToBeUsed = this.cardsMock.shift();
-    if(cardToBeUsed) this.matchVariablesService.sendCard(cardToBeUsed);
-    //POR FAVOR RETIRAR DEPOIS:
-    //this.cardsService.applyCard(cardToBeUsed!);
+    if(cardToBeUsed){
+      if(cardToBeUsed?.applySelf){
+        this.cardsService.applyCard(cardToBeUsed!);
+      }
+      else{
+        this.matchVariablesService.sendCard(cardToBeUsed);
+      }
+    }
   }
 
   changeOrder(){

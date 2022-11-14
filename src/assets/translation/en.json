@@ -50,6 +50,8 @@
     "final_position": "Final Position"
   },
   "cards":{
+    "title": "Cards",
+    "remaining_rounds": "Remaining rounds to get a new card: {{rounds}}",
     "double_damage":{
       "name": "Double damages",
       "description": "Increases damage for 3 rounds"

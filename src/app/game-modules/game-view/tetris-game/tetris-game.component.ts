@@ -533,7 +533,7 @@ export class TetrisGameComponent implements OnInit, OnDestroy {
 
     let x  = this.animations.get(AnimationEnum.trashIndicatorShake)?.enabled ?  Math.random() * 10 : 0;
     for(let i = TRASH_LEVEL - this.accumulatedTrash; i < TRASH_LEVEL; i++){
-      const heightToDraw = this.trashCanvas.nativeElement.height - (BLOCK_SIZE * (TRASH_LEVEL - i)) - 815;
+      const heightToDraw = this.trashCanvas.nativeElement.height - (BLOCK_SIZE * (TRASH_LEVEL - i)) - 780;
       this.trashCanvasContext?.drawImage(this.themeService.themeImages[8],0,0,this.themeService.themeImages[0].width,this.themeService.themeImages[0].height,x,heightToDraw,BLOCK_SIZE,BLOCK_SIZE);
     }
   }

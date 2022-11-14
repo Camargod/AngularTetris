@@ -23,7 +23,7 @@ export const cards : Array<Card> = [
   {
     "name": "cards.freeze.name",
     "image": `/freeze.png`,
-    "description": "cards.freeze.descritpion",
+    "description": "cards.freeze.description",
     "identifier": "FREEZE",
     "durationType": "seconds",
     "duration": 5000,
