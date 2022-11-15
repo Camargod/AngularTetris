@@ -1,0 +1,31 @@
+@import "../../../../scss/ui";
+
+:host{
+  @include ui_background;
+  display: flex;
+  align-items: center;
+}
+
+li{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-size: calc(2vw + 1em);
+  &+li{
+    margin-top: 20px;
+  }
+}
+
+ul{
+  padding: 0;
+}
+
+h1{
+  font-size: calc(4vw + 1em);
+  margin: 0;
+}
+
+h4{
+  font-size: calc(2vw + .8em);
+  margin: 0;
+}

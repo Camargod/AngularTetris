@@ -1,7 +1,9 @@
 import { Component, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { UiAboutComponent } from '../states/ui-about/ui-about.component';
 import { UiCloseComponent } from '../states/ui-close/ui-close.component';
 import { UiConfigComponent } from '../states/ui-config/ui-config.component';
+import { UiCreditsComponent } from '../states/ui-credits/ui-credits.component';
 import { UiGameViewComponent } from '../states/ui-game-view/ui-game-view.component';
 import { UiGameoverComponent } from '../states/ui-gameover/ui-gameover.component';
 import { UiHomeComponent } from '../states/ui-home/ui-home.component';
@@ -55,6 +57,8 @@ const UiStates = [
   {name:"stats", component:UiStatsComponent},
   {name:"game_over", component:UiGameoverComponent},
   {name:"game", component:UiGameViewComponent},
+  {name:"credits", component:UiCreditsComponent},
+  {name:"about", component:UiAboutComponent},
 ]
 export const UiStatesEnum = {
   "HOME":"home",
@@ -66,4 +70,6 @@ export const UiStatesEnum = {
   "STATS": "stats",
   "GAME_OVER": "game_over",
   "GAME": "game",
+  "CREDITS": "credits",
+  "ABOUT": "about"
 }

@@ -7,7 +7,9 @@
     "themes": "Temas",
     "stats": "Estatisticas",
     "config": "Configurações",
-    "welcome": "Olá {{user}}, seja bem vindo"
+    "welcome": "Olá {{user}}, seja bem vindo",
+    "about": "Sobre",
+    "credits": "Creditos"
   },
   "play":{
     "modes":{
