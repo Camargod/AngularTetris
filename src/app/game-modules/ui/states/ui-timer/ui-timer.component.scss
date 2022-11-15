@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
 :host{
+  background-image: url(/assets/ui/instrucoes-pt-br.png);
   display: flex;
   width: 100%;
   height: 100%;
@@ -8,9 +11,33 @@
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 p{
   font-size: 32px;
   margin: 4px;
+}
+
+.singleplayer-button{
+  font-family: Bebas Neue;
+  font-weight: 500;
+  letter-spacing:1px;
+  font-size: 25px;
+  padding: 1.0% 0.5% 1.0% 0.5%;
+  color:black;
+  background-color: orange;
+ 
+  border-radius: 5%;
+  transition: .3s;
+  &:hover{
+    cursor:pointer;
+    transform: scale(1.2);
+    transition: .3s;
+    opacity: 1;
+    box-shadow: inset 0 0 0 80px #b60000;
+    color: rgb(255, 255, 255);
+  }
 }
