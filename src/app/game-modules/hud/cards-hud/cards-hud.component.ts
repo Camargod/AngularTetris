@@ -14,9 +14,9 @@ import { SocketService } from '../../services/socket/socket.service';
 export class CardsHudComponent implements OnInit {
 
   cardsMock : Array<Card> = [
-    cards[0],
-    cards[1],
-    cards[3]
+    // cards[0],
+    // cards[1],
+    // cards[3]
   ];
   localstorage = localStorage
 
@@ -28,6 +28,9 @@ export class CardsHudComponent implements OnInit {
   constructor(private socketService : SocketService, private cardsService : CardsService, private matchVariablesService : MatchVariablesService, public lastMatch : LastMatchService) { }
 
   ngOnInit() {
+    this.matchVariablesService.receivedCardFromEnemy.subscribe((card)=>{
+      if(card.identifier && this.cardsMock.length < 3) this.cardsMock.push(card);
+    });
   }
 
   @HostListener("window:keydown", ['$event'])

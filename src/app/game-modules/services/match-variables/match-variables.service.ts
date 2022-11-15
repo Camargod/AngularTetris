@@ -108,6 +108,7 @@ constructor(
             this.lastMatchService.lastMatch.cards_received_from_enemy++;
             break;
           case SocketEventServerEnumerator.GET_CARD_RETURN:
+            debugger;
             this.receivedCardFromEnemy.next(event.value as Card);
             break;
           default:
