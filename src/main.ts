@@ -11,3 +11,4 @@ if (environment.production) {
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.error(err));
 
+localStorage.getItem('language') ? "" : localStorage.setItem('language','en');

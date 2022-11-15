@@ -26,6 +26,7 @@ export class AttackModesComponent implements OnInit, OnDestroy {
   constructor(private matchVariables : MatchVariablesService) { }
 
   ngOnInit() {
+    this.handleFocusChange({key: "2"} as KeyboardEvent);
   }
 
   @HostListener("window:keyup", ['$event'])

@@ -27,7 +27,7 @@ export class ThemeService {
     return new Observable((observable)=>{
       let loadedImages = 0;
       this.loadedImages.next(0);
-      for(let index = 0; index <= 7; index++){
+      for(let index = 0; index <= 8; index++){
         let image = new Image();
         image.src = `assets/themes/${localStorage.getItem("selectedTheme")}/${index}.png`;
         image.onload = () => {

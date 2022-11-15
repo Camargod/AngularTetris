@@ -8,6 +8,7 @@ import { SocketService } from '../socket/socket.service';
 import { Parser } from '../../utils/parser';
 import { Card } from '../../objects/cards';
 import { CardsService } from '../cards/cards-service';
+import { LastMatchService } from '../last-match/last-match.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,10 @@ export class MatchVariablesService {
 
 constructor(
   private socketService : SocketService,
-  private cardsService : CardsService
-) { }
+  private cardsService : CardsService,
+  private lastMatchService : LastMatchService
+  )
+  { }
   public timer = new BehaviorSubject<number>(9999);
   public game_start = new BehaviorSubject<boolean>(false);
   public damage_received = new BehaviorSubject<number>(0);
@@ -42,6 +45,18 @@ constructor(
     this.socketService.socketDisconnect();
     this.socketSubscription?.unsubscribe();
     this.socketService.isSingleplayer = true;
+  }
+
+  private resetMatchVariables(){
+    this.timer.next(9999);
+    this.game_start.next(false);
+    this.damage_received.next(0);
+    this.in_match_players.next(0);
+    this.otherPlayersGrid.next({});
+    this.match_speed.next(500);
+    this.isSingleplayer.next(false);
+    this.nextPieces.next([]);
+    this.receivedCardFromEnemy.next({} as Card);
   }
 
   private socketMessageHandler(event: {key:number,value:any}){
@@ -73,6 +88,7 @@ constructor(
             break
           case SocketEventServerEnumerator.RECEIVED_DAMAGE:
             this.damage_received.next(Number.parseInt(event.value));
+            this.lastMatchService.lastMatch.damage += Number.parseInt(event.value);
             break
           case SocketEventServerEnumerator.IN_MATCH_PLAYERS:
             this.in_match_players.next(Number.parseInt(event.value));
@@ -82,12 +98,18 @@ constructor(
             break;
           case SocketEventServerEnumerator.MATCH_SPEEDUP:
             this.match_speed.next(Number.parseInt(event.value));
+            this.lastMatchService.lastMatch.speed = this.match_speed.value;
             break;
           case SocketEventServerEnumerator.RECEIVE_PIECES_QUEUE:
             this.nextPieces.next(event.value);
             break;
           case SocketEventServerEnumerator.RECEIVE_CARD_FROM_ENEMY:
             this.cardsService.applyCard(event.value as Card);
+            this.lastMatchService.lastMatch.cards_received_from_enemy++;
+            break;
+          case SocketEventServerEnumerator.GET_CARD_RETURN:
+            debugger;
+            this.receivedCardFromEnemy.next(event.value as Card);
             break;
           default:
             break
@@ -102,15 +124,22 @@ constructor(
   }
 
   setGridUpdate(grid : Array<TetrisGridPiece>){
-    this.socketService.socketMsg(SocketEventClientEnumerator.GRID_UPDATE,grid)
+    this.socketService.socketMsg(SocketEventClientEnumerator.GRID_UPDATE,grid);
+    this.lastMatchService.lastMatch.rounds++;
   }
   setGameOver(value : boolean){
     this.socketService.socketMsg(SocketEventClientEnumerator.GAME_OVER,value);
+    this.resetMatchVariables();
   }
   setEnemyAttack(damage : Number){
     if(damage > 0) this.socketService.socketMsg(SocketEventClientEnumerator.SEND_DAMAGE,Number.parseInt(damage.toString()));
+    this.lastMatchService.lastMatch.damage += Number.parseInt(damage.toString());
   }
   setAttackMode(mode : String){
     this.socketService.socketMsg(SocketEventClientEnumerator.GET_ENEMIES_FOCUS,mode);
+  }
+  sendCard(card : Card){
+    this.socketService.socketMsg(SocketEventClientEnumerator.SEND_CARD,card);
+    this.lastMatchService.lastMatch.cards_used++;
   }
 }

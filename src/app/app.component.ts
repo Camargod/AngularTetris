@@ -2,6 +2,7 @@ import {Component,ViewChild,ElementRef,OnInit} from '@angular/core';
 import { ThemeService} from './game-modules/services/themes/theme-service';
 import { EnemiesViewComponent } from './game-modules/hud/enemies-view/enemies-view.component';
 import { skip } from 'rxjs/operators';
+import { SoundClassService } from './game-modules/services/sounds/sound-service';
 
 @Component({
   selector: 'app-root',
@@ -14,9 +15,10 @@ export class AppComponent implements OnInit{
   isUiEnabled = true;
 
   @ViewChild("gameDiv", {static: true}) gameDiv !: ElementRef <HTMLDivElement>;
+  @ViewChild("audio", { static: true}) audio !: ElementRef <HTMLAudioElement>;
+  @ViewChild("secundaryAudio", { static: true}) secundaryAudio !: ElementRef <HTMLAudioElement>;
 
-
-  constructor(private themeService : ThemeService) {}
+  constructor(private themeService : ThemeService, private audioService : SoundClassService) {}
 
   /*
     Ajustes iniciais do jogo.
@@ -27,6 +29,8 @@ export class AppComponent implements OnInit{
       this.themeService.selectedThemeChanged.next(true);
       this.setBackgroundByTheme();
     });
+    this.audioService.setMainAudio(this.audio.nativeElement);
+    this.audioService.setSecondaryAudio(this.secundaryAudio.nativeElement);
   }
 
 

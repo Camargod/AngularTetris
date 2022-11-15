@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { skip } from 'rxjs/operators';
@@ -8,8 +8,10 @@ import { overrideCanvas, OverridedCanvas2DContext } from '../../objects/CanvsRen
 import { TPiece } from '../../objects/piece';
 import { TetrisGridPiece } from '../../objects/tetris-grid-piece';
 import { CardsService } from '../../services/cards/cards-service';
+import { LastMatchService } from '../../services/last-match/last-match.service';
 import { MatchVariablesService } from '../../services/match-variables/match-variables.service';
 import { MovementService } from '../../services/movement/movement.service';
+import { SoundClassService } from '../../services/sounds/sound-service';
 import { Themes, ThemeService } from '../../services/themes/theme-service';
 import { UiStateControllerService, UiStatesEnum } from '../../ui/ui-state-controller/ui-state-controller.service';
 import { BLOCK_SIZE, CANVAS_SCALING, COLS, GRIDCOLS, GRIDROWS, LATERAL_PADDING, ROWS, TOP_PADDING, TRASH_LEVEL } from '../../utils/constants';
@@ -22,7 +24,7 @@ import { TetrominoGen } from '../../utils/tetromino-gen';
   templateUrl: './tetris-game.component.html',
   styleUrls: ['./tetris-game.component.scss']
 })
-export class TetrisGameComponent implements OnInit {
+export class TetrisGameComponent implements OnInit, OnDestroy {
 
   @ViewChild("gridcanvas", {static: true}) gridCanvas !: ElementRef < HTMLCanvasElement > ;
   @ViewChild("piecescanvas", {static: true}) piecesCanvas !: ElementRef < HTMLCanvasElement > ;
@@ -105,22 +107,32 @@ export class TetrisGameComponent implements OnInit {
     _isSingleplayerSubscription ?: Subscription;
     _gameTimeSubscription ?: Subscription;
 
+    subscriptions = [
+      this._gameTimeSubscription
+      , this._isSingleplayerSubscription
+      , this._piecesQueueSubscription
+      , this._playersToBeFocused
+      , this._trashReceive
+      , this._timerSubscription
+      , this._playersSubscription
+      , this.isPausedSubscription
+      , this._isFrozenSubscription
+    ];
+
     constructor(
       private themeService: ThemeService,
       private matchVariables : MatchVariablesService,
       private movementService : MovementService,
       private uiStateControllerService : UiStateControllerService,
       private tetrominoGen : TetrominoGen,
-      public cardsService : CardsService
+      public cardsService : CardsService,
+      public soundService : SoundClassService,
+      private lastMatchService : LastMatchService,
     ) {}
-
 
     animations : Map<number,Animation> = new Map([
       [AnimationEnum.trashIndicatorShake,new Animation(AnimationEnum.trashIndicatorShake,false,1.7,()=>{})]
     ])
-
-
-
 
     /*
       Movimento de peças, por evento de keydown
@@ -227,8 +239,7 @@ export class TetrisGameComponent implements OnInit {
           this.drawNextPieces();
           this.cardsService.turns.next(this.cardsService.turns.value + 1);
         }
-
-        this.fallingPiecesCanvasContext!.clearRect(this.lastPosX - (BLOCK_SIZE * 2 * LATERAL_PADDING), this.lastPosY - (BLOCK_SIZE * (-TOP_PADDING * 4)) , this.lastPosX + (BLOCK_SIZE * 7 * LATERAL_PADDING), this.posY + (BLOCK_SIZE * 7 * -TOP_PADDING));
+        this.fallingPiecesCanvasContext.clearRect(0, 0, this.fallingPiecesCanvasContext.canvas.width, this.fallingPiecesCanvasContext.canvas.height);
         this.posY += BLOCK_SIZE;
 
         this.tetrominoDraw();
@@ -485,6 +496,7 @@ export class TetrisGameComponent implements OnInit {
         this.redrawAllTetrominos();
         this.gameTime -= 6;
         this.gamePontuation += 50;
+        this.lastMatchService.lastMatch.score = this.gamePontuation;
         if(this.accumulatedTrash > 0){
           this.accumulatedTrash--;
           this.accumulatedTrash == 0 ? this.eventsLeftForTrash = 5 : "";
@@ -493,6 +505,7 @@ export class TetrisGameComponent implements OnInit {
     }
     if(cleanOnceOrMore && this.eventsLeftForTrash < 5) this.eventsLeftForTrash++;
     this.matchVariables.setEnemyAttack(rowsCleaned * this.cardsService.damageMultiplier);
+    this.lastMatchService.lastMatch.lines += rowsCleaned;
   }
 
   redrawAllTetrominos() {
@@ -520,8 +533,8 @@ export class TetrisGameComponent implements OnInit {
 
     let x  = this.animations.get(AnimationEnum.trashIndicatorShake)?.enabled ?  Math.random() * 10 : 0;
     for(let i = TRASH_LEVEL - this.accumulatedTrash; i < TRASH_LEVEL; i++){
-      const heightToDraw = this.trashCanvas.nativeElement.height - (BLOCK_SIZE * (TRASH_LEVEL - i)) - 815;
-      this.trashCanvasContext?.drawImage(this.themeService.themeImages[0],0,0,this.themeService.themeImages[0].width,this.themeService.themeImages[0].height,x,heightToDraw,BLOCK_SIZE,BLOCK_SIZE);
+      const heightToDraw = this.trashCanvas.nativeElement.height - (BLOCK_SIZE * (TRASH_LEVEL - i)) - 780;
+      this.trashCanvasContext?.drawImage(this.themeService.themeImages[8],0,0,this.themeService.themeImages[0].width,this.themeService.themeImages[0].height,x,heightToDraw,BLOCK_SIZE,BLOCK_SIZE);
     }
   }
 
@@ -561,6 +574,9 @@ export class TetrisGameComponent implements OnInit {
   }
 
   drawNextPieces(){
+    if(!this.queueHUDContext){
+      return;
+    }
     const visibleNextPieces = 4;
     const x1 = this.queueHUDContext!.canvas.width - 220;
     const y1Pieces = 210, y1Hold = y1Pieces + (BLOCK_SIZE * 4 * (visibleNextPieces + 1)) + 40;
@@ -613,13 +629,18 @@ export class TetrisGameComponent implements OnInit {
     }
   }
 
-
-
   realtimeLifecycle(){
     this.validateTrashShake()
     this.validateTurbo();
     setTimeout(()=>{
       requestAnimationFrame(()=>this.realtimeLifecycle());
     },1000/60)
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      if(subscription) subscription.unsubscribe();
+    });
+    this.cardsService.resetEffects();
   }
 }

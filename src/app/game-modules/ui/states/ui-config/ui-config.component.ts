@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controller/ui-state-controller.service';
 
@@ -9,14 +9,22 @@ import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controlle
   styleUrls: ['./ui-config.component.scss']
 
 })
-export class UiConfigComponent implements OnInit {
+export class UiConfigComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('select',{static:false}) select !: ElementRef<HTMLSelectElement>;
 
   languages = [
     { code: 'en', label: 'English' },
     { code: 'pt-br', label: 'Português' }
   ];
 
+  selectedLanguageIndex : number = 0;
+
   constructor(private uiState : UiStateControllerService, private translate : TranslateService) { }
+  ngAfterViewInit(): void {
+    this.select.nativeElement.selectedIndex = this.languages.findIndex((language) => language.code === localStorage.getItem('language'));
+
+  }
 
   ngOnInit() {
   }

@@ -1,45 +1,51 @@
 export class Card {
-  name !: String;
-  image !: String;
-  description !: String;
+  name !: string;
+  image !: string;
+  description !: string;
   identifier !: string;
   duration ?: number;
   durationType ?: "turns" | "seconds";
   timeout ?: any;
   turnLimit ?: number = -1;
+  applySelf = false;
 }
 
 export const cards : Array<Card> = [
   {
-    "name": "Double damage",
-    "image": "/assets/cards/fortify.png",
-    "description": "Aumenta o dano por 3 rodadas",
+    "name": "cards.double_damage.name",
+    "image": `/fortify.png`,
+    "description": "cards.double_damage.description",
     "identifier": "DOUBLE_DAMAGE",
     "durationType": "turns",
-    "duration": 3
+    "duration": 3,
+    "applySelf": true
   },
   {
-    "name": "Freeze",
-    "image": "/assets/cards/freeze.png",
-    "description": "Congela seu tabuleiro (Tome um arzinho)",
+    "name": "cards.freeze.name",
+    "image": `/freeze.png`,
+    "description": "cards.freeze.description",
     "identifier": "FREEZE",
     "durationType": "seconds",
     "duration": 5000,
+    "applySelf": true
   },
   {
-    "name": "Speedup",
-    "image": "/assets/cards/speedup.png",
-    "description": "Aumenta temporariamente a velocidade do adversario.",
+    "name": "cards.speedup.name",
+    "image": `/speedup.png`,
+    "description": "cards.speedup.description",
     "identifier": "SPEEDUP",
     "durationType": "turns",
-    "duration": 3
+    "duration": 3,
+    "applySelf": false
+
   },
   {
-    "name": "Inverse Commands",
-    "image": "/assets/cards/inversion.png",
-    "description": "Inverte os comandos do adversario por 3 rodadas",
+    "name": "cards.inverse_commands.name",
+    "image": `/inversion.png`,
+    "description": "cards.inverse_commands.description",
     "identifier": "INVERSE_COMMANDS",
     "durationType": "turns",
-    "duration": 3
+    "duration": 3,
+    "applySelf": false
   }
 ]

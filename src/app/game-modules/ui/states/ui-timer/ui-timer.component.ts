@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { MatchVariablesService } from 'src/app/game-modules/services/match-variables/match-variables.service';
 import { SocketService } from 'src/app/game-modules/services/socket/socket.service';
 import { UserService } from 'src/app/game-modules/services/user/user.service';
-import { AudioMap, AudioMapNames, SoundClass } from 'src/app/game-modules/utils/sound';
+import { AudioMap, AudioMapNames, SoundClassService } from 'src/app/game-modules/services/sounds/sound-service';
 import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controller/ui-state-controller.service';
 
 @Component({
@@ -18,7 +18,7 @@ export class UiTimerComponent implements OnInit, OnDestroy {
   playerSubscription ?: Subscription;
   isConnectedSubscription ?: Subscription;
 
-  constructor(private matchVariables : MatchVariablesService, private uiState : UiStateControllerService, private userService : UserService, private socketService : SocketService) { }
+  constructor(private matchVariables : MatchVariablesService, private uiState : UiStateControllerService, private userService : UserService, private socketService : SocketService, private soundService : SoundClassService) { }
 
   ngOnInit() {
     this.matchVariables.startGameListening();
@@ -46,8 +46,7 @@ export class UiTimerComponent implements OnInit, OnDestroy {
   }
 
   startMusic(){
-    let sound = new SoundClass();
-    sound.setNewAudio(AudioMap[AudioMapNames.main],true);
+    this.soundService.setNewMainAudio(AudioMap[AudioMapNames.main],true);
   }
 
   startSingleplayer(){

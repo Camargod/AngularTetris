@@ -22,7 +22,7 @@
     "about-functions": "Role",
     "about-matches": "Matches",
     "about-statistics": "statistics",
-    "about-time": "Games played", 
+    "about-time": "Games played",
     "statistics-pieces": "Pieces used",
     "statistics-KDA": "Wins/Loses",
     "statistics-players-defeated": "Players defeated",
@@ -50,5 +50,39 @@
     "red": "Red",
     "foods": "Foods",
     "animals": "Animals"
+  },
+  
+  "gameover":{
+    "title": "Game over",
+    "score": "Score",
+    "speed": "Speed",
+    "rounds": "Rounds",
+    "lines": "Lines executed",
+    "damage": "Damage done",
+    "card_count": "Used cards",
+    "cards_received": "Adversary received cards",
+    "kos": "Knockouts",
+    "badges": "Badges",
+    "final_position": "Final Position"
+  },
+  "cards":{
+    "title": "Cards",
+    "remaining_rounds": "Remaining rounds to get a new card: {{rounds}}",
+    "double_damage":{
+      "name": "Double damages",
+      "description": "Increases damage for 3 rounds"
+    },
+    "freeze":{
+      "name": "Freeze",
+      "description": "Stops you game (take a breeze)"
+    },
+    "speedup":{
+      "name": "Speed Up",
+      "description": "Temporary increase for your attacker game-speed (3 rounds limit)"
+    },
+    "inverse_commands":{
+      "name": "Inverse commands",
+      "description": "Inverts adversary controls for 3 rounds"
+    }
   }
 }

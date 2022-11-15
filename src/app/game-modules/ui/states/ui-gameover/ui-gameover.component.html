@@ -1,1 +1,14 @@
 <button class="back-btn" (click)="back()">Menu Iniciar</button>
+
+
+<h1>{{'gameover.title' | translate}}</h1>
+<div>{{'gameover.score' | translate}}: {{lastMatch.lastMatch.score}}</div>
+<div>{{'gameover.speed' | translate}}: {{lastMatch.lastMatch.speed}}</div>
+<div>{{'gameover.rounds' | translate}}: {{lastMatch.lastMatch.rounds}}</div>
+<div>{{'gameover.lines' | translate}}: {{lastMatch.lastMatch.lines}}</div>
+<div>{{'gameover.damage' | translate}}: {{lastMatch.lastMatch.damage}}</div>
+<div>{{'gameover.card_count' | translate}}: {{lastMatch.lastMatch.cards_used}}</div>
+<div>{{'gameover.cards_received' | translate}}: {{lastMatch.lastMatch.cards_received_from_enemy}}</div>
+<div>{{'gameover.kos' | translate}}: {{lastMatch.lastMatch.kos}}</div>
+<div>{{'gameover.badges' | translate}}: {{lastMatch.lastMatch.badges}}</div>
+<div>{{'gameover.final_position' | translate}}: {{lastMatch.lastMatch.position}}</div>

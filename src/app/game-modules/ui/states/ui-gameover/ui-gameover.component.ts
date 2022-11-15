@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { LastMatchService } from 'src/app/game-modules/services/last-match/last-match.service';
+import { SoundClassService } from 'src/app/game-modules/services/sounds/sound-service';
 import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controller/ui-state-controller.service';
 
 @Component({
@@ -8,9 +10,10 @@ import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controlle
 })
 export class UiGameoverComponent implements OnInit {
 
-  constructor(private uiState : UiStateControllerService) { }
+  constructor(private uiState : UiStateControllerService, public lastMatch : LastMatchService, private audioService : SoundClassService) { }
 
   ngOnInit() {
+    this.audioService.stopMainAudio();
   }
 
   back(){
