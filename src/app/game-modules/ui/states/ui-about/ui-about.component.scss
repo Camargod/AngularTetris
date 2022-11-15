@@ -3,3 +3,9 @@
 :host{
   @include ui_background;
 }
+
+p{
+  font-size: calc(2vw + 1em);
+  padding: 0 40px;
+  overflow: auto;
+}

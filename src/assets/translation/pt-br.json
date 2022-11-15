@@ -70,5 +70,8 @@
       "name": "Comandos invertidos",
       "description": "Inverte os comandos do adversario por 3 rodadas"
     }
+  },
+  "about":{
+    "text": "Tetris em sua versão original é um jogo de 1984, criado pelos engenheiros de Informática Alexey Pajitnov e Dmitry Pavlovsky em conjunto com um de seus alunos na época, Vadim Gerasimov. Famoso mundialmente, esse jogo russo tem como objetivo alinhar horizontalmente blocos de formatos diferentes no objetivo de eliminá-los e ganhar pontos. \nTetrisverse é uma iniciativa que alguns alunos da FATEC São Caetano do Sul (seus nomes respectivos nos créditos) tiveram de inovar a versão original, usando de mecânicas modernas e atrativas tanto ao público antigo quanto ao mais jovem. Podendo-se jogar contra 100 jogadores ao mesmo tempo, fazendo uso de power-ups e podendo escolher a aparência que sua tela tomará no meio de uma partida são apenas algumas das mudanças que Tetrisverse fez pra deixar uma partida de Tetris convencional ainda mais atrativa."
   }
 }
