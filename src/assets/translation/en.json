@@ -51,9 +51,12 @@
     "green": "Green",
     "red": "Red",
     "foods": "Foods",
-    "animals": "Animals"
+    "animals": "Animals",
+    "astros": "Astrography",
+    "steampunk": "Steampunk",
+    "countries": "Countries"
   },
-  
+
   "gameover":{
     "title": "Game over",
     "score": "Score",

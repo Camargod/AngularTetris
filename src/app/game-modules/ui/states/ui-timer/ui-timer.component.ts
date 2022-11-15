@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MatchVariablesService } from 'src/app/game-modules/services/match-variables/match-variables.service';
 import { SocketService } from 'src/app/game-modules/services/socket/socket.service';
@@ -9,7 +9,7 @@ import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controlle
 @Component({
   selector: 'app-ui-timer',
   templateUrl: './ui-timer.component.html',
-  styleUrls: ['./ui-timer.component.scss']
+  styleUrls: ['./ui-timer.component.scss'],
 })
 export class UiTimerComponent implements OnInit, OnDestroy {
   timer = 9999;
@@ -18,9 +18,10 @@ export class UiTimerComponent implements OnInit, OnDestroy {
   playerSubscription ?: Subscription;
   isConnectedSubscription ?: Subscription;
 
-  constructor(private matchVariables : MatchVariablesService, private uiState : UiStateControllerService, private userService : UserService, private socketService : SocketService, private soundService : SoundClassService) { }
+  constructor(private elRef:ElementRef<HTMLDivElement>,private matchVariables : MatchVariablesService, private uiState : UiStateControllerService, private userService : UserService, private socketService : SocketService, private soundService : SoundClassService) { }
 
   ngOnInit() {
+    this.elRef.nativeElement.style.backgroundImage = `url(/assets/ui/instrucoes-${localStorage.getItem("language")}.png)`;
     this.matchVariables.startGameListening();
     this.timerSubscription = this.matchVariables.timer.subscribe((time)=>{
       this.timer = time;

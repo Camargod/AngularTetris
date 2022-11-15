@@ -42,10 +42,12 @@ export class SoundClassService {
 
 export const AudioMap = [
   "main",
-  "oof"
+  "damage",
+  "fast-throw"
 ]
 
 export const enum AudioMapNames {
   "main" = 0,
-  "oof" = 1
+  "damage" = 1,
+  "fast_throw" = 2,
 }

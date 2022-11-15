@@ -181,5 +181,17 @@ export const Themes = [{
   {
     name: "themes.animals",
     fileName: "theme14"
+  },
+  {
+    name: "themes.astros",
+    fileName: "theme15"
+  },
+  {
+    name: "themes.steampunk",
+    fileName: "theme16"
+  },
+  {
+    name: "themes.countries",
+    fileName: "theme16"
   }
 ]
