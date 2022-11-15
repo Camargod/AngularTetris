@@ -7,7 +7,9 @@
     "themes": "Themes",
     "stats": "Stats",
     "config": "Settings",
-    "welcome": "Hey {{user}}! Be welcome to the game!"
+    "welcome": "Hey {{user}}! Be welcome to the game!",
+    "about": "About",
+    "credits": "Credits"
   },
   "play":{
     "modes":{

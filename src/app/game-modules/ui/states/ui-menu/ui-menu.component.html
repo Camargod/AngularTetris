@@ -5,5 +5,11 @@
 </div>
 
 <div class="overlay">
-  {{'menu.welcome' | translate: {user: user?.nickname} }}
+  <div>
+    <fa-icon [tooltip]="'menu.about' | translate" (click)="openAbout()" [icon]="faCircleInfo"></fa-icon>
+    <fa-icon [tooltip]="'menu.credits' | translate" (click)="openCredits()" [icon]="faSquareList"></fa-icon>
+  </div>
+  <!-- {{'menu.welcome' | translate: {user: user?.nickname} }} -->
 </div>
+
+

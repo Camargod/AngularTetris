@@ -3,6 +3,7 @@ import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controlle
 import { AuthService, User } from '@auth0/auth0-angular';
 import { UserService } from 'src/app/game-modules/services/user/user.service';
 import { ThemeService } from 'src/app/game-modules/services/themes/theme-service';
+import { faCircleInfo, faListSquares } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-ui-menu',
@@ -12,6 +13,9 @@ import { ThemeService } from 'src/app/game-modules/services/themes/theme-service
 export class UiMenuComponent implements OnInit {
 
   playEnabled = false;
+
+  faCircleInfo = faCircleInfo;
+  faSquareList = faListSquares;
 
   constructor(private stateController : UiStateControllerService, private auth : AuthService, private themeService : ThemeService) { }
 
@@ -44,6 +48,14 @@ export class UiMenuComponent implements OnInit {
   validateSelectedTheme(){
     this.themeService.setDefaultTheme();
   }
+
+  openCredits(){
+    this.stateController.changeState(UiStatesEnum.CREDITS);
+  }
+  openAbout(){
+    this.stateController.changeState(UiStatesEnum.ABOUT);
+  }
+
 }
 
 export class MenuItem{

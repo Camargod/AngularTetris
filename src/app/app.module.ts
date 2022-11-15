@@ -24,6 +24,11 @@ import { NgChartsModule } from 'ng2-charts';
 import { UiConfigComponent } from './game-modules/ui/states/ui-config/ui-config.component';
 import { UiStatsComponent } from './game-modules/ui/states/ui-stats/ui-stats.component';
 import { UiGameoverComponent } from './game-modules/ui/states/ui-gameover/ui-gameover.component';
+import { UiAboutComponent } from './game-modules/ui/states/ui-about/ui-about.component';
+import { UiCreditsComponent } from './game-modules/ui/states/ui-credits/ui-credits.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TooltipComponent } from './game-modules/ui/components/tooltip/tooltip.component';
+import { TooltipDirective } from './game-modules/ui/components/tooltip/tooltip.directive';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/translation/', '.json');
@@ -49,7 +54,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     TetrisGameComponent,
     UiGameViewComponent,
     InfoHudComponent,
-    UiGameoverComponent
+    UiGameoverComponent,
+    UiAboutComponent,
+    UiCreditsComponent,
+    TooltipComponent,
+    TooltipDirective
   ],
   imports: [
     BrowserModule,
@@ -70,7 +79,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         }
       }
     ),
-    NgChartsModule
+    NgChartsModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
