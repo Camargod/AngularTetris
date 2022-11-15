@@ -71,7 +71,7 @@ export class MovementService {
 
   turbo(scope: TetrisGameComponent) {
     scope.isTurboOn = true;
-    scope.soundService.setNewSecondaryAudio(AudioMap[AudioMapNames.oof],false);
+    scope.soundService.setNewSecondaryAudio(AudioMap[AudioMapNames.fast_throw],false);
 
   }
 

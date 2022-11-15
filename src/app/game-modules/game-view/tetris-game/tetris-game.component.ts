@@ -11,7 +11,7 @@ import { CardsService } from '../../services/cards/cards-service';
 import { LastMatchService } from '../../services/last-match/last-match.service';
 import { MatchVariablesService } from '../../services/match-variables/match-variables.service';
 import { MovementService } from '../../services/movement/movement.service';
-import { SoundClassService } from '../../services/sounds/sound-service';
+import { AudioMap, AudioMapNames, SoundClassService } from '../../services/sounds/sound-service';
 import { Themes, ThemeService } from '../../services/themes/theme-service';
 import { UiStateControllerService, UiStatesEnum } from '../../ui/ui-state-controller/ui-state-controller.service';
 import { BLOCK_SIZE, CANVAS_SCALING, COLS, GRIDCOLS, GRIDROWS, LATERAL_PADDING, ROWS, TOP_PADDING, TRASH_LEVEL } from '../../utils/constants';
@@ -551,6 +551,9 @@ export class TetrisGameComponent implements OnInit, OnDestroy {
   setGarbageOnGrid(trashHeight:number){
     this.accumulatedTrash+= trashHeight;
     this.drawTrashIndicator();
+    if(trashHeight > 0){
+      this.soundService.setNewSecondaryAudio(AudioMap[AudioMapNames.damage],false);
+    }
     this.animations.get(AnimationEnum.trashIndicatorShake)?.startAnimation();
   }
 
