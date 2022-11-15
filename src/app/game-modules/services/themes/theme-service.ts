@@ -135,11 +135,11 @@ export const Themes = [{
     fileName: "theme02"
   },
   {
-    name: "themes.retro",
+    name: "themes.tech",
     fileName: "theme03"
   },
   {
-    name: "themes.tech",
+    name: "themes.retro",
     fileName: "theme04"
   },
   {
