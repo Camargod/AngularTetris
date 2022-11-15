@@ -1,41 +1,44 @@
 :host{
-  //background-image: url(/assets/ui/tetrisverse.png);
+  background-image: url(/assets/ui/tetrisverse.jpg);
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
-  img {
-    width: 35%;
-  }
-  background-color: cornsilk;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  //img {
+  //  width: 35%;
+  //}
   transition: 2s;
-  flex-direction: column; //esse cara q ta cagano minha tela
+  //flex-direction: column; //esse cara q ta cagano minha tela
 }
 
-.logo{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  .home-title{
-    font-size: 96px;
-  }
-  opacity: 0;
-  transform: translateY(-70px);
-  animation-name: intro;
-  animation-duration: 3s;
-  animation-fill-mode: forwards;
-}
+//.logo{
+  //display: flex;
+  //align-items: center;
+  //justify-content: center;
+  //.home-title{
+  //  font-size: 96px;
+  //}
+  //opacity: 0;
+  //transform: translateY(-70px);
+  //animation-name: intro;
+  //animation-duration: 3s;
+  //animation-fill-mode: forwards;
+//}
 
 .key-press{
-  color:red;
+  color:white;
+  margin-top: 30%;
   cursor: pointer;
   padding: 1% 1% 1% 1%;
   border-radius: 4%;
   opacity: 0;
   animation-name: key-intro;
   animation-duration: 1.7s;
-  animation-delay: 3s;
+  animation-delay: 2s;
   animation-iteration-count: infinite;
   animation-fill-mode: forwards;
 }
