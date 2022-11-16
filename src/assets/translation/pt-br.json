@@ -44,7 +44,7 @@
     "tech": "Tecnologia",
     "retro": "Atompunk",
     "fruits": "Frutas",
-    "default-2": "Tema Base 2",
+    "default-2": "Tema Padrão 2",
     "geometrics": "Geométricos",
     "purple": "Roxo",
     "blue": "Azul",
@@ -52,7 +52,7 @@
     "red": "Vermelho",
     "foods": "Comidas",
     "animals": "Animais",
-    "astros": "Astrologia",
+    "astros": "Astronomia",
     "steampunk": "Steampunk",
     "countries": "Países"
   },
@@ -72,7 +72,7 @@
   },
   "cards":{
     "title": "Cartas",
-    "remaining_rounds": "Rounds restatantes para conseguir uma carta: {{rounds}}",
+    "remaining_rounds": "Rounds restantes para conseguir uma carta: {{rounds}}",
     "double_damage":{
       "name": "Dano duplo",
       "description": "Aumenta o dano por 3 rodadas"

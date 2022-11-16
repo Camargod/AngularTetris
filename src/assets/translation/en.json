@@ -52,9 +52,9 @@
     "red": "Red",
     "foods": "Foods",
     "animals": "Animals",
-    "astros": "Astrography",
+    "astros": "Astronomy",
     "steampunk": "Steampunk",
-    "countries": "Countries"
+    "countries": "Nations"
   },
 
   "gameover":{
@@ -89,5 +89,8 @@
       "name": "Inverse commands",
       "description": "Inverts adversary controls for 3 rounds"
     }
+  },
+  "about":{
+    "text": "Tetris in its original version is a game from 1984, created by IT engineers Alexey Pajitnov and Dmitry Pavlovsky together with one of their students at the time, Vadim Gerasimov. Famous worldwide, this Russian game aims to align horizontally blocks of different formats in order to eliminate them and earn points. \nTetrisverse is an initiative that some students from FATEC São Caetano do Sul (their respective names in the credits) had to innovate the original version, using modern and attractive mechanics both old and younger audiences. Being able to play against 100 players at the same time, making use of power-ups and being able to choose the appearance that your screen will take in the middle of a game are just some of the changes that Tetrisverse has made to leave a game of conventional Tetris even more attractive."
   }
 }
