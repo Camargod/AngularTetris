@@ -30,10 +30,20 @@
     "statistics-players-defeated": "Jogadores derrotados",
     "statistics-rows-destroyed": "Fileiras destruídas",
     "statistics-max-score": "Pontuação máxima",
-    "about-text": "Estatísticas de jogadas do jogador. Inclui vitórias, derrotas, tempo de jogo, temas com mais vitórias/derrotas, estilos de gameplay, quantidade de peças usadas, n° de fileiras destruídas, KDA e pontuação máxima."
+    "about-text": "Estatísticas de jogadas do jogador. Inclui vitórias, derrotas, tempo de jogo, temas com mais vitórias/derrotas, estilos de gameplay, quantidade de peças usadas, n° de fileiras destruídas, KDA e pontuação máxima.",
+    "this-year": "Este ano",
+    "last-year": "Ano Passado",
+    "year-timeline": ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho"],
+    "modes":  ["1 contra 1", "1 contra 2", "1 contra 3", "1 contra 4", "1 contra 5"],
+    "playing_styles": ["Agressivo" , "Trilha linhas", "Pacificador"],
+    "victories": "Vitórias",
+    "defeats": "Derrotas"
   },
   "config": {
-    "title": "Configurações"
+    "title": "Configurações",
+    "language": "Linguagem",
+    "sounds": "Sons",
+    "effects": "Efeitos"
   },
   "ui": {
     "back-button": "Voltar"
@@ -56,7 +66,6 @@
     "steampunk": "Steampunk",
     "countries": "Países"
   },
-
   "gameover":{
     "title": "Fim de jogo",
     "score": "Pontuação",
@@ -92,6 +101,12 @@
   },
   "about":{
     "text": "Tetris em sua versão original é um jogo de 1984, criado pelos engenheiros de Informática Alexey Pajitnov e Dmitry Pavlovsky em conjunto com um de seus alunos na época, Vadim Gerasimov. Famoso mundialmente, esse jogo russo tem como objetivo alinhar horizontalmente blocos de formatos diferentes no objetivo de eliminá-los e ganhar pontos. \nTetrisverse é uma iniciativa que alguns alunos da FATEC São Caetano do Sul (seus nomes respectivos nos créditos) tiveram de inovar a versão original, usando de mecânicas modernas e atrativas tanto ao público antigo quanto ao mais jovem. Podendo-se jogar contra 100 jogadores ao mesmo tempo, fazendo uso de power-ups e podendo escolher a aparência que sua tela tomará no meio de uma partida são apenas algumas das mudanças que Tetrisverse fez pra deixar uma partida de Tetris convencional ainda mais atrativa."
-  }
-
+  },
+  "timer":{
+    "title": "Tempo para começar:",
+    "players": "Jogadores"
+  },
+  "pause-button": "Pausar",
+  "play-button": "Continuar",
+  "game": "jogo"
 }

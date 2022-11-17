@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AuthService, User } from '@auth0/auth0-angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Chart, ChartConfiguration } from 'chart.js';
 import { UiStateControllerService, UiStatesEnum } from '../../ui-state-controller/ui-state-controller.service';
 
@@ -32,19 +33,21 @@ export class UiStatsComponent implements OnInit {
   roleStatsChart ?: Chart;
   myLineChart ?: Chart;
 
+  constructor(private uiState : UiStateControllerService, private auth : AuthService, private translate: TranslateService) { }
+
   myLineChartConfig: ChartConfiguration = {
     type: 'line',
     data: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      labels: this.translate.instant('stats.year-timeline'),
       datasets: [{
-        label: 'Esse ano',
+        label: this.translate.instant('stats.this-year'),
         data: [65, 59, 80, 81, 56, 55, 40],
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1
       },
       {
-        label: 'Ano Passado',
+        label: this.translate.instant('last-year'),
         data: [28, 48, 40, 19, 86, 27, 90],
         fill: false,
         borderColor: 'rgb(255, 99, 132)',
@@ -63,10 +66,10 @@ export class UiStatsComponent implements OnInit {
   }
 
   champDataConfig = {
-    labels: ["Padrão", "Noir", "Tech", "Retro"],
+    labels: [this.translate.instant("themes.default"), this.translate.instant("themes.noir"), this.translate.instant("themes.tech"), this.translate.instant("themes.retro")],
     datasets: [
         {
-            label: "Vitórias",
+            label: this.translate.instant("stats.victories"),
             fillColor: "rgba(220,220,220,0.5)",
             strokeColor: "rgba(220,220,220,0.8)",
             highlightFill: "rgba(220,220,220,0.75)",
@@ -74,7 +77,7 @@ export class UiStatsComponent implements OnInit {
             data: [65, 59, 80, 81]
         },
         {
-            label: "Derrotas",
+            label: this.translate.instant("stats.defeats"),
             fillColor: "rgba(151,187,205,0.5)",
             strokeColor: "rgba(151,187,205,0.8)",
             highlightFill: "rgba(151,187,205,0.75)",
@@ -87,7 +90,7 @@ export class UiStatsComponent implements OnInit {
   gameStatsConfig:ChartConfiguration = {
     type: 'doughnut',
     data: {
-      labels: ["1 contra 1", "1 contra 2", "1 contra 3", "1 contra 4", "1 contra 5"],
+      labels: this.translate.instant("stats.modes"),
       datasets: [
         {
           data: [280, 150, 100, 40, 20],
@@ -104,7 +107,7 @@ export class UiStatsComponent implements OnInit {
   roleStatsConfig : ChartConfiguration = {
     type: 'polarArea',
     data: {
-      labels: ["Agressivo" , "Line Maker", "Pacificador"],
+      labels: this.translate.instant("stats.playing_styles"),
       datasets: [
         {
           data: [300, 225, 240],
@@ -117,8 +120,6 @@ export class UiStatsComponent implements OnInit {
       responsive: true
     }
   }
-
-  constructor(private uiState : UiStateControllerService, private auth : AuthService) { }
 
   ngOnInit() {
     this.auth.user$.subscribe((user)=>{

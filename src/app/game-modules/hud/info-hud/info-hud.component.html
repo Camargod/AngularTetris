@@ -1,10 +1,10 @@
   <div class="info">
     <span class="info-background">
-    <label class="pontuacao">Pontuação: {{game.gamePontuation}}</label><br>
-    <label class = "players">Players: {{game.players}}</label><br>
-    <button (click)="game.setGarbageOnGrid(1)">Testar lixo +1</button><br>
+    <label class="pontuacao">{{'gameover.score' | translate}}: {{game.gamePontuation}}</label><br>
+    <label class = "players">{{'timer.players' | translate}}: {{game.players}}</label><br>
+    <!-- <button (click)="game.setGarbageOnGrid(1)">Testar lixo +1</button><br> -->
     <!-- <label>Resta {{game.eventsLeftForTrash}} para {{game.accumulatedTrash}} de lixo cair</label> -->
-    <button *ngIf="game.isSingleplayer" (click)="game.isPaused = !game.isPaused">{{game.isPaused ? "Voltar" : "Pausar"}} Jogo</button>
+    <button *ngIf="game.isSingleplayer" (click)="game.isPaused = !game.isPaused">{{(game.isPaused ? "play-button" : "pause-button") | translate}} {{'game' | translate}}</button>
     <!-- <label>Speed: {{game.gameTimer2}}</label> -->
       <!-- <form (ngSubmit)="authenticateUser()" [formGroup]="autenticateForm">
         <button type="submit">Test autenticate</button>
