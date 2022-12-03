@@ -67,7 +67,10 @@
     "countries": "Países"
   },
   "gameover":{
-    "title": "Fim de jogo",
+    "title": {
+      "won": "Voce ganhou!",
+      "lost": "Fim de jogo"
+    },
     "score": "Pontuação",
     "speed": "Velocidade",
     "rounds": "Rodadas",

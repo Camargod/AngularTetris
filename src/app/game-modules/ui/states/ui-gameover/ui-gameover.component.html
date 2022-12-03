@@ -1,7 +1,7 @@
 <button class="back-btn" (click)="back()">{{'ui.back-button' | translate}}</button>
 
 
-<h1>{{'gameover.title' | translate}}</h1>
+<h1>{{ (this.won ? 'gameover.title.won' : 'gameover.title.lost') | translate}}</h1>
 <div>{{'gameover.score' | translate}}: {{lastMatch.lastMatch.score}}</div>
 <div>{{'gameover.speed' | translate}}: {{lastMatch.lastMatch.speed}}</div>
 <div>{{'gameover.rounds' | translate}}: {{lastMatch.lastMatch.rounds}}</div>

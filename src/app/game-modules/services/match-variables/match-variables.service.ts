@@ -25,11 +25,13 @@ constructor(
   public game_start = new BehaviorSubject<boolean>(false);
   public damage_received = new BehaviorSubject<number>(0);
   public in_match_players = new BehaviorSubject<number>(0);
+  public alivePlayers = new BehaviorSubject<number>(0);
   public otherPlayersGrid = new BehaviorSubject<PlayersGrids>({});
   public match_speed = new BehaviorSubject<number>(500);
   public isSingleplayer = new BehaviorSubject(false);
   public nextPieces = new BehaviorSubject([]);
   public receivedCardFromEnemy = new BehaviorSubject<Card>({} as Card);
+  public won = new BehaviorSubject<boolean>(false);
   private socketSubscription ?: Subscription;
 
   startGameListening(){
@@ -108,8 +110,13 @@ constructor(
             this.lastMatchService.lastMatch.cards_received_from_enemy++;
             break;
           case SocketEventServerEnumerator.GET_CARD_RETURN:
-            debugger;
             this.receivedCardFromEnemy.next(event.value as Card);
+            break;
+          case SocketEventServerEnumerator.YOU_WIN:
+            this.won.next(true);
+            break;
+          case SocketEventServerEnumerator.ALIVE_PLAYERS:
+            this.alivePlayers.next(Number.parseInt(event.value));
             break;
           default:
             break

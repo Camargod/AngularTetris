@@ -107,6 +107,8 @@ export class TetrisGameComponent implements OnInit, OnDestroy {
     _isSingleplayerSubscription ?: Subscription;
     _gameTimeSubscription ?: Subscription;
 
+    _wonSubscription ?: Subscription;
+
     subscriptions = [
       this._gameTimeSubscription
       , this._isSingleplayerSubscription
@@ -117,6 +119,7 @@ export class TetrisGameComponent implements OnInit, OnDestroy {
       , this._playersSubscription
       , this.isPausedSubscription
       , this._isFrozenSubscription
+      , this._wonSubscription
     ];
 
     constructor(
@@ -189,6 +192,13 @@ export class TetrisGameComponent implements OnInit, OnDestroy {
     })
     this._isFrozenSubscription = this.cardsService.isFrozen.subscribe((isFrozen)=>{
       this.isFrozen = isFrozen;
+    });
+    this._wonSubscription = this.matchVariables.won.subscribe((won)=>{
+      if(won == true){
+        this.isGameOver = true;
+        this.soundService.setNewSecondaryAudio("victory");
+        this.uiStateControllerService.changeState(UiStatesEnum.GAME_OVER);
+      }
     });
   }
 
@@ -539,11 +549,12 @@ export class TetrisGameComponent implements OnInit, OnDestroy {
   }
 
   trashEventTrigger(){
+    const draw_from_thrash = 4;
     if(this.accumulatedTrash > 0) this.eventsLeftForTrash--;
     if(this.eventsLeftForTrash == 0){
-      GridUtils.gridTrashLineup(this.gridVector,this.accumulatedTrash);
+      GridUtils.gridTrashLineup(this.gridVector,draw_from_thrash);
       this.redrawAllTetrominos();
-      this.accumulatedTrash = 0;
+      this.accumulatedTrash = this.accumulatedTrash - draw_from_thrash;
       this.eventsLeftForTrash = 5;
     }
   }

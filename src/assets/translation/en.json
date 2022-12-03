@@ -67,7 +67,10 @@
   },
 
   "gameover":{
-    "title": "Game over",
+    "title": {
+      "won": "You Win, congratulations!",
+      "lost": "Game over"
+    },
     "score": "Score",
     "speed": "Speed",
     "rounds": "Rounds",
